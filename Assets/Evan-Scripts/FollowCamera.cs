@@ -20,6 +20,7 @@ public class FollowCamera : MonoBehaviour
     Vector3 hiddenMarker;
 
     GameObject lockTarget;
+    string currentLockTargetName;
     bool lockOn = false;
 
     private Transform myTransform;
@@ -31,23 +32,21 @@ public class FollowCamera : MonoBehaviour
         myTransform = transform;
         CameraSetup();
         lockTarget = findClosest();
+        currentLockTargetName = "none";
         hiddenMarker = new Vector3(0, -200, 0);
     }
 
     //using late update so camera moves after player moves in update
     void LateUpdate()
     {
-        if(Input.GetAxis("rightTrigger") > 0 && !lockOn)
+        if(Input.GetAxis("rightTrigger") > 0 && !lockOn && enemiesExist())
         {
-            Debug.Log("MADEITTTTTTGFKUYTYFIYSFUYKDGUYKDFKUDY");
-            lockTarget = findClosest();
-            lockOn = true;
-        }else if(Input.GetAxis("rightTrigger") == 0 && lockOn)
+            //Debug.Log("MADEITTTTTTGFKUYTYFIYSFUYKDGUYKDFKUDY");
+            lockOnToTarget();
+        }else if((Input.GetAxis("rightTrigger") == 0 && lockOn) || GameObject.Find(currentLockTargetName) == null)
         {
-            lockMarker.transform.position = hiddenMarker;
-            lockOn = false;
-            x = myTransform.rotation.x;
-            y = myTransform.rotation.y;
+            endLockOn();
+            Debug.Log("stopped locking on");
         }
         if (!lockOn)
         {
@@ -87,7 +86,7 @@ public class FollowCamera : MonoBehaviour
                 closestDist = getDistance(enemy);
             }
             enemyDist = getDistance(enemy);
-            Debug.Log("Enemy = " + enemy.name + " distance = " + enemyDist);
+            //Debug.Log("Enemy = " + enemy.name + " distance = " + enemyDist);
             if(enemyDist < closestDist)
             {
                 closest = enemy;
@@ -110,4 +109,27 @@ public class FollowCamera : MonoBehaviour
         myTransform.LookAt(target);
     }
 
+    public bool enemiesExist()
+    {
+        var array = GameObject.FindGameObjectsWithTag("Enemy");
+        if(array.Length > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void lockOnToTarget()
+    {
+        lockTarget = findClosest();
+        currentLockTargetName = lockTarget.name;
+        lockOn = true;
+    }
+    public void endLockOn()
+    {
+        lockMarker.transform.position = hiddenMarker;
+        lockOn = false;
+        //x = myTransform.rotation.x;
+        //y = myTransform.rotation.y;
+    }
 }

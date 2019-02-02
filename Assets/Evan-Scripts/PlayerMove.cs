@@ -32,7 +32,7 @@ public class PlayerMove : MonoBehaviour {
         float horizontal = Input.GetAxis("LStick X") * movementSpeed * Time.deltaTime;
         float vertical = Input.GetAxis("LStick Y") * movementSpeed * Time.deltaTime;
 
-        Debug.Log("horiz = " + horizontal + " vert = " + vertical);
+        //Debug.Log("horiz = " + horizontal + " vert = " + vertical);
 
         //cam2 movement
         heading += horizontal;
