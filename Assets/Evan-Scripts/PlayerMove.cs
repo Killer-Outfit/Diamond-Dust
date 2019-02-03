@@ -14,6 +14,8 @@ public class PlayerMove : MonoBehaviour {
     public Transform cam;
     float heading;
     //
+    CharacterController controller;
+    Vector3 velocity;
 
     bool isLock;
 
@@ -23,7 +25,9 @@ public class PlayerMove : MonoBehaviour {
     void Start () {
         isLock = false;
         anim = GetComponent<Animator>();
-	}
+        controller = GetComponent<CharacterController>();
+        velocity = new Vector3(0, Physics.gravity.y, 0);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -58,7 +62,10 @@ public class PlayerMove : MonoBehaviour {
 
         if (!isLock)
         {
-            transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed;
+            //transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed;
+            controller.Move((camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed);
+            velocity.y += Physics.gravity.y * Time.deltaTime;
+            controller.Move(velocity * Time.deltaTime);
 
             //setting character rotation
             if (inputs.x != 0 || inputs.y != 0)
