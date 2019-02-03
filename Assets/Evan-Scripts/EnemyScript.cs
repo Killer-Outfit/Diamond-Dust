@@ -27,11 +27,14 @@ public class EnemyScript : MonoBehaviour
     {
         if(getDistance() > followDistance)
         {
-            //float step = speed * Time.deltaTime;
-            //transformObject.position = Vector3.MoveTowards(transformObject.position, player.transform.position, step);
-            //myTransform.position = new Vector3(transformObject.position.x, initialY, transformObject.position.z);
-            //myTransform.LookAt(player.transform);
+            float step = speed * Time.deltaTime;
+            transformObject.position = Vector3.MoveTowards(transformObject.position, player.transform.position, step);
+            myTransform.position = new Vector3(transformObject.position.x, initialY, transformObject.position.z);
+            myTransform.LookAt(player.transform);
             anim.Play("run");
+        }else
+        {
+            anim.Play("idle");
         }
     }
 

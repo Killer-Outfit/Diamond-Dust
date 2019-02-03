@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    //ADD COLLER TO THE HAND BONE AND FOOT BONES
     public void launchAttack(Collider attack)
     {
         //overlapSphere is best if applicable
