@@ -12,11 +12,14 @@ public class EnemyScript : MonoBehaviour
     public float followDistance;
     public Transform transformObject;
 
+    Animator anim;
+
     // Start is called before the first frame update
     void Start()
     {
         myTransform = transform;
         initialY = myTransform.position.y;
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -28,6 +31,7 @@ public class EnemyScript : MonoBehaviour
             transformObject.position = Vector3.MoveTowards(transformObject.position, player.transform.position, step);
             myTransform.position = new Vector3(transformObject.position.x, initialY, transformObject.position.z);
             myTransform.LookAt(player.transform);
+            anim.Play("run");
         }
     }
 
