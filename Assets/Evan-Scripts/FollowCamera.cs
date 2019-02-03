@@ -43,7 +43,7 @@ public class FollowCamera : MonoBehaviour
         {
             //Debug.Log("MADEITTTTTTGFKUYTYFIYSFUYKDGUYKDFKUDY");
             lockOnToTarget();
-        }else if((Input.GetAxis("rightTrigger") == 0 && lockOn) || GameObject.Find(currentLockTargetName) == null)
+        }else if((Input.GetAxis("rightTrigger") == 0 && lockOn) || GameObject.Find(currentLockTargetName) == null && lockOn)
         {
             endLockOn();
             Debug.Log("stopped locking on");
@@ -122,8 +122,11 @@ public class FollowCamera : MonoBehaviour
     public void lockOnToTarget()
     {
         lockTarget = findClosest();
-        currentLockTargetName = lockTarget.name;
-        lockOn = true;
+        if (getDistance(lockTarget) < 30)
+        {
+            currentLockTargetName = lockTarget.name;
+            lockOn = true;
+        }
     }
     public void endLockOn()
     {

@@ -6,24 +6,28 @@ public class EnemyScript : MonoBehaviour
 {
     public GameObject player;
     public float speed;
-    public float initialY;
+    float initialY;
     private Transform myTransform;
     public int health;
+    public float followDistance;
+    public Transform transformObject;
 
     // Start is called before the first frame update
     void Start()
     {
         myTransform = transform;
+        initialY = myTransform.position.y;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(getDistance() > 5)
+        if(getDistance() > followDistance)
         {
             float step = speed * Time.deltaTime;
-            myTransform.position = Vector3.MoveTowards(myTransform.position, player.transform.position, step);
-            myTransform.position = new Vector3(myTransform.position.x, initialY, myTransform.position.z);
+            transformObject.position = Vector3.MoveTowards(transformObject.position, player.transform.position, step);
+            myTransform.position = new Vector3(transformObject.position.x, initialY, transformObject.position.z);
+            myTransform.LookAt(player.transform);
         }
     }
 
