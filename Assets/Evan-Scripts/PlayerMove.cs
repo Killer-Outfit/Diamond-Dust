@@ -15,7 +15,11 @@ public class PlayerMove : MonoBehaviour {
     float heading;
     //
     CharacterController controller;
-    Vector3 velocity;
+    Vector3 movementVector;
+    float vVelocity;
+
+    GameObject mainCamera;
+    FollowCamera mainCameraScript;
 
     bool isLock;
 
@@ -23,14 +27,18 @@ public class PlayerMove : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        vVelocity = 0;
         isLock = false;
         anim = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
-        velocity = new Vector3(0, Physics.gravity.y, 0);
+        mainCamera = GameObject.Find("Main Camera");
+        mainCameraScript = mainCamera.GetComponent<FollowCamera>();
+
+        //velocity = new Vector3(0, Physics.gravity.y, 0);
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 
         //get stick inputs
         float horizontal = Input.GetAxis("LStick X") * movementSpeed * Time.deltaTime;
@@ -42,7 +50,7 @@ public class PlayerMove : MonoBehaviour {
         heading += horizontal;
         camPivot.rotation = Quaternion.Euler(0, heading, 0);
         Vector2 inputs = new Vector2(horizontal, vertical);
-        inputs = Vector2.ClampMagnitude(inputs, 1);
+        inputs = Vector2.ClampMagnitude(inputs, 1); // CLAMP?
         Vector3 camF = cam.forward;
         Vector3 camR = cam.right;
         camF.y = 0f;
@@ -63,15 +71,30 @@ public class PlayerMove : MonoBehaviour {
         if (!isLock)
         {
             //transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed;
-            controller.Move((camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed);
-            velocity.y += Physics.gravity.y * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime);
+            movementVector = (camF * inputs.y + camR * inputs.x);
+            vVelocity += Physics.gravity.y * Time.deltaTime;
+            movementVector.y = vVelocity;
+            controller.Move(movementVector * Time.deltaTime * movementSpeed);
+            if (controller.isGrounded)
+            {
+                //Debug.Log("I am on the ground");
+                vVelocity = 0;
+            }
+            //velocity.y += Physics.gravity.y * Time.deltaTime;
+            //controller.Move(velocity * Time.deltaTime);
 
             //setting character rotation
             if (inputs.x != 0 || inputs.y != 0)
             {
-                var rotation = Quaternion.LookRotation(((camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed));
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
+                if (!isLock)
+                {
+                    var rotation = Quaternion.LookRotation(((camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed));
+                    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
+                }else
+                {
+                    //transform.LookAt(mainCameraScript.lockTarget.transform);
+                }
+
             }
             
         }

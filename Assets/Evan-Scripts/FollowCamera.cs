@@ -19,7 +19,7 @@ public class FollowCamera : MonoBehaviour
     public GameObject lockMarker;
     Vector3 hiddenMarker;
 
-    GameObject lockTarget;
+    public GameObject lockTarget;
     string currentLockTargetName;
     bool lockOn = false;
 
