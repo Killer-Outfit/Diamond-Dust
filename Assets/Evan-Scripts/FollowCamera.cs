@@ -39,20 +39,30 @@ public class FollowCamera : MonoBehaviour
     //using late update so camera moves after player moves in update
     void LateUpdate()
     {
-        if(Input.GetAxis("rightTrigger") > 0 && !lockOn && enemiesExist())
+        if((Input.GetAxis("rightTrigger") > 0 || Input.GetButtonDown("L")) && !lockOn && enemiesExist())
         {
             //Debug.Log("MADEITTTTTTGFKUYTYFIYSFUYKDGUYKDFKUDY");
             lockOnToTarget();
-        }else if((Input.GetAxis("rightTrigger") == 0 && lockOn) || GameObject.Find(currentLockTargetName) == null && lockOn)
+        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetButtonDown("L"))&& lockOn) || GameObject.Find(currentLockTargetName) == null && lockOn)
         {
             endLockOn();
             Debug.Log("stopped locking on");
         }
         if (!lockOn)
         {
+
             x += Input.GetAxis("RStick X") * XrotateSpeed;
             y -= Input.GetAxis("RStick Y") * YrotateSpeed;
-            
+
+            if(Input.GetAxis("MouseX") != 0)
+            {
+                x += Input.GetAxis("MouseX") * XrotateSpeed;
+            }
+            if (Input.GetAxis("MouseY") != 0)
+            {
+                y += Input.GetAxis("MouseY") * YrotateSpeed;
+            }
+
             var rotation = Quaternion.Euler(y, x, 0);
             Vector3 position = rotation * new Vector3(0.0f, 0.0f, -minDistance) + target.position;
 
