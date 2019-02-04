@@ -1,16 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class Player : MonoBehaviour
 {
-    public int health;
+    public float maxHealth;
+    public float currentHealth;
     public Collider[] attackHitboxes;
     private GameObject enemyHit;
+
+    // External variables
+    public Slider healthbar;
     // Start is called before the first frame update
     void Start()
     {
-        
+        currentHealth = maxHealth;
+        healthbar.value = currentHealth / maxHealth;
     }
 
     // Update is called once per frame
@@ -23,10 +30,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void decreaseHealth(int damage)
+    public void decreaseHealth(float damage)
     {
-        health -= damage;
-        if(health <= 0)
+        currentHealth -= damage;
+        healthbar.value = currentHealth / maxHealth;
+        if (currentHealth <= 0)
         {
             killPlayer();
         }

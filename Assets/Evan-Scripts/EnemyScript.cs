@@ -6,11 +6,11 @@ public class EnemyScript : MonoBehaviour
 {
     public GameObject player;
     public float speed;
-    float initialY;
+   // float initialY;
     private Transform myTransform;
     public int health;
     public float followDistance;
-    public Transform transformObject;
+    //public Transform transformObject;
 
     Animator anim;
 
@@ -18,7 +18,7 @@ public class EnemyScript : MonoBehaviour
     void Start()
     {
         myTransform = transform;
-        initialY = myTransform.position.y;
+        //initialY = myTransform.position.y;
         anim = GetComponent<Animator>();
     }
 
@@ -28,14 +28,19 @@ public class EnemyScript : MonoBehaviour
         if(getDistance() > followDistance)
         {
             float step = speed * Time.deltaTime;
-            transformObject.position = Vector3.MoveTowards(transformObject.position, player.transform.position, step);
-            myTransform.position = new Vector3(transformObject.position.x, initialY, transformObject.position.z);
-            myTransform.LookAt(player.transform);
-            anim.Play("run");
+            //transformObject.position = Vector3.MoveTowards(transformObject.position, player.transform.position, step);
+            //Debug.Log("enemy out of range");
+            transform.position = Vector3.MoveTowards(transform.position, player.transform.position, step);
+            //myTransform.position = new Vector3(transformObject.position.x, initialY, transformObject.position.z);
+            anim.SetBool("isIdle", false);
+            //anim.Play("run");
         }else
         {
-            anim.Play("idle");
+            //Debug.Log("enemy in range");
+            anim.SetBool("isIdle", true);
+            //anim.Play("idle");
         }
+        //myTransform.LookAt(2 * myTransform.position - player.transform.position);
     }
 
     public float getDistance()
