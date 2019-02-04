@@ -88,7 +88,8 @@ public class PlayerMove : MonoBehaviour {
             {
                 if (!isLock)
                 {
-                    var rotation = Quaternion.LookRotation(((camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed));
+                    //remove "-1 *" change -  to plus to invert rotation
+                    var rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * movementSpeed));
                     transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
                 }else
                 {
@@ -119,11 +120,13 @@ public class PlayerMove : MonoBehaviour {
         //play run animation when the player is moving
         if (vertical != 0 || horizontal != 0)
         {
-            anim.Play("HumanoidRun");
+            //anim.Play("HumanoidRun");
+            anim.SetBool("isIdle", false);
         }
         else
         {
-            anim.SetTrigger("stopRun");
+            //anim.SetTrigger("stopRun");
+            anim.SetBool("isIdle", true);
         }
         //
 
