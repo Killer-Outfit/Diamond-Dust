@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 6709187559075255312}
   - component: {fileID: 720329672396155534}
   - component: {fileID: 36718581930551417}
+  - component: {fileID: 1528094426181345015}
+  - component: {fileID: 3049121689147375648}
   m_Layer: 0
   m_Name: crowdPlaceholder
   m_TagString: Obstacle
@@ -104,5 +106,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 626a3cf9007ebf54da4747a59ec44751, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensorLength: -0.3
+  sensorLength: -0.1
   speed: 0.5
+--- !u!114 &1528094426181345015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8493013753192187171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac4ccaf84d12224c9c022aea8884669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multiplyBy: 1
+  runRange: 15
+--- !u!195 &3049121689147375648
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8493013753192187171}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

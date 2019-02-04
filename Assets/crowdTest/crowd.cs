@@ -34,10 +34,7 @@ public class crowd : MonoBehaviour
             {
                 return;
             }
-            Vector3 direction = Vector3.zero - transform.position;
-            transform.rotation = Quaternion.Slerp(transform.rotation,
-                                                  Quaternion.LookRotation(direction),
-                                                  rotationSpeed * Time.deltaTime);
+            transform.Rotate(0.0f, -0.5f, 0.0f);
             speed = Random.Range(0.5f, 1);
         }
         //Left Sensor
@@ -47,10 +44,7 @@ public class crowd : MonoBehaviour
             {
                 return;
             }
-            Vector3 direction = Vector3.zero - transform.position;
-            transform.rotation = Quaternion.Slerp(transform.rotation,
-                                                  Quaternion.LookRotation(direction),
-                                                  rotationSpeed * Time.deltaTime);
+            transform.Rotate(0.0f, 0.5f, 0.0f);
             speed = Random.Range(0.5f, 1);
         }
         //Front Sensor
@@ -61,10 +55,13 @@ public class crowd : MonoBehaviour
                 return;
             }
             speed = 0.0f;
-            Vector3 direction = Vector3.zero - transform.position;
-            transform.rotation = Quaternion.Slerp(transform.rotation,
-                                                  Quaternion.LookRotation(direction),
-                                                  rotationSpeed * Time.deltaTime);
+            if (Physics.Raycast(transform.position, -transform.right, out hit, (sensorLength + transform.localScale.x)))
+                transform.Rotate(0.0f, 0.5f, 0.0f);
+            if (Physics.Raycast(transform.position, transform.right, out hit, (sensorLength + transform.localScale.x)))
+                transform.Rotate(0.0f, -0.5f, 0.0f);
+            else
+                transform.Rotate(0.0f, 0.5f, 0.0f);
+
         }
         else
         {
