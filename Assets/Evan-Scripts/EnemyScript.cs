@@ -40,7 +40,7 @@ public class EnemyScript : MonoBehaviour
             anim.SetBool("isIdle", true);
             //anim.Play("idle");
         }
-        //myTransform.LookAt(2 * myTransform.position - player.transform.position);
+        myTransform.LookAt(2 * myTransform.position - player.transform.position);
     }
 
     public float getDistance()

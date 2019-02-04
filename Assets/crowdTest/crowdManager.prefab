@@ -45,5 +45,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crowdPrefab: {fileID: 8493013753192187171, guid: 1b591ae3104c3a84bbbfa1a261e56b67,
     type: 3}
-  goalPrefab: {fileID: 1760002787095197198, guid: 81bf146f7189a9947afacd6275f0e424,
-    type: 3}

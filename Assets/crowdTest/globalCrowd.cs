@@ -5,12 +5,13 @@ using UnityEngine;
 public class globalCrowd : MonoBehaviour
 {
     public GameObject crowdPrefab;
-    public static int arenaSize = 50;
-    public GameObject playerPrefab;
-    static int numCrowd = 150;
+    public static int arenaSize = 1000;
+    // public GameObject playerPrefab;
+    public static int numCrowd = 1000;
     public static GameObject[] allCrowd = new GameObject[numCrowd];
     // private static Vector3 pPos = Vector3.zero;
 
+    // public static int spaceHeight = 1960;
     public static Vector3 goalPos = Vector3.zero;
     // Start is called before the first frame update
     void Start()
@@ -20,6 +21,7 @@ public class globalCrowd : MonoBehaviour
             Vector3 pos = new Vector3(Random.Range(-arenaSize, arenaSize),
                                       0,
                                       Random.Range(-arenaSize, arenaSize));
+            // Debug.Log("SpaceHeight = " + pos.y);
             allCrowd[i] = (GameObject) Instantiate(crowdPrefab, pos, Quaternion.identity);
         }
         
@@ -36,6 +38,7 @@ public class globalCrowd : MonoBehaviour
                 goalPos = new Vector3(Random.Range(-arenaSize, arenaSize),
                                       0,
                                       Random.Range(-arenaSize, arenaSize));
+            //Debug.Log("new SpaceHeight = " + goalPos.y);
             // }
         }
     }
