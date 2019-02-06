@@ -4,31 +4,32 @@ using UnityEngine;
 
 public class FollowCamera : MonoBehaviour
 {
-    //public GameObject target;
+    // set target to player, creating reference to camera transform
     public Transform target;
+    private Transform myTransform;
+
+    // variables for camera speed and location
     public float minDistance;
     public float maxDistance;
     public float camHeight;
     public float XrotateSpeed;
     public float YrotateSpeed;
-    Vector3 offset;
     private float x;
     private float y;
 
-    Vector3 targetDir;
-    public GameObject lockMarker;
+    // location where maker is when hidden
+    //Vector3 targetDir;
     Vector3 hiddenMarker;
 
+    public GameObject lockMarker;
     public GameObject lockTarget;
-    string currentLockTargetName;
-    bool lockOn = false;
 
-    private Transform myTransform;
+    string currentLockTargetName;
+
+    bool lockOn = false;
 
     void Start()
     {
-        if (target == null)
-            Debug.LogWarning("no target selected");
         myTransform = transform;
         CameraSetup();
         lockTarget = findClosest();
@@ -70,7 +71,7 @@ public class FollowCamera : MonoBehaviour
             myTransform.position = position;
         }else
         {
-            targetDir = lockTarget.transform.position - transform.position;
+            //targetDir = lockTarget.transform.position - transform.position;
             // The step size is equal to speed times frame time.
             float step = 40 * Time.deltaTime;
             var targetRotation = Quaternion.LookRotation(lockTarget.transform.position - transform.position);
@@ -79,7 +80,69 @@ public class FollowCamera : MonoBehaviour
             myTransform.position = position;
             Vector3 markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + 2, lockTarget.transform.position.z);
             lockMarker.transform.position = markerPos;
+
+            if (Input.GetAxis("RStick X") != 0)
+            {
+                Debug.Log("x = " + Input.GetAxis("RStick X") + "y = " + Input.GetAxis("RStick Y"));
+                Debug.Log(lockTarget.transform.forward);
+                if(Input.GetAxis("RStick X") > 0)
+                {
+                    lockTarget = findClosestInDirection(true);
+                }else
+                {
+                    lockTarget = findClosestInDirection(false);
+                }
+            }
         }
+    }
+
+
+
+    //returns true if to the right, returns false if to the left
+    public bool CheckRelativeDirection(GameObject potentialTarget)
+    {
+        var relativeDir = lockTarget.transform.InverseTransformPoint(potentialTarget.transform.position);
+        Vector3 right = lockTarget.transform.TransformDirection(Vector3.right);
+        Vector3 toOther = potentialTarget.transform.position - lockTarget.transform.position;
+        if (Vector3.Dot(right, toOther) < 0)
+        {
+            Debug.Log("move to left");
+            return false;
+        }else
+        {
+            return true;
+        }
+    }
+
+    public GameObject findClosestInDirection(bool right)
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject closest = null;
+        float closestDist = 0;
+        float enemyDist = 0;
+        foreach (GameObject enemy in enemies)
+        {
+            if (CheckRelativeDirection(enemy) == right)
+            {
+                if (closest == null)
+                {
+                    closest = enemy;
+                    closestDist = getDistance(enemy);
+                }
+                enemyDist = getDistance(enemy);
+                //Debug.Log("Enemy = " + enemy.name + " distance = " + enemyDist);
+                if (enemyDist < closestDist)
+                {
+                    closest = enemy;
+                    closestDist = enemyDist;
+                }
+            }
+        }
+        if (closest != null)
+        {
+            return closest;
+        }
+        return lockTarget;
     }
 
     public GameObject findClosest()
@@ -138,6 +201,7 @@ public class FollowCamera : MonoBehaviour
             lockOn = true;
         }
     }
+
     public void endLockOn()
     {
         lockMarker.transform.position = hiddenMarker;
