@@ -6,81 +6,82 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    // Set health variables
     public float maxHealth;
     public float currentHealth;
+    // Create a list of attack hitboxes
     public Collider[] attackHitboxes;
+
     private GameObject enemyHit;
-
+    // Create an animator variable
     Animator anim;
-
-    // External variables
+    // Reference to the health bar
     public Slider healthbar;
-    // Start is called before the first frame update
+    // Initialize animator, current health and healthbar value
     void Start()
     {
         anim = GetComponent<Animator>();
         currentHealth = maxHealth;
         healthbar.value = currentHealth / maxHealth;
     }
-
-    // Update is called once per frame
+    // Get user inputs
     void Update()
     {
+        // Activate punch when the user presses x
         if (Input.GetButtonDown("XButton"))
         {
             anim.SetTrigger("punch");
-            Debug.Log("PUNCH!!!!!!!!!");
             launchAttack(attackHitboxes[0]);
         }
-
+        // Activate kick when user presses Y
         if (Input.GetButtonDown("YButton"))
         {
             anim.SetTrigger("kick");
-            Debug.Log("Kick!!!!!!!!!");
             launchAttack(attackHitboxes[1]);
         }
     }
-
+    // Decrease the current health and update health bar
     public void decreaseHealth(float damage)
     {
         currentHealth -= damage;
         healthbar.value = currentHealth / maxHealth;
+        // If health drops to or bellow 0 then the player dies
         if (currentHealth <= 0)
         {
             killPlayer();
         }
     }
-
+    // Kill the player
     private void killPlayer()
     {
         //Destroy(this.gameObject);
         currentHealth = maxHealth;
     }
-
-    //ADD COLLER TO THE HAND BONE AND FOOT BONES
+    // Make the attack activate
     public void launchAttack(Collider attack)
     {
         //overlapSphere is best if applicable
+        // Create a list of all objects that have collided with the attack hitbox
         Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
-       
+       // Iterate through each collision event
         foreach(Collider c in cols)
         {
             //Debug.Log(c.name);
-            //if the collision is with the own player body
+            // If the collision is with the player's own body
             if (c.transform == transform)
             {
-                //skips the rest of code in loop and keeps checking 
-                //Debug.Log("ignoring self hit");
+                // Skips the rest of code in loop and keeps checking 
                 continue;
             }
+            // Check if collision event is not with itself
             else if (c.name == attack.name)
             {
-                //Debug.Log("stopped self hit");
                 continue;
             }
             else
             {
-                Debug.Log("hit the " + c.name);
+                //Debug.Log("hit the " + c.name);
+                // Decrease the hit target's health by 10
                 c.SendMessageUpwards("decreaseHealth", 10);
             }
         }
