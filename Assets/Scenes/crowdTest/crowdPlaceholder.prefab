@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ac4ccaf84d12224c9c022aea8884669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  multiplyBy: 1
+  multiplier: 1
   runRange: 15
 --- !u!195 &7551163040968593299
 NavMeshAgent:
