@@ -13,7 +13,7 @@ public class crowd : MonoBehaviour
 
     Collider myCollider;
 
-    bool turning = false;
+    bool canCurrentlyTurn = false;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +27,7 @@ public class crowd : MonoBehaviour
     {
         RaycastHit hit;
 
-        //Right Sensor
+        // Right Sensor
         if(Physics.Raycast(transform.position, transform.right, out hit, (sensorLength + transform.localScale.x)))
         {
             if(hit.collider.tag != "Obstacle" || hit.collider == myCollider)
@@ -37,7 +37,7 @@ public class crowd : MonoBehaviour
             transform.Rotate(0.0f, -0.5f, 0.0f);
             speed = Random.Range(0.5f, 1);
         }
-        //Left Sensor
+        // Left Sensor
         if (Physics.Raycast(transform.position, -transform.right, out hit, (sensorLength + transform.localScale.x)))
         {
             if (hit.collider.tag != "Obstacle" || hit.collider == myCollider)
@@ -47,7 +47,7 @@ public class crowd : MonoBehaviour
             transform.Rotate(0.0f, 0.5f, 0.0f);
             speed = Random.Range(0.5f, 1);
         }
-        //Front Sensor
+        // Front Sensor
         if (Physics.Raycast(transform.position, transform.forward, out hit, (sensorLength + transform.localScale.z)))
         {
             if (hit.collider.tag != "Obstacle" || hit.collider == myCollider)
@@ -70,14 +70,14 @@ public class crowd : MonoBehaviour
 
         if (Vector3.Distance(transform.position, Vector3.zero) >= globalCrowd.arenaSize)
         {
-            turning = true;
+            canCurrentlyTurn = true;
         }
         else
         {
-            turning = false;
+            canCurrentlyTurn = false;
         }
 
-        if (turning)
+        if (canCurrentlyTurn)
         {
             Vector3 direction = Vector3.zero - transform.position;
             transform.rotation = Quaternion.Slerp(transform.rotation,

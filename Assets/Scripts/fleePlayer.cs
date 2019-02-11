@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class fleePlayer : MonoBehaviour
 {
+    public float multiplier;
+    public float runRange;
+
     private Transform player;
     private UnityEngine.AI.NavMeshAgent myNMagent;
     private float nextTurnTime;
     private Transform startTransform;
-
-    public float multiplyBy;
-    public float runRange;
-
 
     // Use this for initialization
     void Start()
@@ -33,11 +32,11 @@ public class fleePlayer : MonoBehaviour
         }
             
 
-        // if (Mathf.Abs(player.position.z - transform.position.z) < runRange)
-        // {
-        //     Debug.Log("Too close to player on z plane -> " + Mathf.Abs(player.position.z - transform.position.z));
-        //     RunFrom();
-        // }
+        //if (Mathf.Abs(player.position.z - transform.position.z) < runRange)
+        //{
+        //    Debug.Log("Too close to player on z plane -> " + Mathf.Abs(player.position.z - transform.position.z));
+        //    RunFrom();
+        //}
             
     }
 
@@ -45,15 +44,15 @@ public class fleePlayer : MonoBehaviour
     {
 
        
-        //temporarily point the object to look away from the player
+        // temporarily point the object to look away from the player
         transform.rotation = Quaternion.LookRotation(transform.position - player.position);
 
-        //Then we'll get the position on that rotation that's multiplyBy down the path (you could set a Random.range
+        // Then we'll get the position on that rotation that's multiplier down the path (you could set a Random.range
         // for this if you want variable results) and store it in a new Vector3 called runTo
-        Vector3 runTo = transform.position + transform.forward * multiplyBy;
+        Vector3 runTo = transform.position + transform.forward * multiplier;
         // Debug.Log("runTo = " + runTo);
 
-        //So now we've got a Vector3 to run to and we can transfer that to a location on the NavMesh with samplePosition.
+        // So now we've got a Vector3 to run to and we can transfer that to a location on the NavMesh with samplePosition.
 
         UnityEngine.AI.NavMeshHit hit;    // stores the output in a variable called hit
 
