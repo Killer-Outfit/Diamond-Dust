@@ -7,7 +7,7 @@ public class globalCrowd : MonoBehaviour
     public GameObject crowdPrefab;
     public static int arenaSize = 1000;
     // public GameObject playerPrefab;
-    public static int numCrowd = 1000;
+    public static int numCrowd = 50;
     public static GameObject[] allCrowd = new GameObject[numCrowd];
     // private static Vector3 pPos = Vector3.zero;
 
