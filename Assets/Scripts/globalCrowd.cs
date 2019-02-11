@@ -5,9 +5,9 @@ using UnityEngine;
 public class globalCrowd : MonoBehaviour
 {
     public GameObject crowdPrefab;
-    public static int arenaSize = 1000;
-    //public GameObject playerPrefab;
-    public static int numCrowd = 1000;
+    public static int arenaSize = 100;
+    public GameObject playerPrefab;
+    public static int numCrowd = 50;
     public static GameObject[] allCrowd = new GameObject[numCrowd];
     //public static int spaceHeight = 1960;
     public static Vector3 goalPos = Vector3.zero;
@@ -19,9 +19,9 @@ public class globalCrowd : MonoBehaviour
     {
         for (int i = 0; i < numCrowd; i++)
         {
-            Vector3 pos = new Vector3(Random.Range(-arenaSize, arenaSize),
+            Vector3 pos = new Vector3(Random.Range(playerPrefab.transform.position.x - arenaSize, playerPrefab.transform.position.x + arenaSize),
                                       0,
-                                      Random.Range(-arenaSize, arenaSize));
+                                      Random.Range(playerPrefab.transform.position.z-arenaSize, playerPrefab.transform.position.z + arenaSize));
             //Debug.Log("SpaceHeight = " + pos.y);
             allCrowd[i] = (GameObject) Instantiate(crowdPrefab, pos, Quaternion.identity);
         }
@@ -36,9 +36,9 @@ public class globalCrowd : MonoBehaviour
             //Vector3 pRange = new Vector3(pPos.x + 10, 0, pPos.z + 10);
             //while (goalPos.x <= pRange.x || goalPos.z <= pRange.z)
             //{
-                goalPos = new Vector3(Random.Range(-arenaSize, arenaSize),
+                goalPos = new Vector3(Random.Range(playerPrefab.transform.position.x - arenaSize, playerPrefab.transform.position.x + arenaSize),
                                       0,
-                                      Random.Range(-arenaSize, arenaSize));
+                                      Random.Range(playerPrefab.transform.position.z - arenaSize, playerPrefab.transform.position.z + arenaSize));
             //Debug.Log("new SpaceHeight = " + goalPos.y);
             //}
         }

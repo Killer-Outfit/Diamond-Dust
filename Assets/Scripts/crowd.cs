@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class crowd : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class crowd : MonoBehaviour
     float neighborDistance = 3.0f;
 
     Collider myCollider;
+    NavMeshAgent agent;
 
     bool canCurrentlyTurn = false;
 
@@ -19,7 +21,8 @@ public class crowd : MonoBehaviour
     void Start()
     {
         myCollider = transform.GetComponent<Collider>();
-        speed = Random.Range(0.5f, 1);
+        speed = Random.Range(1f, 5);
+        agent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
