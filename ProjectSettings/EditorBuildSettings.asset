@@ -14,7 +14,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity
     guid: 640f69d78d1c17b4cb70dd13bbaebffd
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level 1.unity
     guid: 38aa523991197b84d8a3ab019f33859e
+  - enabled: 0
+    path: Assets/Scenes/districtOne.unity
+    guid: 71b4cf1798d161243949d05a1715e3ae
+  - enabled: 1
+    path: Assets/Scenes/Evan-Dev2.unity
+    guid: 78ec9c428a89c0f47be1de903f8c4ac0
   m_configObjects: {}

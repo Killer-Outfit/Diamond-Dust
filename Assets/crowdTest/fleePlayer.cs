@@ -26,9 +26,9 @@ public class fleePlayer : MonoBehaviour
     void Update()
     {
 
-        if ((player.position - transform.position).sqrMagnitude < Mathf.Pow(runRange, 2))
+        if ((player.position - transform.position).sqrMagnitude < Mathf.Pow(runRange, 3))
         {
-            Debug.Log("Too close to player on -> " + Mathf.Sqrt((player.position - transform.position).sqrMagnitude));
+            //Debug.Log("Too close to player on -> " + Mathf.Sqrt((player.position - transform.position).sqrMagnitude));
             RunFrom();
         }
             
