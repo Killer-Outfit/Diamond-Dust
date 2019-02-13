@@ -44,11 +44,12 @@ public class EnemyScript : MonoBehaviour
         {
             if (Vector3.Distance(agent.transform.position, player.transform.position) > followDistance)
             {
+                agent.destination = player.transform.position;
+                agent.isStopped = false;
                 //Debug.Log("Distance to player is " + Vector3.Distance(agent.transform.position, player.transform.position));
                 //destination = player.transform.position;
-                agent.destination = player.transform.position;
                 agent.speed = speed;
-                //Debug.Log("Destination is " + player.transform.position.x + ", " + player.transform.position.z);
+                //Debug.Log("Destination is " + agent.destination);
                 //float step = speed * Time.deltaTime;
                 //transformObject.position = Vector3.MoveTowards(transformObject.position, player.transform.position, step);
                 //Debug.Log("enemy out of range");
@@ -61,7 +62,8 @@ public class EnemyScript : MonoBehaviour
             else
             {
                 //Debug.Log(timer);
-                agent.Stop();
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;
                 anim.SetBool("isIdle", true);
                 if ((int)timer % 20 == 0 && canLaunchAttack)
                 {
@@ -124,11 +126,32 @@ public class EnemyScript : MonoBehaviour
         {
             Die();
         }
-        Debug.Log("enemy current Health is " + health);
+        //Debug.Log("enemy current Health is " + health);
     }
 
     private void Die()
     {
         Destroy(this.gameObject);
+    }
+
+    protected void LateUpdate()
+    {
+        transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
+    }
+
+    //void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.tag == "Player")
+    //    {
+    //        Debug.Log("Collided with player");
+    //        GetComponent<Rigidbody>().isKinematic = false;
+    //    }
+            
+    //}
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+            GetComponent<Rigidbody>().isKinematic = true;
     }
 }
