@@ -149,9 +149,9 @@ public class EnemyScript : MonoBehaviour
             
     //}
 
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.tag == "Player")
-            GetComponent<Rigidbody>().isKinematic = true;
-    }
+    //void OnCollisionExit(Collision collision)
+    //{
+    //    if (collision.gameObject.tag == "Player")
+    //        GetComponent<Rigidbody>().isKinematic = true;
+    //}
 }
