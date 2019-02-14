@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     // Set health variables
     public float maxHealth;
     public float currentHealth;
+    // State bools
+    public bool isAttacking = false;
     // Create a list of attack hitboxes
     public Collider[] attackHitboxes;
 
@@ -27,17 +29,21 @@ public class Player : MonoBehaviour
     // Get user inputs
     void Update()
     {
-        // Activate punch when the user presses x
-        if (Input.GetButtonDown("XButton"))
+        if (!this.isAttacking) //Don't call attacks if the player is mid-attack already.
         {
-            anim.SetTrigger("punch");
-            launchAttack(attackHitboxes[0]);
-        }
-        // Activate kick when user presses Y
-        if (Input.GetButtonDown("YButton"))
-        {
-            anim.SetTrigger("kick");
-            launchAttack(attackHitboxes[1]);
+            // Activate punch when the user presses x
+            if (Input.GetButtonDown("XButton"))
+            {
+                anim.SetTrigger("punch");
+                StartCoroutine(launchAttack(attackHitboxes[0]));
+            }
+
+            // Activate kick when user presses Y
+            if (Input.GetButtonDown("YButton"))
+            {
+                anim.SetTrigger("kick");
+                StartCoroutine(launchAttack(attackHitboxes[1]));
+            }
         }
     }
     // Decrease the current health and update health bar
@@ -58,12 +64,14 @@ public class Player : MonoBehaviour
         currentHealth = maxHealth;
     }
     // Make the attack activate
-    public void launchAttack(Collider attack)
+    IEnumerator launchAttack(Collider attack)
     {
+        this.isAttacking = true;
+        yield return new WaitForSeconds(0.2f); // Do hitbox calcuation after 0.2 seconds. Adjust this to match the animation later?
         //overlapSphere is best if applicable
         // Create a list of all objects that have collided with the attack hitbox
         Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
-       // Iterate through each collision event
+        // Iterate through each collision event
         foreach(Collider c in cols)
         {
             //Debug.Log(c.name);
@@ -85,5 +93,7 @@ public class Player : MonoBehaviour
                 c.SendMessageUpwards("DecreaseHealth", 10);
             }
         }
+        yield return new WaitForSeconds(0.2f); //"Cooldown" time
+        this.isAttacking = false;
     }
 }

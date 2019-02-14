@@ -15,6 +15,8 @@ public class EnemyScript : MonoBehaviour
     //public Transform transformObject;
     float timer;
     bool canLaunchAttack;
+    public bool canBlock = false;
+    public bool isBlocking = false;
     Animator anim;
     NavMeshAgent agent;
     
@@ -65,20 +67,29 @@ public class EnemyScript : MonoBehaviour
                 agent.isStopped = true;
                 agent.velocity = Vector3.zero;
                 anim.SetBool("isIdle", true);
-                if ((int)timer % 20 == 0 && canLaunchAttack)
+                if (!isBlocking) // Only try to attack if not blocking. Always true on enemies that can't block.
                 {
-                    anim.SetTrigger("punch");
-                    launchAttack(attackHitboxes[0]);
-                    canLaunchAttack = false;
-                }
-                else if ((int)timer % 3 == 0 && !canLaunchAttack)
-                {
-                    canLaunchAttack = true;
+                    if ((int) timer % 20 == 0 && canLaunchAttack)
+                    {
+                        anim.SetTrigger("punch");
+                        launchAttack(attackHitboxes[0]);
+                        canLaunchAttack = false;
+                    }
+                    else if ((int) timer % 3 == 0 && !canLaunchAttack)
+                    {
+                        canLaunchAttack = true;
+                    }
                 }
                 //Debug.Log("enemy in range");
 
                 //anim.Play("idle");
 
+            }
+
+            // Try to block if the player is close enough and attacking, and if the enemy can block. Sets the block script's timer to 1, so it refreshes if the player attacks repeatedly.
+            if (Vector3.Distance(agent.transform.position, player.transform.position) < 5 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
+            {
+                SendMessage("Block");
             }
             myTransform.LookAt(2 * myTransform.position - player.transform.position);
         }
@@ -120,11 +131,17 @@ public class EnemyScript : MonoBehaviour
 
     public void DecreaseHealth(int damage)
     {
-        
-        health -= damage;
-        if(health <= 0)
+        if (isBlocking) //Take no damage if blocking.
         {
-            Die();
+            Debug.Log("get blocked idiot");
+        }
+        else
+        {
+            health -= damage;
+            if (health <= 0)
+            {
+                Die();
+            }
         }
         //Debug.Log("enemy current Health is " + health);
     }

@@ -273,7 +273,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
-  attackHitboxes: []
+  isAttacking: 0
+  attackHitboxes:
+  - {fileID: 1526767471}
+  - {fileID: 2117732178}
   healthbar: {fileID: 5079908908540841359, guid: 0d530442fa04ff94593be3f0ac801670,
     type: 3}
 --- !u!1 &1428083362
