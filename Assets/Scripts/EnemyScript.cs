@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class EnemyScript : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class EnemyScript : MonoBehaviour
     public float speed;
     //float initialY;
     public int health;
+    private int maxhealth;
     public float followDistance;
     public Collider[] attackHitboxes;
     public bool canBlock = false;
@@ -22,6 +24,7 @@ public class EnemyScript : MonoBehaviour
     private Transform myTransform;
     private float curTime;
     private Vector3 curPos = Vector3.zero;
+    public Image HPBar;
 
     //Vector3 destination;
 
@@ -30,6 +33,7 @@ public class EnemyScript : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Player");
+        maxhealth = health;
         agent = GetComponent<NavMeshAgent>();
         //destination = agent.destination;
         canLaunchAttack = true;
@@ -162,6 +166,7 @@ public class EnemyScript : MonoBehaviour
         else
         {
             health -= damage;
+            HPBar.fillAmount = health / maxhealth;
             if (health <= 0)
             {
                 Die();
