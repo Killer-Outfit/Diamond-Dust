@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 50
-  health: 100
+  health: 50
   followDistance: 20
   attackHitboxes:
   - {fileID: 2027557192}
@@ -3152,11 +3152,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 24666744}
     m_Modifications:
-    - target: {fileID: 7666059023892931396, guid: 6790954183d6f54408ba409013e24a50,
-        type: 3}
-      propertyPath: m_Name
-      value: EnemyHPBar
-      objectReference: {fileID: 0}
     - target: {fileID: 7659810275906162109, guid: 6790954183d6f54408ba409013e24a50,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3261,6 +3256,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7666059023892931396, guid: 6790954183d6f54408ba409013e24a50,
+        type: 3}
+      propertyPath: m_Name
+      value: EnemyHPBar
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6790954183d6f54408ba409013e24a50, type: 3}

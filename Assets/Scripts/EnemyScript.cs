@@ -49,7 +49,7 @@ public class EnemyScript : MonoBehaviour
         timer += Time.deltaTime;
         int seconds = ((int)timer % 60);
 
-        if (player)
+        if (player && Vector3.Distance(agent.transform.position, player.transform.position) < 80) // Only becomes 'active' if the player is in range
         {
             if (Vector3.Distance(agent.transform.position, player.transform.position) > followDistance)
             {
@@ -166,7 +166,7 @@ public class EnemyScript : MonoBehaviour
         else
         {
             health -= damage;
-            HPBar.fillAmount = health / maxhealth;
+            HPBar.fillAmount = (float)health / (float)maxhealth;
             if (health <= 0)
             {
                 Die();
