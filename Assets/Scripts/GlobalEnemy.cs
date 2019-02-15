@@ -7,7 +7,7 @@ public class GlobalEnemy : MonoBehaviour
     public GameObject minorEnemy;
     public GameObject majorEnemy;
     public GameObject player;
-    public static int numMinor = 15;
+    public static int numMinor = 0;
     public static int numMajor;
     public static GameObject[] allMinor = new GameObject[numMinor];
     public static GameObject[] allMajor = new GameObject[numMajor];
@@ -16,6 +16,8 @@ public class GlobalEnemy : MonoBehaviour
     Vector3 pos3;
     Vector3 pos4;
     int truePos;
+
+    //bool isAttacking = false;
 
 
     // Start is called before the first frame update
@@ -54,7 +56,7 @@ public class GlobalEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private Vector3 RandPos1()
@@ -88,5 +90,9 @@ public class GlobalEnemy : MonoBehaviour
     private int RandTruePos()
     {
         return Random.Range(1, 4);
+    }
+    private int RandEnemy()
+    {
+        return Random.Range(0, numMinor - 1);
     }
 }
