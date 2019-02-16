@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour {
     public float movementSpeed;
     public float turningSpeed;
+    public float dashSpeed;
     float lockSpeed;
+    private float horizontalDash;
     Quaternion targetRotation;
     //public GameObject child; //used with child relative motion
 
@@ -21,12 +23,19 @@ public class PlayerMove : MonoBehaviour {
     GameObject mainCamera;
     FollowCamera mainCameraScript;
 
+    private bool isBlocking;
+    private bool isAttacking;
+    private bool dashed;
     bool isLock;
 
     Animator anim;
 
     // Use this for initialization
     void Start () {
+        horizontalDash = 0f;
+        dashed = false;
+        isBlocking = false;
+        isAttacking = false;
         vVelocity = 0;
         isLock = false;
         anim = GetComponent<Animator>();
@@ -39,12 +48,62 @@ public class PlayerMove : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        if (!isBlocking && !isAttacking)
+        {
+            normalMovement();
+        }else if(isBlocking)
+        {
+            if(Input.GetAxis("LStick X") != 0 && !dashed)
+            {
+                horizontalDash = Input.GetAxis("LStick X") * dashSpeed * Time.deltaTime;
+                dashed = true;
+                dash(horizontalDash);
+            }else if(Input.GetAxis("LStick X") == 0 && dashed)
+            {
+                dash(horizontalDash);
+                dashed = false;
+            }
+        }
+       
+    }
 
+    private void dash(float horizontal)
+    {
+        heading += horizontal;
+        camPivot.rotation = Quaternion.Euler(0, heading, 0);
+        Vector2 inputs = new Vector2(horizontal, 0);
+        inputs = Vector2.ClampMagnitude(inputs, 1); // CLAMP?
+        Vector3 camF = cam.forward;
+        Vector3 camR = cam.right;
+        camF.y = 0f;
+        camR.y = 0f;
+        camF = camF.normalized;
+        camR = camR.normalized;
+
+        movementVector = (camF * inputs.y + camR * inputs.x);
+        vVelocity += Physics.gravity.y * Time.deltaTime;
+        movementVector.y = vVelocity;
+        controller.Move(movementVector * Time.deltaTime * dashSpeed);
+        if (horizontal > 0)
+        {
+            controller.Move(Vector3.left * Time.deltaTime * dashSpeed);
+        }else
+        {
+            controller.Move(Vector3.right * Time.deltaTime * dashSpeed);
+        }
+    }
+    private void stationaryRotate()
+    {
+        
+    }
+
+    private void normalMovement()
+    {
         //get stick inputs
         float horizontal = Input.GetAxis("LStick X") * movementSpeed * Time.deltaTime;
         float vertical = Input.GetAxis("LStick Y") * movementSpeed * Time.deltaTime;
 
-        if(Input.GetAxis("Horizontal") != 0)
+        if (Input.GetAxis("Horizontal") != 0)
         {
             horizontal = Input.GetAxis("Horizontal") * movementSpeed * Time.deltaTime;
         }
@@ -100,13 +159,14 @@ public class PlayerMove : MonoBehaviour {
                     //remove "-1 *" change -  to plus to invert rotation
                     var rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * movementSpeed));
                     transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
-                }else
+                }
+                else
                 {
                     //transform.LookAt(mainCameraScript.lockTarget.transform);
                 }
 
             }
-            
+
         }
         else
         {
@@ -114,16 +174,17 @@ public class PlayerMove : MonoBehaviour {
             if (System.Math.Abs(horizontal) < vertical)
             {
                 lockSpeed = movementSpeed;
-            }else
+            }
+            else
             {
                 lockSpeed = 10;
             }
             //Debug.Log("lockspeed = " + lockSpeed);
             transform.rotation = Quaternion.LookRotation(camF);
             transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * lockSpeed;
-            
+
         }
-            //
+        //
         //
 
         //play run animation when the player is moving
@@ -187,5 +248,20 @@ public class PlayerMove : MonoBehaviour {
         horizontal = 0;
         vertical = 0;
         */
+    }
+
+    public void changeBlock()
+    {
+        if (isBlocking)
+        {
+            isBlocking = false;
+        }else
+        {
+            isBlocking = true;
+        }
+    }
+    public void changeAttacking(bool action)
+    {
+        isAttacking = action;
     }
 }
