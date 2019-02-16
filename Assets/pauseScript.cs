@@ -21,10 +21,12 @@ public class pauseScript : MonoBehaviour
         {
             menu.SetActive(true);
             isPaused = true;
+            Time.timeScale = 0.0f;
         }else if (Input.GetButtonDown("StartButton") && isPaused)
         {
             menu.SetActive(false);
             isPaused = false;
+            Time.timeScale = 1f;
         }
     }
 }

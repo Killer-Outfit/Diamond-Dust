@@ -5,8 +5,13 @@ using UnityEngine;
 public class globalCrowd : MonoBehaviour
 {
     public GameObject crowdPrefab;
+<<<<<<< HEAD
+    public static int arenaSize = 1000;
+    // public GameObject playerPrefab;
+=======
     public static int arenaSize = 100;
     public GameObject playerPrefab;
+>>>>>>> develop
     public static int numCrowd = 50;
     public static GameObject[] allCrowd = new GameObject[numCrowd];
     //public static int spaceHeight = 1960;
