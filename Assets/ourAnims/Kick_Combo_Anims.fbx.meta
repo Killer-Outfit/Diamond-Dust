@@ -210,44 +210,7 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Kick_Combo_Out' has import animation warnings
-      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'Lower Arm-2.L' is inbetween humanoid transforms
-      and has rotation animation that will be discarded.\n\t'Lower Arm-2.R' is inbetween
-      humanoid transforms and has rotation animation that will be discarded.\n\nClip
-      'Kick_Combo_1' has import animation warnings that might lower retargeting quality:\nNote:
-      Activate translation DOF on avatar to improve retargeting quality.\n\t'Lower
-      Arm-2.L' is inbetween humanoid transforms and has rotation animation that will
-      be discarded.\n\t'Lower Arm-2.R' is inbetween humanoid transforms and has rotation
-      animation that will be discarded.\n\nClip 'Armature|ArmatureAction' has import
-      animation warnings that might lower retargeting quality:\nNote: Activate translation
-      DOF on avatar to improve retargeting quality.\n\t'Lower Arm-2.L' is inbetween
-      humanoid transforms and has rotation animation that will be discarded.\n\t'Lower
-      Arm-2.R' is inbetween humanoid transforms and has rotation animation that will
-      be discarded.\n\nClip 'Armature|Kick_Combo_1' has import animation warnings
-      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'Lower Arm-2.L' is inbetween humanoid transforms
-      and has rotation animation that will be discarded.\n\t'Lower Arm-2.R' is inbetween
-      humanoid transforms and has rotation animation that will be discarded.\n\nClip
-      'Armature|Kick_Combo_2' has import animation warnings that might lower retargeting
-      quality:\nNote: Activate translation DOF on avatar to improve retargeting quality.\n\t'Lower
-      Arm-2.L' is inbetween humanoid transforms and has rotation animation that will
-      be discarded.\n\t'Lower Arm-2.R' is inbetween humanoid transforms and has rotation
-      animation that will be discarded.\n\nClip 'Armature|Kick_Combo_3' has import
-      animation warnings that might lower retargeting quality:\nNote: Activate translation
-      DOF on avatar to improve retargeting quality.\n\t'Lower Arm-2.L' is inbetween
-      humanoid transforms and has rotation animation that will be discarded.\n\t'Lower
-      Arm-2.R' is inbetween humanoid transforms and has rotation animation that will
-      be discarded.\n\nClip 'Armature|Kick_Combo_4' has import animation warnings
-      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'Lower Arm-2.L' is inbetween humanoid transforms
-      and has rotation animation that will be discarded.\n\t'Lower Arm-2.R' is inbetween
-      humanoid transforms and has rotation animation that will be discarded.\n\nClip
-      'Armature|Kick_Combo_Out' has import animation warnings that might lower retargeting
-      quality:\nNote: Activate translation DOF on avatar to improve retargeting quality.\n\t'Lower
-      Arm-2.L' is inbetween humanoid transforms and has rotation animation that will
-      be discarded.\n\t'Lower Arm-2.R' is inbetween humanoid transforms and has rotation
-      animation that will be discarded.\n"
+    animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
