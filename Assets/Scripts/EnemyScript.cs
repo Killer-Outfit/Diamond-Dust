@@ -6,154 +6,166 @@ using UnityEngine.UI;
 
 public class EnemyScript : MonoBehaviour
 {
-    GameObject player;
-    public float speed;
-    //float initialY;
-    public int health;
+    // References
+    private GameObject player;
+    private NavMeshAgent agent;
+    private Animator anim;
+    public Image HPBar;
+    // Stats
     private int maxhealth;
-    public float followDistance;
-    public Collider[] attackHitboxes;
+    public float speed;
+    public float turnSpeed;
+    public float followDistanceUpper;
+    public float followDistanceLower;
+    public int health;
+    // Flags
+    private bool canLaunchAttack = false;
+    private bool trackingPlayer = false;
+    private bool isAttacking = false;
+    private bool isApproaching = false;
+    public bool active = false;
     public bool canBlock = false;
     public bool isBlocking = false;
-    public float attackSpacing;
-    //public Transform transformObject;
-    float timer;
-    bool canLaunchAttack;
-    Animator anim;
-    NavMeshAgent agent;
-    private Transform myTransform;
-    private float curTime;
+    // Other
     private Vector3 curPos = Vector3.zero;
-    public Image HPBar;
+    public Collider[] attackHitboxes;
+    public float attack1Timer;
+    private float attack1TimeReset;
 
-    //Vector3 destination;
-
-
-    // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.Find("Player");
+        player = GameObject.FindWithTag("Player");
         maxhealth = health;
         agent = GetComponent<NavMeshAgent>();
-        //destination = agent.destination;
-        canLaunchAttack = true;
-        timer = 0;
-        myTransform = transform;
-        //initialY = myTransform.position.y;
         anim = GetComponent<Animator>();
+        attack1TimeReset = attack1Timer;
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        timer += Time.deltaTime;
-        int seconds = ((int)timer % 60);
-
-        if (player && Vector3.Distance(agent.transform.position, player.transform.position) < 80) // Only becomes 'active' if the player is in range
+        // While 'inactive' (out of range), just keep checking distance to the player.
+        if (!active)
         {
-            if (Vector3.Distance(agent.transform.position, player.transform.position) > followDistance)
+            if (player && Vector3.Distance(agent.transform.position, player.transform.position) < 80)
             {
-                agent.destination = player.transform.position;
-                //agent.isStopped = false;
-                //Debug.Log("Distance to player is " + Vector3.Distance(agent.transform.position, player.transform.position));
-                //destination = player.transform.position;
-                agent.speed = speed;
-                //Debug.Log("Destination is " + agent.destination);
-                //float step = speed * Time.deltaTime;
-                //transformObject.position = Vector3.MoveTowards(transformObject.position, player.transform.position, step);
-                //Debug.Log("enemy out of range");
-                //transform.position = Vector3.MoveTowards(transform.position, player.transform.position, step);
-                //myTransform.position = new Vector3(transformObject.position.x, initialY, transformObject.position.z);
-                anim.SetBool("isIdle", false);
-                //anim.Play("run");
+                active = true;
+                trackingPlayer = true;
             }
-
+        }
+        // Enemy is active, do the following.
+        else
+        {
+            // Move closer if too far away.
+            if (Vector3.Distance(agent.transform.position, player.transform.position) > followDistanceUpper)
+            {
+                anim.SetBool("isIdle", false);
+                agent.destination = player.transform.position;
+                agent.speed = speed;
+            }
+            // Enemy is in range to attack
             else
             {
-                //Debug.Log(timer);
-                //agent.isStopped = true;
-                agent.destination = agent.transform.position;
-                anim.SetBool("isIdle", true);
-
-                // Only try to attack if not blocking. Always true on enemies that can't block.
-                if (!isBlocking)
+                // Only do combat things if not already attacking.
+                if (!isAttacking)
                 {
-                    curTime += Time.deltaTime;
-                    //curPos = CurrentPosition(curPos);
-                    if (curTime >= attackSpacing)
+                    if (!isBlocking) // Don't attack while blocking.
                     {
-                        agent.isStopped = false;
-                        anim.SetBool("isIdle", false);
-                        //Debug.Log("curPos is " + curPos.x + " , " + curPos.z);
-                        agent.destination = player.transform.position;
-                    }
+                        attack1Timer -= Time.deltaTime;
 
-                    if (Vector3.Distance(agent.transform.position, player.transform.position) < 5 && canLaunchAttack)
-                    {
-                        if (curTime >= attackSpacing)
+                        if (attack1Timer <= 0 && !isApproaching)
                         {
-                            anim.SetTrigger("punch");
-                            launchAttack(attackHitboxes[0]);
-                            agent.destination = Vector3.zero;
-                            canLaunchAttack = false;
-                            curTime = 0;
-                            //agent.destination = curPos;
-                            //curPos = Vector3.zero;
-                            //Debug.Log("curPos is now " + curPos.x + " , " + curPos.z);
+                            isApproaching = true;
+                        }
+
+                        if (isApproaching) // Run in for an attack
+                        {
+                            anim.SetBool("isIdle", false);
+                            agent.speed = speed;
+                            if (Vector3.Distance(agent.transform.position, player.transform.position) < 5)
+                            {
+                                agent.speed = 0.1f;
+                                isApproaching = false;
+                                StartCoroutine("Attack1");
+                            }
+                        }
+                        else // Idle movement
+                        {
+                            agent.speed = 0f;
+                            // Move further if too close, or stays still if in range. (Can still attack either way)
+                            if (Vector3.Distance(agent.transform.position, player.transform.position) < followDistanceLower)
+                            {
+                                transform.Translate(Vector3.forward/10);
+                                anim.SetBool("isIdle", false);
+                            }
+                            else
+                            {
+                                anim.SetBool("isIdle",true);
+                            }
                         }
                     }
-                    if ((int)timer % 3 == 0 && !canLaunchAttack)
+                    
+                    // Try to block if the player is close enough and attacking, and if the enemy can block. Sets the block script's timer to 1, so it refreshes if the player attacks repeatedly.
+                    if (Vector3.Distance(agent.transform.position, player.transform.position) < 5 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
                     {
-                        canLaunchAttack = true;
-                        curTime = 0;
+                        SendMessage("Block");
                     }
                 }
-                //Debug.Log("enemy in range");
-
-                //anim.Play("idle");
             }
 
-
-            // Try to block if the player is close enough and attacking, and if the enemy can block. Sets the block script's timer to 1, so it refreshes if the player attacks repeatedly.
-            if (Vector3.Distance(agent.transform.position, player.transform.position) < 5 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
+            if (trackingPlayer) // Smooth turn towards the player using turnSpeed, and set destination.
             {
-                SendMessage("Block");
+                agent.destination = player.transform.position;
+                Vector3 targetDir = -1*(player.transform.position - transform.position);
+                float step = turnSpeed * Time.deltaTime;
+                Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
+                transform.rotation = Quaternion.LookRotation(newDir);
             }
-            myTransform.LookAt(2 * myTransform.position - player.transform.position);
         }
     }
 
-    public void launchAttack(Collider attack)
+    IEnumerator Attack1()
     {
+        anim.SetTrigger("Punch");
+        trackingPlayer = false;
+        isAttacking = true;
         // overlapSphere is best if applicable
+        Collider attack = attackHitboxes[0];
         Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
+        bool hitPlayer = false;
 
-        foreach (Collider c in cols)
+        for (int i = 0; i < 15; i++) // Wait 15 frames (This seems buggy/inaccurate to Unity's frame timer?)
         {
-            //Debug.Log(c.name);
-            // if the collision is with the own player body
-            if (c.transform == transform)
-            {
-                // skips the rest of code in loop and keeps checking 
-                //Debug.Log("ignoring self hit");
-                continue;
-            }
-            else if (c.name == attack.name)
-            {
-                //Debug.Log("stopped self hit");
-                continue;
-            }
-            else if (c.name == "Player")
-            {
-                Debug.Log("hit the " + c.name);
-                c.SendMessageUpwards("DecreaseHealth", 10);
-            }
+            yield return null;
         }
+
+        for (int i = 0; i < 3; i++) // Hitbox has 3 active frames
+        {
+            if (!hitPlayer)
+            {
+                foreach (Collider c in cols)
+                {
+                    if (c.tag == "Player")
+                    {
+                        hitPlayer = true;
+                        c.SendMessageUpwards("DecreaseHealth", 10);
+                    }
+                }
+            }
+            yield return null;
+        }
+
+        for (int i = 0; i < 7; i++) // Wait 7 frames (Punch anim is 25 frames total)
+        {
+            yield return null;
+        }
+        trackingPlayer = true;
+        isAttacking = false;
+        attack1Timer = attack1TimeReset;
     }
 
     public float GetDistance()
     {
-        float distance = Vector3.Distance(myTransform.position, player.transform.position);
+        float distance = Vector3.Distance(transform.position, player.transform.position);
         return distance;
     }
 
@@ -172,7 +184,6 @@ public class EnemyScript : MonoBehaviour
                 Die();
             }
         }
-        //Debug.Log("enemy current Health is " + health);
     }
 
     private void Die()
