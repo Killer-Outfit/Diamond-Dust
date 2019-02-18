@@ -24,6 +24,10 @@ public class EnemyScript : MonoBehaviour
     private bool trackingPlayer = false;
     private bool isAttacking = false;
     private bool isApproaching = false;
+    private bool isFar = false;
+    private bool isMiddle = false;
+    private bool isClose = false;
+    private bool isDanger = false;
     public bool active = false;
     public bool canBlock = false;
     public bool isBlocking = false;
@@ -47,11 +51,11 @@ public class EnemyScript : MonoBehaviour
         // While 'inactive' (out of range), just keep checking distance to the player.
         if (!active)
         {
-            if (player && Vector3.Distance(agent.transform.position, player.transform.position) < 80)
+            if (player && GetDistance() < 80)
             {
                 active = true;
                 trackingPlayer = true;
-                enemyManager.GetComponent<GlobalEnemy>().AddEnemy();
+                //enemyManager.GetComponent<GlobalEnemy>().AddEnemy();
             }
         }
         // Enemy is active, do the following.
@@ -116,23 +120,32 @@ public class EnemyScript : MonoBehaviour
 
             if (trackingPlayer) // Smooth turn towards the player using turnSpeed, and set destination.
             {
-                agent.destination = player.transform.position;
-                Vector3 targetDir = -1*(player.transform.position - transform.position);
-                float step = turnSpeed * Time.deltaTime;
-                Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
-                transform.rotation = Quaternion.LookRotation(newDir);
+                TrackPlayer();
             }
         }
     }
 
-    private void GetState()
+    private void GetState() // Gets distance state in relation to the player
     {
         float distance = GetDistance();
+        isFar = (GetDistance() > followDistanceUpper);
+        isMiddle = (!isFar && GetDistance() > followDistanceLower);
+        isClose = (!isMiddle && GetDistance() < followDistanceLower);
+        isDanger = (isMiddle || isClose);
     }
 
     private void DoMovement()
     {
 
+    }
+
+    private void TrackPlayer() // Smooth turn towards the player using turnSpeed, and set destination.
+    {
+        agent.destination = player.transform.position;
+        Vector3 targetDir = -1 * (player.transform.position - transform.position);
+        float step = turnSpeed * Time.deltaTime;
+        Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
+        transform.rotation = Quaternion.LookRotation(newDir);
     }
 
     IEnumerator Attack1()
@@ -198,7 +211,7 @@ public class EnemyScript : MonoBehaviour
 
     private void Die()
     {
-        enemyManager.GetComponent<GlobalEnemy>().RemoveEnemy();
+        //enemyManager.GetComponent<GlobalEnemy>().RemoveEnemy();
         Destroy(this.gameObject);
     }
 
