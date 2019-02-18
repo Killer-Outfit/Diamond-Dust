@@ -100,7 +100,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b63bbc58fb6b7e4bb5c34d53130ec86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HPBar: {fileID: 5094065518771958199}
+  HPBarSprite: {fileID: 5094065518771958199}
+  HPBar: {fileID: 283501901888429332}
+  enemyManager: {fileID: 0}
   speed: 25
   turnSpeed: 10
   followDistanceUpper: 20
