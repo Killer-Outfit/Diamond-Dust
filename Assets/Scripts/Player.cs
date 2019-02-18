@@ -16,8 +16,8 @@ public class Player : MonoBehaviour
     public Collider[] kickHitBoxes;
     public Collider[] miscHitBoxes;
 
-    
 
+    private string attackType;
     private string[] punchAnims;
     private string[] kickAnims;
     private string[] miscAnims;
@@ -28,6 +28,8 @@ public class Player : MonoBehaviour
     private GameObject enemyHit;
     // Create an animator variable
     Animator anim;
+    AnimatorOverrideController animatorOverrideController;
+    
     // Reference to the health bar
     public Slider healthbar;
 
@@ -42,6 +44,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         //transform.localScale = new Vector3(0.35F, 0.35f, 0.35f);
+        attackType = "";
         shield = 100;
         blocking = false;
         animQueueStateNames = new List<string>() { "checkQueueState1", "checkQueueState2", "checkQueueState3" };
@@ -54,6 +57,12 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         currentHealth = maxHealth;
         healthbar.value = currentHealth / maxHealth;
+
+
+        animatorOverrideController = new AnimatorOverrideController(anim.runtimeAnimatorController);
+        anim.runtimeAnimatorController = animatorOverrideController;
+        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+
     }
     // Get user inputs
     void Update()
@@ -70,13 +79,13 @@ public class Player : MonoBehaviour
                 }
             }
             // Activate kick when user presses Y
-            if (Input.GetButtonDown("YButton"))
+            /*if (Input.GetButtonDown("YButton"))
             {
                 if (inputQueue.Count < 3)
                 {
                     inputQueue.Add("kick");
                 }
-            }
+            }*/
 
             if (Input.GetButtonDown("AButton"))
             {
@@ -89,7 +98,7 @@ public class Player : MonoBehaviour
 
             if (Input.GetButton("BButton"))
             {
-                Debug.Log("pressing B");
+                //Debug.Log("pressing B");
                 if (!blocking)
                 {
                     anim.SetTrigger("block");
@@ -158,10 +167,25 @@ public class Player : MonoBehaviour
         currentHealth = maxHealth;
     }
     // Make the attack activate
-    IEnumerator launchAttack(Collider attack)
+    IEnumerator launchAttack()
     {
-        gameObject.GetComponent<PlayerMove>().changeAttacking(true);
+        Collider attack = null;
+        if(attackType == "punch")
+        {
+            attack = punchHitboxes[currentHitNumber];
+        }
+        else if (attackType == "kick")
+        {
+            attack = kickHitBoxes[currentHitNumber];
+        }
+        else if (attackType == "misc")
+        {
+            attack = miscHitBoxes[currentHitNumber];
+        }
+        
+
         this.isAttacking = true;
+        gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
         yield return new WaitForSeconds(0.2f); // Do hitbox calcuation after 0.2 seconds. Adjust this to match the animation later?
         //overlapSphere is best if applicable
         // Create a list of all objects that have collided with the attack hitbox
@@ -169,50 +193,46 @@ public class Player : MonoBehaviour
         // Iterate through each collision event
         foreach(Collider c in cols)
         {
-            //Debug.Log(c.name);
-            // If the collision is with the player's own body
-            if (c.transform == transform)
+            Debug.Log(c.name);
+            if (c.tag == "Enemy")
             {
-                // Skips the rest of code in loop and keeps checking 
-                continue;
-            }
-            // Check if collision event is not with itself
-            else if (c.name == attack.name)
-            {
-                continue;
-            }
-            else
-            {
-                //Debug.Log("hit the " + c.name);
+                Debug.Log("hit the " + c.name);
                 // Decrease the hit target's health by 10
                 c.SendMessageUpwards("DecreaseHealth", 10);
             }
         }
         yield return new WaitForSeconds(0.2f); //"Cooldown" time
         this.isAttacking = false;
+        gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
     }
     public void pressX()
     {
         inputStartTime = currentInputTimer;
         anim.SetTrigger("punch");
-        launchAttack(punchHitboxes[currentHitNumber]);
+        //launchAttack(punchHitboxes[currentHitNumber]);
+        attackType = "punch";
+        StartCoroutine("launchAttack");
         currentHitNumber += 1;
     }
 
     public void pressY()
     {
-        Debug.Log("I am pressing Y");
+        //Debug.Log("I am pressing Y");
         inputStartTime = currentInputTimer;
         anim.SetTrigger("kick");
-        launchAttack(kickHitBoxes[currentHitNumber]);
+        //launchAttack(kickHitBoxes[currentHitNumber]);
+        attackType = "kick";
+        StartCoroutine("launchAttack");
         currentHitNumber += 1;
     }
     public void pressA()
     {
-        Debug.Log("I am pressing A");
+        //Debug.Log("I am pressing A");
         inputStartTime = currentInputTimer;
         anim.SetTrigger("miscAttack");
-        launchAttack(miscHitBoxes[currentHitNumber]);
+        //launchAttack(miscHitBoxes[currentHitNumber]);
+        attackType = "misc";
+        StartCoroutine("launchAttack");
         currentHitNumber += 1;
     }
 

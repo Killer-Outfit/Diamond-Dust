@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Main.unity
     guid: c6c43e73a60f5e54a828c62136e81017
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Tutorial.unity
     guid: 640f69d78d1c17b4cb70dd13bbaebffd
   - enabled: 0
@@ -20,7 +20,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/districtOne.unity
     guid: 71b4cf1798d161243949d05a1715e3ae
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Evan-Dev2.unity
     guid: 78ec9c428a89c0f47be1de903f8c4ac0
+  - enabled: 1
+    path: Assets/Scenes/District-One.unity
+    guid: 41abef5f82f53df4d8d68606b7ab7c54
   m_configObjects: {}
