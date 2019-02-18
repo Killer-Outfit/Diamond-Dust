@@ -16,10 +16,7 @@ public class Player : MonoBehaviour
     public Collider[] kickHitBoxes;
     public Collider[] miscHitBoxes;
 
-    public Mesh outfit1Top;
-    public Mesh outfit2Top;
-
-    public SkinnedMeshRenderer outfitTop;
+    
 
     private string[] punchAnims;
     private string[] kickAnims;
