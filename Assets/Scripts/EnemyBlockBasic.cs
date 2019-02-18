@@ -8,11 +8,13 @@ public class EnemyBlockBasic : MonoBehaviour
     // Store the attached EnemyScript
     private EnemyScript thisEnemyScript;
     private float blocktime = 0;
+    private Animator anim;
 
     // Allows the attached enemy to block.
     void Start()
     {
         thisEnemyScript = this.gameObject.GetComponent<EnemyScript>();
+        anim = GetComponent<Animator>();
         thisEnemyScript.canBlock = true;
     }
 
@@ -25,6 +27,7 @@ public class EnemyBlockBasic : MonoBehaviour
             if (blocktime <= 0)
             {
                 thisEnemyScript.isBlocking = false;
+                anim.SetBool("Block", false);
             }
         }
     }
@@ -34,5 +37,6 @@ public class EnemyBlockBasic : MonoBehaviour
     {
         blocktime = 1;
         thisEnemyScript.isBlocking = true;
+        anim.SetBool("Block", true);
     }
 }
