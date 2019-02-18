@@ -155,7 +155,7 @@ public class crowd : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             GetComponent<Rigidbody>().isKinematic = true;
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            //GetComponent<Rigidbody>().velocity = Vector3.zero;
         }
 
     }
