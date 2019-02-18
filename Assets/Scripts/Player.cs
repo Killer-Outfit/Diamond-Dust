@@ -16,7 +16,6 @@ public class Player : MonoBehaviour
     public Collider[] kickHitBoxes;
     public Collider[] miscHitBoxes;
 
-
     private string attackType;
     private string[] punchAnims;
     private string[] kickAnims;
@@ -32,6 +31,9 @@ public class Player : MonoBehaviour
     
     // Reference to the health bar
     public Slider healthbar;
+
+    public outfit outfit1;
+    public outfit outfit2;
 
 
     private float currentInputTimer;
@@ -59,9 +61,9 @@ public class Player : MonoBehaviour
         healthbar.value = currentHealth / maxHealth;
 
 
-        animatorOverrideController = new AnimatorOverrideController(anim.runtimeAnimatorController);
-        anim.runtimeAnimatorController = animatorOverrideController;
-        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+        //animatorOverrideController = new AnimatorOverrideController(anim.runtimeAnimatorController);
+        //anim.runtimeAnimatorController = animatorOverrideController;
+        //var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
 
     }
     // Get user inputs
@@ -256,5 +258,25 @@ public class Player : MonoBehaviour
                 pressA();
             }
         }
+    }
+
+    public void changeOutfit(outfit newOutfit)
+    {
+        newOutfit.outfitSkinRenderer.sharedMesh = newOutfit.outfitMesh;
+        newOutfit.outfitSkinRenderer.material = newOutfit.outfitMaterial;
+
+        AnimatorOverrideController aoc = new AnimatorOverrideController(anim.runtimeAnimatorController);
+        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+        int index = 0;
+        foreach (var a in aoc.animationClips)
+            if (a.name.Contains(newOutfit.outfitType))
+            {
+                Debug.Log(a);
+                anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(a, newOutfit.attacks[index]));
+                index += 1;
+            }
+        aoc.ApplyOverrides(anims);
+        anim.runtimeAnimatorController = aoc;
+        punchHitboxes = newOutfit.attackColliders;
     }
 }

@@ -10,22 +10,5 @@ public class outfit : MonoBehaviour
     public Material outfitMaterial;
     public SkinnedMeshRenderer outfitSkinRenderer;
     public string outfitType;
-    public Collider[] attackColliders;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public AnimationClip getAnimClip(int animClipIndex)
-    {
-        return attacks[animClipIndex];
-    }
-
+    public Collider[] attackColliders; 
 }
