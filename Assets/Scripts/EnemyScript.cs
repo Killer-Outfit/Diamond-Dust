@@ -11,6 +11,7 @@ public class EnemyScript : MonoBehaviour
     private NavMeshAgent agent;
     private Animator anim;
     public Image HPBar;
+    public GameObject enemyManager;
     // Stats
     private int maxhealth;
     public float speed;
@@ -23,6 +24,10 @@ public class EnemyScript : MonoBehaviour
     private bool trackingPlayer = false;
     private bool isAttacking = false;
     private bool isApproaching = false;
+    private bool isFar = false;
+    private bool isMiddle = false;
+    private bool isClose = false;
+    private bool isDanger = false;
     public bool active = false;
     public bool canBlock = false;
     public bool isBlocking = false;
@@ -46,10 +51,11 @@ public class EnemyScript : MonoBehaviour
         // While 'inactive' (out of range), just keep checking distance to the player.
         if (!active)
         {
-            if (player && Vector3.Distance(agent.transform.position, player.transform.position) < 80)
+            if (player && GetDistance() < 80)
             {
                 active = true;
                 trackingPlayer = true;
+                //enemyManager.GetComponent<GlobalEnemy>().AddEnemy();
             }
         }
         // Enemy is active, do the following.
@@ -114,13 +120,32 @@ public class EnemyScript : MonoBehaviour
 
             if (trackingPlayer) // Smooth turn towards the player using turnSpeed, and set destination.
             {
-                agent.destination = player.transform.position;
-                Vector3 targetDir = -1*(player.transform.position - transform.position);
-                float step = turnSpeed * Time.deltaTime;
-                Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
-                transform.rotation = Quaternion.LookRotation(newDir);
+                TrackPlayer();
             }
         }
+    }
+
+    private void GetState() // Gets distance state in relation to the player
+    {
+        float distance = GetDistance();
+        isFar = (GetDistance() > followDistanceUpper);
+        isMiddle = (!isFar && GetDistance() > followDistanceLower);
+        isClose = (!isMiddle && GetDistance() < followDistanceLower);
+        isDanger = (isMiddle || isClose);
+    }
+
+    private void DoMovement()
+    {
+
+    }
+
+    private void TrackPlayer() // Smooth turn towards the player using turnSpeed, and set destination.
+    {
+        agent.destination = player.transform.position;
+        Vector3 targetDir = -1 * (player.transform.position - transform.position);
+        float step = turnSpeed * Time.deltaTime;
+        Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
+        transform.rotation = Quaternion.LookRotation(newDir);
     }
 
     IEnumerator Attack1()
@@ -132,35 +157,33 @@ public class EnemyScript : MonoBehaviour
         Collider attack = attackHitboxes[0];
         Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
         bool hitPlayer = false;
+        float timer = 0f;
 
-        for (int i = 0; i < 15; i++) // Wait 15 frames (This seems buggy/inaccurate to Unity's frame timer?)
+        while(isAttacking)
         {
-            yield return null;
-        }
-
-        for (int i = 0; i < 3; i++) // Hitbox has 3 active frames
-        {
-            if (!hitPlayer)
+            timer += Time.deltaTime;
+            if(timer > 0.3f && timer < 0.5f)
             {
-                foreach (Collider c in cols)
+                if (!hitPlayer)
                 {
-                    if (c.tag == "Player")
+                    foreach (Collider c in cols)
                     {
-                        hitPlayer = true;
-                        c.SendMessageUpwards("DecreaseHealth", 10);
+                        if (c.tag == "Player")
+                        {
+                            hitPlayer = true;
+                            c.SendMessageUpwards("DecreaseHealth", 10);
+                        }
                     }
                 }
             }
+            if (timer >= 0.8f)
+            {
+                trackingPlayer = true;
+                isAttacking = false;
+                attack1Timer = attack1TimeReset;
+            }
             yield return null;
         }
-
-        for (int i = 0; i < 7; i++) // Wait 7 frames (Punch anim is 25 frames total)
-        {
-            yield return null;
-        }
-        trackingPlayer = true;
-        isAttacking = false;
-        attack1Timer = attack1TimeReset;
     }
 
     public float GetDistance()
@@ -188,16 +211,9 @@ public class EnemyScript : MonoBehaviour
 
     private void Die()
     {
+        //enemyManager.GetComponent<GlobalEnemy>().RemoveEnemy();
         Destroy(this.gameObject);
     }
-
-    //private Vector3 CurrentPosition(Vector3 curPos)
-    //{
-    //    if (curPos == Vector3.zero)
-    //        return transform.position;
-    //    else
-    //        return curPos;
-    //}
 
     protected void LateUpdate()
     {

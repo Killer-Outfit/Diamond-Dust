@@ -150,4 +150,19 @@ public class crowd : MonoBehaviour
                                      rotationSpeed * Time.deltaTime);
         }
     }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
+
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+            GetComponent<Rigidbody>().isKinematic = false;
+    }
 }
