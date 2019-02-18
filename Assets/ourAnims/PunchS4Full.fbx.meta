@@ -1,0 +1,288 @@
+fileFormatVersion: 2
+guid: e78120005da2f594d953260205b41759
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Armature
+    100002: ArmIK.L
+    100004: ArmIK.R
+    100006: Control
+    100008: Elbow Poll.L
+    100010: Elbow Poll.L_end
+    100012: Elbow Poll.R
+    100014: Elbow Poll.R_end
+    100016: Foot-1 Roll.L
+    100018: Foot-1 Roll.R
+    100020: Foot-1.L
+    100022: Foot-1.R
+    100024: Foot-2 Roll.L
+    100026: Foot-2 Roll.R
+    100028: Foot-2.L
+    100030: Foot-2.L_end
+    100032: Foot-2.R
+    100034: Foot-2.R_end
+    100036: Hand.L
+    100038: Hand.R
+    100040: Head
+    100042: Head_end
+    100044: high-poly.obj
+    100046: Index Finger-1.L
+    100048: Index Finger-1.R
+    100050: Index Finger-2.L
+    100052: Index Finger-2.R
+    100054: Index Finger-3.L
+    100056: Index Finger-3.L_end
+    100058: Index Finger-3.R
+    100060: Index Finger-3.R_end
+    100062: Knee Pole IK.L
+    100064: Knee Pole IK.L_end
+    100066: Knee Pole IK.R
+    100068: Knee Pole IK.R_end
+    100070: Leg Control.L
+    100072: Leg Control.R
+    100074: LegIK.L
+    100076: LegIK.L_end
+    100078: LegIK.R
+    100080: LegIK.R_end
+    100082: Little Finger-1.L
+    100084: Little Finger-1.R
+    100086: Little Finger-2.L
+    100088: Little Finger-2.R
+    100090: Little Finger-3.L
+    100092: Little Finger-3.L_end
+    100094: Little Finger-3.R
+    100096: Little Finger-3.R_end
+    100098: Lower Arm.L
+    100100: Lower Arm.L_end
+    100102: Lower Arm.R
+    100104: Lower Arm.R_end
+    100106: Lower Leg.L
+    100108: Lower Leg.R
+    100110: Lower Torso
+    100112: male_generic.obj
+    100114: Midde Finger-2.L
+    100116: Midde Finger-2.R
+    100118: Middle Finger-1.L
+    100120: Middle Finger-1.R
+    100122: Middle Finger-3.L
+    100124: Middle Finger-3.L_end
+    100126: Middle Finger-3.R
+    100128: Middle Finger-3.R_end
+    100130: Neck
+    100132: //RootNode
+    100134: Ring Finger-1.L
+    100136: Ring Finger-1.R
+    100138: Ring Finger-2.L
+    100140: Ring Finger-2.R
+    100142: Ring Finger-3.L
+    100144: Ring Finger-3.L_end
+    100146: Ring Finger-3.R
+    100148: Ring Finger-3.R_end
+    100150: Shoulder.L
+    100152: Shoulder.R
+    100154: Thumb-1.L
+    100156: Thumb-1.R
+    100158: Thumb-2.L
+    100160: Thumb-2.R
+    100162: Thumb-3.L
+    100164: Thumb-3.L_end
+    100166: Thumb-3.R
+    100168: Thumb-3.R_end
+    100170: Upper Arm.L
+    100172: Upper Arm.R
+    100174: Upper Leg.L
+    100176: Upper Leg.R
+    100178: Upper Torso
+    100180: Waist
+    400000: Armature
+    400002: ArmIK.L
+    400004: ArmIK.R
+    400006: Control
+    400008: Elbow Poll.L
+    400010: Elbow Poll.L_end
+    400012: Elbow Poll.R
+    400014: Elbow Poll.R_end
+    400016: Foot-1 Roll.L
+    400018: Foot-1 Roll.R
+    400020: Foot-1.L
+    400022: Foot-1.R
+    400024: Foot-2 Roll.L
+    400026: Foot-2 Roll.R
+    400028: Foot-2.L
+    400030: Foot-2.L_end
+    400032: Foot-2.R
+    400034: Foot-2.R_end
+    400036: Hand.L
+    400038: Hand.R
+    400040: Head
+    400042: Head_end
+    400044: high-poly.obj
+    400046: Index Finger-1.L
+    400048: Index Finger-1.R
+    400050: Index Finger-2.L
+    400052: Index Finger-2.R
+    400054: Index Finger-3.L
+    400056: Index Finger-3.L_end
+    400058: Index Finger-3.R
+    400060: Index Finger-3.R_end
+    400062: Knee Pole IK.L
+    400064: Knee Pole IK.L_end
+    400066: Knee Pole IK.R
+    400068: Knee Pole IK.R_end
+    400070: Leg Control.L
+    400072: Leg Control.R
+    400074: LegIK.L
+    400076: LegIK.L_end
+    400078: LegIK.R
+    400080: LegIK.R_end
+    400082: Little Finger-1.L
+    400084: Little Finger-1.R
+    400086: Little Finger-2.L
+    400088: Little Finger-2.R
+    400090: Little Finger-3.L
+    400092: Little Finger-3.L_end
+    400094: Little Finger-3.R
+    400096: Little Finger-3.R_end
+    400098: Lower Arm.L
+    400100: Lower Arm.L_end
+    400102: Lower Arm.R
+    400104: Lower Arm.R_end
+    400106: Lower Leg.L
+    400108: Lower Leg.R
+    400110: Lower Torso
+    400112: male_generic.obj
+    400114: Midde Finger-2.L
+    400116: Midde Finger-2.R
+    400118: Middle Finger-1.L
+    400120: Middle Finger-1.R
+    400122: Middle Finger-3.L
+    400124: Middle Finger-3.L_end
+    400126: Middle Finger-3.R
+    400128: Middle Finger-3.R_end
+    400130: Neck
+    400132: //RootNode
+    400134: Ring Finger-1.L
+    400136: Ring Finger-1.R
+    400138: Ring Finger-2.L
+    400140: Ring Finger-2.R
+    400142: Ring Finger-3.L
+    400144: Ring Finger-3.L_end
+    400146: Ring Finger-3.R
+    400148: Ring Finger-3.R_end
+    400150: Shoulder.L
+    400152: Shoulder.R
+    400154: Thumb-1.L
+    400156: Thumb-1.R
+    400158: Thumb-2.L
+    400160: Thumb-2.R
+    400162: Thumb-3.L
+    400164: Thumb-3.L_end
+    400166: Thumb-3.R
+    400168: Thumb-3.R_end
+    400170: Upper Arm.L
+    400172: Upper Arm.R
+    400174: Upper Leg.L
+    400176: Upper Leg.R
+    400178: Upper Torso
+    400180: Waist
+    2100000: DefaultSkin
+    2100002: Eye_brown
+    4300000: male_generic.obj
+    4300002: high-poly.obj
+    7400000: ArmatureAction
+    7400002: Armature|Action
+    7400004: Armature|ArmatureAction
+    7400006: Armature|punch1
+    7400008: Armature|punch2
+    7400010: Armature|punch3
+    7400012: Armature|punch4
+    9500000: //RootNode
+    13700000: high-poly.obj
+    13700002: male_generic.obj
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 1
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 100f1a4fcb04a80499faf5cca45aea72,
+    type: 3}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
