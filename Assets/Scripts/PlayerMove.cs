@@ -7,27 +7,27 @@ public class PlayerMove : MonoBehaviour {
     public float turningSpeed;
     public float dashSpeed;
     float lockSpeed;
+
     private float horizontalDash;
     Quaternion targetRotation;
-    //public GameObject child; //used with child relative motion
 
-    //use with cam relative motion 2
+    // Use with cam relative motion 2
     public Transform camPivot;
     public Transform cam;
     float heading;
-    //
+    // Set up character controller for motion and vector 
     CharacterController controller;
     Vector3 movementVector;
     float vVelocity;
-
+    // Main camera and its script
     GameObject mainCamera;
     FollowCamera mainCameraScript;
-
+    // States for blocking, attacking, dashing and locking
     private bool isBlocking;
     private bool isAttacking;
     private bool dashed;
-    bool isLock;
-
+    private bool isLock;
+    // Animator
     Animator anim;
 
     // Use this for initialization
@@ -42,7 +42,6 @@ public class PlayerMove : MonoBehaviour {
         controller = GetComponent<CharacterController>();
         mainCamera = GameObject.Find("Main Camera");
         mainCameraScript = mainCamera.GetComponent<FollowCamera>();
-
         //velocity = new Vector3(0, Physics.gravity.y, 0);
     }
 
@@ -112,8 +111,6 @@ public class PlayerMove : MonoBehaviour {
             vertical = Input.GetAxis("Vertical") * movementSpeed * Time.deltaTime;
         }
 
-        //Debug.Log("horiz = " + horizontal + " vert = " + vertical);
-
         //cam2 movement
         heading += horizontal;
         camPivot.rotation = Quaternion.Euler(0, heading, 0);
@@ -125,7 +122,6 @@ public class PlayerMove : MonoBehaviour {
         camR.y = 0f;
         camF = camF.normalized;
         camR = camR.normalized;
-
 
         if (Input.GetAxis("rightTrigger") > 0 && !isLock)
         {
@@ -154,19 +150,10 @@ public class PlayerMove : MonoBehaviour {
             //setting character rotation
             if (inputs.x != 0 || inputs.y != 0)
             {
-                if (!isLock)
-                {
-                    //remove "-1 *" change -  to plus to invert rotation
-                    var rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * movementSpeed));
-                    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
-                }
-                else
-                {
-                    //transform.LookAt(mainCameraScript.lockTarget.transform);
-                }
-
+                //remove "-1 *" change -  to plus to invert rotation
+                var rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * movementSpeed));
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
             }
-
         }
         else
         {
@@ -184,9 +171,6 @@ public class PlayerMove : MonoBehaviour {
             transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * lockSpeed;
 
         }
-        //
-        //
-
         //play run animation when the player is moving
         if (vertical != 0 || horizontal != 0)
         {
@@ -198,58 +182,8 @@ public class PlayerMove : MonoBehaviour {
             //anim.SetTrigger("stopRun");
             anim.SetBool("isIdle", true);
         }
-        //
-
-
-        /*
-        //Code to establish camera relative movement
-        var camera = Camera.main;
-        var camFor = camera.transform.forward;
-        var camRight = camera.transform.right;
-
-        camFor.y = 0f;
-        camRight.y = 0f;
-
-        camFor.Normalize();
-        camRight.Normalize();
-
-        var relativeDirection = camFor * vertical + camRight * horizontal;
-        */
-        /*
-        //check to see if user in pushing a stick
-        var input = new Vector3(horizontal, 0, vertical);
-        if (input != Vector3.zero)
-        {
-            //set rotation vectors
-            transform.forward = input;
-            targetRotation = Quaternion.LookRotation(input);
-
-            //trigger the run animation
-            anim.SetTrigger("run");
-            
-        }
-        else {
-            //end the run animation
-            anim.SetTrigger("stopRun");
-        }
-
-        //set rotation
-        //transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, movementSpeed * Time.deltaTime);
-
-        //child relative motion
-        //transform.position = child.transform.position;
-
-        //world relative motion
-        //transform.Translate(horizontal, 0, vertical, Space.World);
-
-        //camera relative motion
-        //transform.Translate(relativeDirection * movementSpeed * Time.deltaTime);
-
-        horizontal = 0;
-        vertical = 0;
-        */
     }
-
+    // Block to change state
     public void changeBlock()
     {
         if (isBlocking)
@@ -260,6 +194,7 @@ public class PlayerMove : MonoBehaviour {
             isBlocking = true;
         }
     }
+    // Set attacking state
     public void changeAttacking(bool action)
     {
         isAttacking = action;
