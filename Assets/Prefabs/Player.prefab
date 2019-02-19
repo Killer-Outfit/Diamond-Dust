@@ -295,6 +295,8 @@ MonoBehaviour:
   - {fileID: 2309589555237416117}
   healthbar: {fileID: 5079908908540841359, guid: 0d530442fa04ff94593be3f0ac801670,
     type: 3}
+  outfit1: {fileID: 0}
+  outfit2: {fileID: 0}
 --- !u!1 &1428083362
 GameObject:
   m_ObjectHideFlags: 0
@@ -895,7 +897,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: 100f1a4fcb04a80499faf5cca45aea72, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: 100f1a4fcb04a80499faf5cca45aea72, type: 3}
       propertyPath: m_LocalPosition.z
