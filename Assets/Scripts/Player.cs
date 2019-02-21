@@ -96,7 +96,6 @@ public class Player : MonoBehaviour
             // Enable player motion after blocking is complete  
             else if (blocking)
             {
-                Debug.Log("here");
                 blocking = false;
                 gameObject.GetComponent<PlayerMove>().changeBlock();
                 anim.SetTrigger("block");
@@ -176,11 +175,11 @@ public class Player : MonoBehaviour
         this.isAttacking = true;
         gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
         // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
-        yield return new WaitForSeconds(0.2f); 
+        yield return new WaitForSeconds(0.01f); 
         //overlapSphere is best if applicable
         // Create a list of all objects that have collided with the attack hitbox
         Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
-        // Iterate through each collision event
+        // Iterate through each collision eventc
         foreach(Collider c in cols)
         {
             // If you collided with an enemy damage them
@@ -191,7 +190,7 @@ public class Player : MonoBehaviour
             }
         }
         // "Cooldown" time
-        yield return new WaitForSeconds(0.2f); 
+        yield return new WaitForSeconds(0.01f); 
         this.isAttacking = false;
         gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
     }

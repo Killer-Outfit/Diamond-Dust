@@ -169,7 +169,6 @@ public class PlayerMove : MonoBehaviour {
             //Debug.Log("lockspeed = " + lockSpeed);
             transform.rotation = Quaternion.LookRotation(camF);
             transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * lockSpeed;
-
         }
         //play run animation when the player is moving
         if (vertical != 0 || horizontal != 0)

@@ -9,6 +9,8 @@ public class FollowCamera : MonoBehaviour
     private Transform myTransform;
 
     // Variables for camera speed and location
+    public float maxRotation;
+    public float minRotation;
     public float minDistance;
     public float maxDistance;
     public float camHeight;
@@ -80,6 +82,14 @@ public class FollowCamera : MonoBehaviour
         if (Input.GetAxis("MouseY") != 0)
         {
             y += Input.GetAxis("MouseY") * YrotateSpeed;
+        }
+        if( y > maxRotation)
+        {
+            y = maxRotation;
+        }
+        if( y < minRotation)
+        {
+            y = minRotation;
         }
         // Create rotation and the position vectors
         var rotation = Quaternion.Euler(y, x, 0);
