@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    CharacterController controller;
+    public CheckpointManager checkpoint;
     // Set health variables
     public float maxHealth;
     public float currentHealth;
@@ -39,6 +41,8 @@ public class Player : MonoBehaviour
     // Initialize animator, current health and healthbar value
     void Start()
     {
+        controller = GetComponent<CharacterController>();
+        checkpoint.updateCheckpoint(transform.position);
         //transform.localScale = new Vector3(0.35F, 0.35f, 0.35f);
         attackType = "";
         shield = 100;
@@ -70,13 +74,15 @@ public class Player : MonoBehaviour
                 inputQueue[0] = "punch";
             }
             // Activate kick when user presses Y
-            /*if (Input.GetButtonDown("YButton"))
+            if (Input.GetButtonDown("YButton"))
             {
+                /*
                 if (inputQueue.Count < 3)
                 {
                     inputQueue.Add("kick");
-                }
-            }*/
+                }*/
+                killPlayer();
+            }
             // Add misc attack to input queue
             if (Input.GetButtonDown("AButton"))
             {
@@ -151,8 +157,13 @@ public class Player : MonoBehaviour
     // Kill the player
     private void killPlayer()
     {
+        controller.enabled = false;
+        controller.transform.position = checkpoint.getCheckpoint();
+        controller.enabled = true;
+        Debug.Log(checkpoint.getCheckpoint());
         //Destroy(this.gameObject);
         currentHealth = maxHealth;
+        //transform.position = checkpoint.getCheckpoint();
     }
     // Make the attack activate
     IEnumerator launchAttack()

@@ -6,6 +6,12 @@ public class PlayerMove : MonoBehaviour {
     public float movementSpeed;
     public float turningSpeed;
     public float dashSpeed;
+    public float maxDashTime;
+    private float currenDashTime;
+    private float dashTimeIncriment;
+    private float inputIntervalMax = 1f;
+    private float inputTime;
+    private float inputTimeIncriment;
     float lockSpeed;
 
     private float horizontalDash;
@@ -27,15 +33,20 @@ public class PlayerMove : MonoBehaviour {
     private bool isAttacking;
     private bool dashed;
     private bool isLock;
+    private bool stickPushed;
     // Animator
     Animator anim;
 
     // Use this for initialization
     void Start () {
+        inputTime = inputIntervalMax;
+        currenDashTime = maxDashTime;
+        dashTimeIncriment = 0.1f;
         horizontalDash = 0f;
         dashed = false;
         isBlocking = false;
         isAttacking = false;
+        stickPushed = false;
         vVelocity = 0;
         isLock = false;
         anim = GetComponent<Animator>();
@@ -48,22 +59,21 @@ public class PlayerMove : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         if (!isBlocking && !isAttacking)
-        {
-            normalMovement();
-        }else if(isBlocking)
-        {
-            if(Input.GetAxis("LStick X") != 0 && !dashed)
-            {
-                horizontalDash = Input.GetAxis("LStick X") * dashSpeed * Time.deltaTime;
-                dashed = true;
-                dash(horizontalDash);
-            }else if(Input.GetAxis("LStick X") == 0 && dashed)
-            {
-                dash(horizontalDash);
-                dashed = false;
-            }
-        }
-       
+         {
+             normalMovement();
+         }else if(isBlocking)
+         {
+             if(Input.GetAxis("LStick X") != 0 && !dashed)
+             {
+                 horizontalDash = Input.GetAxis("LStick X") * dashSpeed * Time.deltaTime;
+                 dashed = true;
+                 dash(horizontalDash);
+             }else if(Input.GetAxis("LStick X") == 0 && dashed)
+             {
+                 dash(horizontalDash);
+                 dashed = false;
+             }
+         }
     }
 
     private void dash(float horizontal)

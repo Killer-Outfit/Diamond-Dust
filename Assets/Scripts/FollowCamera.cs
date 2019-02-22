@@ -83,6 +83,7 @@ public class FollowCamera : MonoBehaviour
         {
             y += Input.GetAxis("MouseY") * YrotateSpeed;
         }
+        // Prevent camera motion that is too high or too low
         if( y > maxRotation)
         {
             y = maxRotation;
@@ -105,13 +106,14 @@ public class FollowCamera : MonoBehaviour
         float step = 40 * Time.deltaTime;
         // Get the rotation toward the enemy
         var targetRotation = Quaternion.LookRotation(lockTarget.transform.position - transform.position);
+        Debug.Log(targetRotation);
         // Move position of camera with player
         Vector3 position = targetRotation * new Vector3(0.0f, 0.0f, -minDistance) + target.position;
         // Rotate camera by 1 step from current rotate to the target rotation
         myTransform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, step);
         myTransform.position = position;
         // Move the lockMarker to slightly above the position of the lockTarget 
-        Vector3 markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2, lockTarget.transform.position.z);
+        Vector3 markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2.1f, lockTarget.transform.position.z);
         lockMarker.transform.position = markerPos;
         // Reset the condition to change target
         if (Input.GetAxis("RStick X") == 0 && !allowToChangeTarget)
@@ -126,10 +128,14 @@ public class FollowCamera : MonoBehaviour
             if (Input.GetAxis("RStick X") > 0)
             {
                 lockTarget = findClosestInDirection(true);
+                markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2, lockTarget.transform.position.z);
+                lockMarker.transform.position = markerPos;
             }
             else
             {
                 lockTarget = findClosestInDirection(false);
+                markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2, lockTarget.transform.position.z);
+                lockMarker.transform.position = markerPos;
             }
         }
     }
