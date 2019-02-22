@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     public Collider[] punchHitboxes;
     public Collider[] kickHitBoxes;
     public Collider[] miscHitBoxes;
+    public GameObject canvas;
     private string attackType;
     // Create single element input queue
     private string[] inputQueue;
@@ -140,11 +141,11 @@ public class Player : MonoBehaviour
         }
         else
         {
-            decreaseSheild(damage);
+            decreaseShield(damage);
         }
     }
-    // Sheild damage if blocking
-    public void decreaseSheild(float damage)
+    // Shield damage if blocking
+    public void decreaseShield(float damage)
     {
         shield -= damage;
     }
@@ -153,6 +154,7 @@ public class Player : MonoBehaviour
     {
         //Destroy(this.gameObject);
         currentHealth = maxHealth;
+        //canvas.SendMessage("PlayerDead", true);
     }
     // Make the attack activate
     IEnumerator launchAttack()
