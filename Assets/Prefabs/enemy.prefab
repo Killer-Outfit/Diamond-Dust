@@ -104,16 +104,14 @@ MonoBehaviour:
   HPBar: {fileID: 283501901888429332}
   enemyManager: {fileID: 0}
   speed: 25
-  turnSpeed: 10
+  turnSpeed: 3
   followDistanceUpper: 20
-  followDistanceLower: 15
+  followDistanceLower: 10
   health: 50
-  active: 0
   canBlock: 0
   isBlocking: 0
   attackHitboxes:
   - {fileID: 2027557192}
-  attack1Timer: 3
 --- !u!195 &3924548499555707488
 NavMeshAgent:
   m_ObjectHideFlags: 0
