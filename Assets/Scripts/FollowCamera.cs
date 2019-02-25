@@ -31,7 +31,7 @@ public class FollowCamera : MonoBehaviour
     string currentLockTargetName;
 
     // Bool to check if the player has locked on and already inputted a target change
-    bool lockOn = false;
+    public bool lockOn = false;
     bool allowToChangeTarget = true;
 
 

@@ -55,11 +55,6 @@ public class Player : MonoBehaviour
         currentHealth = maxHealth;
         healthbar.value = currentHealth / maxHealth;
 
-
-        //animatorOverrideController = new AnimatorOverrideController(anim.runtimeAnimatorController);
-        //anim.runtimeAnimatorController = animatorOverrideController;
-        //var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
-
     }
     // Get user inputs
     void Update()

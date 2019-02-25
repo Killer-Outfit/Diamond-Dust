@@ -135,7 +135,11 @@ public class PlayerMove : MonoBehaviour {
 
         if (Input.GetAxis("rightTrigger") > 0 && !isLock)
         {
-            //isLock = true;
+            if (mainCameraScript.lockOn)
+            {
+                isLock = true;
+            }
+            
         }
         else if (Input.GetAxis("rightTrigger") == 0 && isLock)
         {
@@ -174,11 +178,15 @@ public class PlayerMove : MonoBehaviour {
             }
             else
             {
-                lockSpeed = 10;
+                lockSpeed = 50;
             }
             //Debug.Log("lockspeed = " + lockSpeed);
-            transform.rotation = Quaternion.LookRotation(camF);
-            transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * lockSpeed;
+            transform.rotation = Quaternion.LookRotation(-camF);
+            movementVector = (camF * inputs.y + camR * inputs.x);
+            vVelocity += Physics.gravity.y * Time.deltaTime;
+            movementVector.y = vVelocity;
+            controller.Move(movementVector * Time.deltaTime * lockSpeed);
+            
         }
         //play run animation when the player is moving
         if (vertical != 0 || horizontal != 0)

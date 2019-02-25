@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/District-One.unity
     guid: 41abef5f82f53df4d8d68606b7ab7c54
+  - enabled: 0
+    path: Assets/Scenes/Evan-D!.unity
+    guid: ac2814f8cf2eeaa49bb3d794907b11d4
   m_configObjects: {}
