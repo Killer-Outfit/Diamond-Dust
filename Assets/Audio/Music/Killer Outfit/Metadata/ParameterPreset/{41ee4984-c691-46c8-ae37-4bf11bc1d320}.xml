@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="ParameterPreset" id="{41ee4984-c691-46c8-ae37-4bf11bc1d320}">
+        <property name="name">
+            <value>In Battle</value>
+        </property>
+        <relationship name="folder">
+            <destination>{97b49450-63f1-44a4-987e-4bdc191a8bd7}</destination>
+        </relationship>
+        <relationship name="parameter">
+            <destination>{9222323b-9a24-42e4-b389-200a3215cdcc}</destination>
+        </relationship>
+    </object>
+    <object class="GameParameter" id="{9222323b-9a24-42e4-b389-200a3215cdcc}">
+        <property name="initialValue">
+            <value>0</value>
+        </property>
+        <property name="seekSpeed">
+            <value>0.71000003814697266</value>
+        </property>
+    </object>
+</objects>
