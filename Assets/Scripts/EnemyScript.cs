@@ -10,7 +10,9 @@ public class EnemyScript : MonoBehaviour
     private GameObject player;
     private NavMeshAgent agent;
     private Animator anim;
-    private GameObject closestEnemy;
+    private Transform closestEnemy;
+    private Transform frontTargeter;
+    private Transform sideTargeter;
     public Image HPBarSprite;
     public Transform HPBar;
     public GameObject enemyManager;
@@ -34,9 +36,14 @@ public class EnemyScript : MonoBehaviour
     public bool canBlock = false;
     public bool isBlocking = false;
     // Other
+    private float attack1Timer;
+    private float randomWander;
+    private float wanderTimer;
+    private float spacingTimer = 0f;
+    private float distCheckTimer = 1f;
     private Vector3 curPos = Vector3.zero;
     public Collider[] attackHitboxes;
-    private float attack1Timer;
+    public int managerIndex;
 
     void Start()
     {
@@ -44,7 +51,11 @@ public class EnemyScript : MonoBehaviour
         maxhealth = health;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        attack1Timer = Random.Range(5f, 10f);
+        frontTargeter = transform.Find("FrontTargeter");
+        sideTargeter = transform.Find("SideTargeter");
+        attack1Timer = 1f;
+        wanderTimer = Random.Range(2f, 4f);
+        randomWander = Random.Range(-1f, 1f);
     }
     
     void Update()
@@ -54,24 +65,30 @@ public class EnemyScript : MonoBehaviour
         {
             if (player && GetDistance() < 80)
             {
+                enemyManager.GetComponent<GlobalEnemy>().AddEnemy(this.gameObject);
                 state = "neutral";
-                //enemyManager.GetComponent<GlobalEnemy>().AddEnemy();
             }
         }
         // Enemy is active, do the following.
         else
         {
-            GetMoveState(); // Tells the enemy how far it is from the player.
-            DoMovement(); // Does movement based on distance and state.
-
             if (state == "neutral" || state == "approaching") // Enemy is in neutral stance or simply running at the player. Not attacking or blocking.
             {
+                agent.destination = player.transform.position;
                 TrackPlayer();
                 if (GetDistance() < 5 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
                 {
                     SendMessage("Block");
                 }
             }
+
+            if (state == "approaching" && GetDistance() < 5)
+            {
+                StartCoroutine("Attack1");
+            }
+            GetMoveState(); // Tells the enemy how far it is from the player.
+            DoMovement(); // Does movement based on distance and state.
+
             //if (!isAttacking)
             //{
             //    if (!isBlocking) // Don't attack while blocking.
@@ -93,13 +110,6 @@ public class EnemyScript : MonoBehaviour
             //        }
             //    }
 
-            //    // Try to block if the player is close enough and attacking, and if the enemy can block. Sets the block script's timer to 1, so it refreshes if the player attacks repeatedly.
-            //    if (Vector3.Distance(agent.transform.position, player.transform.position) < 5 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
-            //    {
-            //        SendMessage("Block");
-            //    }
-            //}
-
             //if (!InterruptingMovement()) // Movement and tracking scripts. Overridden by enemy actions.
             //{
             //    TrackPlayer();
@@ -114,8 +124,37 @@ public class EnemyScript : MonoBehaviour
             if (attack1Timer <= 0)
             {
                 attackReady = true;
+                enemyManager.GetComponent<GlobalEnemy>().EnemyReady(managerIndex);
             }
         }
+
+        // Random 'strafing' that gets added to certain movements
+        wanderTimer -= Time.deltaTime;
+        if (wanderTimer <= 0)
+        {
+            wanderTimer = Random.Range(2f, 4f);
+            randomWander = Random.Range(-1f, 1f);
+        }
+
+        // Spacing if another enemy gets too close
+        if (spacingTimer > 0)
+        {
+            spacingTimer -= Time.deltaTime;
+        }
+        else
+        {
+            distCheckTimer -= Time.deltaTime;
+            if (distCheckTimer <= 0)
+            {
+                closestEnemy = GetClosestEnemy();
+                if (Vector3.Distance(agent.transform.position, closestEnemy.position) < 5)
+                {
+                    randomWander = -randomWander;
+                }
+                distCheckTimer = 1f;
+            }
+        }
+
         // HP bar billboarding
         HPBar.LookAt(Camera.main.transform.position, -Vector3.up);
     }
@@ -128,9 +167,34 @@ public class EnemyScript : MonoBehaviour
         isClose = (!isMiddle && distance < followDistanceLower);
     }
 
+    private Transform GetClosestEnemy()
+    {
+        Transform enemy;
+        float closestDist = 100;
+        List<GameObject> relevantEnemies = enemyManager.GetComponent<GlobalEnemy>().battleRing;
+        if (relevantEnemies.Count > 1)
+        {
+            enemy = this.transform;
+            for (int i = 0; i < relevantEnemies.Count; i++)
+            {
+                float distToThisEnemy = Vector3.Distance(agent.transform.position, relevantEnemies[i].transform.position);
+                if (distToThisEnemy < closestDist && distToThisEnemy >= 0.2f)
+                {
+                    closestDist = Vector3.Distance(agent.transform.position, relevantEnemies[i].transform.position);
+                    enemy = relevantEnemies[i].transform;
+                }
+            }
+        }
+        else
+        {
+            enemy = this.transform;
+        }
+        spacingTimer = 1f;
+        return enemy;
+    }
+
     private void DoMovement()
     {
-        agent.destination = player.transform.position;
         if (state == "neutral")
         {
             if (isFar)
@@ -140,17 +204,24 @@ public class EnemyScript : MonoBehaviour
             }
             else if (isMiddle)
             {
+                // Slowly move towards the middle of the center ring
                 float mod = .01f;
+                if (GetDistance() < 15)
+                {
+                    mod = mod * -1;
+                }
+
                 anim.SetBool("isIdle", true);
                 agent.speed = speed * 0.0f;
-                if (GetDistance() < 15) { mod = mod * -1; }
                 agent.Move(((player.transform.position - transform.position).normalized * mod));
+                agent.Move((sideTargeter.position - transform.position).normalized * randomWander);
             }
             else if (isClose)
             {
                 anim.SetBool("isIdle", false);
                 agent.speed = 0.0f;
                 agent.Move((player.transform.position - transform.position).normalized * -.07f);
+                agent.Move(((sideTargeter.position - transform.position).normalized * randomWander)/2);
             }
         }
         else if (state == "approaching")
@@ -192,14 +263,17 @@ public class EnemyScript : MonoBehaviour
 
         while(state == "attacking")
         {
-            agent.speed = speed * 1.5f;
-            yield return new WaitForSeconds(0.3f);
+            for (float i = 0f; i < 0.3f; i += Time.deltaTime)
+            {
+                agent.Move((frontTargeter.position - transform.position).normalized * -0.5f);
+                yield return null;
+            }
             // Reset attack readiness as soon as the hitbox appears rather than the end of the attack sequence.
             attackReady = false;
             attack1Timer = Random.Range(5f, 10f);
-            agent.speed = speed * 0.5f;
             for (float i = 0f; i < 0.2f; i += Time.deltaTime)
             {
+                agent.Move((frontTargeter.position - transform.position).normalized * -2f);
                 if (!hitPlayer)
                 {
                     foreach (Collider c in cols)
@@ -213,8 +287,11 @@ public class EnemyScript : MonoBehaviour
                 }
                 yield return null;
             }
-            agent.speed = speed * 0.25f;
-            yield return new WaitForSeconds(0.3f);
+            for (float i = 0f; i < 0.3f; i += Time.deltaTime)
+            {
+                agent.Move((frontTargeter.position - transform.position).normalized * -0.5f);
+                yield return null;
+            }
             state = "neutral";
             yield return null;
         }
@@ -271,7 +348,7 @@ public class EnemyScript : MonoBehaviour
 
     private void Die()
     {
-        //enemyManager.GetComponent<GlobalEnemy>().RemoveEnemy();
+        enemyManager.GetComponent<GlobalEnemy>().RemoveEnemy(managerIndex);
         Destroy(this.gameObject);
     }
 
