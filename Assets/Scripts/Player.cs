@@ -158,6 +158,7 @@ public class Player : MonoBehaviour
         Debug.Log(checkpoint.getCheckpoint());
         //Destroy(this.gameObject);
         currentHealth = maxHealth;
+		healthbar.value = currentHealth / maxHealth;
         //transform.position = checkpoint.getCheckpoint();
     }
     // Make the attack activate
