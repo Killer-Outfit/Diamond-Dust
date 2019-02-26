@@ -58,7 +58,14 @@ public class PlayerMove : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (!isBlocking && !isAttacking)
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle") || anim.GetCurrentAnimatorStateInfo(0).IsName("run"))
+        {
+            isAttacking = false;
+        }else if(!anim.GetCurrentAnimatorStateInfo(0).IsName("block"))
+        {
+            isAttacking = true;
+        }
+            if (!isBlocking && !isAttacking)
          {
              normalMovement();
          }else if(isBlocking)
@@ -73,7 +80,10 @@ public class PlayerMove : MonoBehaviour {
                  dash(horizontalDash);
                  dashed = false;
              }
-         }
+         }else if (isAttacking)
+        {
+            stationaryRotate();
+        }
     }
 
     private void dash(float horizontal)
@@ -103,7 +113,37 @@ public class PlayerMove : MonoBehaviour {
     }
     private void stationaryRotate()
     {
-        
+        //get stick inputs
+        float horizontal = Input.GetAxis("LStick X") * movementSpeed * Time.deltaTime;
+        float vertical = Input.GetAxis("LStick Y") * movementSpeed * Time.deltaTime;
+
+        if (Input.GetAxis("Horizontal") != 0)
+        {
+            horizontal = Input.GetAxis("Horizontal") * movementSpeed * Time.deltaTime;
+        }
+        if (Input.GetAxis("Vertical") != 0)
+        {
+            vertical = Input.GetAxis("Vertical") * movementSpeed * Time.deltaTime;
+        }
+
+        //cam2 movement
+        heading += horizontal;
+        camPivot.rotation = Quaternion.Euler(0, heading, 0);
+        Vector2 inputs = new Vector2(horizontal, vertical);
+        inputs = Vector2.ClampMagnitude(inputs, 1); // CLAMP?
+        Vector3 camF = cam.forward;
+        Vector3 camR = cam.right;
+        camF.y = 0f;
+        camR.y = 0f;
+        camF = camF.normalized;
+        camR = camR.normalized;
+
+        if (inputs.x != 0 || inputs.y != 0)
+        {
+            //remove "-1 *" change -  to plus to invert rotation
+            var rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * movementSpeed));
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
+        }
     }
 
     private void normalMovement()
