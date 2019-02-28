@@ -7,12 +7,12 @@ using UnityEngine.UI;
 public class EnemyScript : MonoBehaviour
 {
     // References
-    private GameObject player;
-    private NavMeshAgent agent;
     private Animator anim;
     private Transform closestEnemy;
     private Transform frontTargeter;
     private Transform sideTargeter;
+    public GameObject player;
+    public NavMeshAgent agent;
     public Image HPBarSprite;
     public Transform HPBar;
     public GameObject enemyManager;
@@ -25,22 +25,17 @@ public class EnemyScript : MonoBehaviour
     public int health;
     // Flags
     public string state = "inactive";
-    private bool attackReady = false;
-    private bool isAttacking = false;
-    private bool isStaggered = false;
-    private bool isApproaching = false;
+    public bool attackReady = false;
     private bool isFar = false;
     private bool isMiddle = false;
     private bool isClose = false;
-    private bool isSpreading = false;
     public bool canBlock = false;
-    public bool isBlocking = false;
+    public bool canDodge = false;
     // Other
-    private float attack1Timer;
+    public float attackTimer;
     private float randomWander;
     private float wanderTimer;
     private float spacingTimer = 0f;
-    private float distCheckTimer = 1f;
     private Vector3 curPos = Vector3.zero;
     public Collider[] attackHitboxes;
     public int managerIndex;
@@ -53,7 +48,7 @@ public class EnemyScript : MonoBehaviour
         anim = GetComponent<Animator>();
         frontTargeter = transform.Find("FrontTargeter");
         sideTargeter = transform.Find("SideTargeter");
-        attack1Timer = 1f;
+        attackTimer = 1f;
         wanderTimer = Random.Range(2f, 4f);
         randomWander = Random.Range(-1f, 1f);
     }
@@ -72,13 +67,17 @@ public class EnemyScript : MonoBehaviour
         // Enemy is active, do the following.
         else
         {
-            if (state == "neutral" || state == "approaching") // Enemy is in neutral stance or simply running at the player. Not attacking or blocking.
+            if (state == "neutral" || state == "approaching" || state == "dodgestart" || state == "dodging" || state == "dodgeend") // Enemy is in neutral stance or simply running at the player. Not attacking or blocking.
             {
                 agent.destination = player.transform.position;
                 TrackPlayer();
-                if (GetDistance() < 5 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
+                if (GetDistance() < 10 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
                 {
                     SendMessage("Block");
+                }
+                if (GetDistance() < 10 && canDodge && player.gameObject.GetComponent<Player>().isAttacking)
+                {
+                    SendMessage("Dodge");
                 }
             }
 
@@ -88,40 +87,13 @@ public class EnemyScript : MonoBehaviour
             }
             GetMoveState(); // Tells the enemy how far it is from the player.
             DoMovement(); // Does movement based on distance and state.
-
-            //if (!isAttacking)
-            //{
-            //    if (!isBlocking) // Don't attack while blocking.
-            //    {
-            //        attack1Timer -= Time.deltaTime;
-
-            //        if (attack1Timer <= 0 && !isApproaching)
-            //        {
-            //            isApproaching = true;
-            //        }
-
-            //        if (isApproaching) // Running in for an attack
-            //        {
-            //            if (Vector3.Distance(agent.transform.position, player.transform.position) < 5)
-            //            {
-            //                isApproaching = false;
-            //                StartCoroutine("Attack1");
-            //            }
-            //        }
-            //    }
-
-            //if (!InterruptingMovement()) // Movement and tracking scripts. Overridden by enemy actions.
-            //{
-            //    TrackPlayer();
-            //    GetMoveState();
-            //    DoMovement();
-            //}
         }
+
         // Attack readiness counter for the enemy manager.
         if (!attackReady)
         {
-            attack1Timer -= Time.deltaTime;
-            if (attack1Timer <= 0)
+            attackTimer -= Time.deltaTime;
+            if (attackTimer <= 0)
             {
                 attackReady = true;
                 enemyManager.GetComponent<GlobalEnemy>().EnemyReady(managerIndex);
@@ -133,7 +105,7 @@ public class EnemyScript : MonoBehaviour
         if (wanderTimer <= 0)
         {
             wanderTimer = Random.Range(2f, 4f);
-            randomWander = Random.Range(-1f, 1f);
+            randomWander = Random.Range(-0.8f, 0.8f);
         }
 
         // Spacing if another enemy gets too close
@@ -143,16 +115,19 @@ public class EnemyScript : MonoBehaviour
         }
         else
         {
-            distCheckTimer -= Time.deltaTime;
-            if (distCheckTimer <= 0)
+            closestEnemy = GetClosestEnemy();
+            if (Vector3.Distance(agent.transform.position, closestEnemy.position) < 8)
             {
-                closestEnemy = GetClosestEnemy();
-                if (Vector3.Distance(agent.transform.position, closestEnemy.position) < 5)
+                if (GetFlatAngle(closestEnemy.position) > 0)
                 {
-                    randomWander = -randomWander;
+                    randomWander = Mathf.Abs(randomWander);
                 }
-                distCheckTimer = 1f;
+                else
+                {
+                    randomWander = -Mathf.Abs(randomWander);
+                }
             }
+            spacingTimer = Random.Range(1f,2f);
         }
 
         // HP bar billboarding
@@ -189,7 +164,6 @@ public class EnemyScript : MonoBehaviour
         {
             enemy = this.transform;
         }
-        spacingTimer = 1f;
         return enemy;
     }
 
@@ -232,7 +206,7 @@ public class EnemyScript : MonoBehaviour
         else if (state == "stagger")
         {
             agent.speed = 0.0f;
-            agent.Move((player.transform.position - transform.position).normalized * -.03f);
+            agent.Move((player.transform.position - transform.position).normalized * -.02f);
         }
         else if (state == "blockstagger")
         {
@@ -243,7 +217,7 @@ public class EnemyScript : MonoBehaviour
 
     private void TrackPlayer() // Smooth turn towards the player using turnSpeed, and set destination.
     {
-        if (GetFlatAngle() > 5f)
+        if (Mathf.Abs(GetFlatAngle(player.transform.position)) > 5f)
         {
             Vector3 targetDir = -1 * (player.transform.position - transform.position);
             float step = turnSpeed * Time.deltaTime;
@@ -270,7 +244,7 @@ public class EnemyScript : MonoBehaviour
             }
             // Reset attack readiness as soon as the hitbox appears rather than the end of the attack sequence.
             attackReady = false;
-            attack1Timer = Random.Range(5f, 10f);
+            attackTimer = Random.Range(5f, 10f);
             for (float i = 0f; i < 0.2f; i += Time.deltaTime)
             {
                 agent.Move((frontTargeter.position - transform.position).normalized * -2f);
@@ -303,20 +277,24 @@ public class EnemyScript : MonoBehaviour
         return Vector3.Distance(agent.transform.position, player.transform.position);
     }
 
-    // Returns the angle between the enemy and the player, without the Y axis
-    public float GetFlatAngle()
+    // Returns the angle between the enemy and a coordinate, without the Y axis
+    public float GetFlatAngle(Vector3 coord)
     {
         Vector3 fvec = transform.forward;
-        Vector3 pvec = transform.position - player.transform.position;
-        return Vector3.Angle(new Vector3(fvec.x, 0, fvec.z), new Vector3(pvec.x, 0 ,pvec.z));
+        Vector3 pvec = transform.position - coord;
+        return Vector3.SignedAngle(new Vector3(fvec.x, 0, fvec.z), new Vector3(pvec.x, 0 ,pvec.z), Vector3.up);
     }
 
     public void DecreaseHealth(int damage)
     {
-        if (state == "blocking" || state == "blockstagger") //Take no damage if blocking.
+        if (state == "blocking" || state == "blockstagger") // If blocking, take no damage but get pushed back a little.
         {
-            Debug.Log("get blocked idiot");
+            Debug.Log("blocked idiot");
             StartCoroutine("BlockStagger");
+        }
+        else if (state == "dodging") // If dodge frames are active, take no damage.
+        {
+            Debug.Log("dodged idiot");
         }
         else
         {
@@ -334,7 +312,7 @@ public class EnemyScript : MonoBehaviour
     {
         state = "stagger";
         anim.SetTrigger("Stagger");
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.5f);
         state = "neutral";
     }
 
@@ -350,11 +328,6 @@ public class EnemyScript : MonoBehaviour
     {
         enemyManager.GetComponent<GlobalEnemy>().RemoveEnemy(managerIndex);
         Destroy(this.gameObject);
-    }
-
-    private bool InterruptingMovement()
-    {
-        return (isAttacking || isBlocking || isStaggered);
     }
 
     protected void LateUpdate()

@@ -58,9 +58,11 @@ public class GlobalEnemy : MonoBehaviour
             for (int i = numAttackers; i > 0; i--)
             {
                 randIndex = Random.Range(0, availableFighters.Count);
-                Debug.Log(randIndex);
-                availableFighters[randIndex].GetComponent<EnemyScript>().state = "approaching";
-                availableFighters.RemoveAt(randIndex);
+                if (availableFighters[randIndex].GetComponent<EnemyScript>().attackReady)
+                {
+                    availableFighters[randIndex].GetComponent<EnemyScript>().state = "approaching";
+                    availableFighters.RemoveAt(randIndex);
+                }
                 yield return new WaitForSeconds(attackSpacing);
             }
             attackSpacing = Random.Range(0.1f, 0.4f);
