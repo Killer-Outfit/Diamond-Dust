@@ -7,10 +7,12 @@ using UnityEngine.UI;
 public class EnemyScript : MonoBehaviour
 {
     // References
-    private GameObject player;
-    private NavMeshAgent agent;
     private Animator anim;
-    private GameObject closestEnemy;
+    private Transform closestEnemy;
+    private Transform frontTargeter;
+    private Transform sideTargeter;
+    public GameObject player;
+    public NavMeshAgent agent;
     public Image HPBarSprite;
     public Transform HPBar;
     public GameObject enemyManager;
@@ -22,23 +24,21 @@ public class EnemyScript : MonoBehaviour
     public float followDistanceLower;
     public int health;
     // Flags
-    private bool canLaunchAttack = false;
-    private bool isAttacking = false;
-    private bool isStaggered = false;
-    private bool isApproaching = false;
+    public string state = "inactive";
+    public bool attackReady = false;
     private bool isFar = false;
     private bool isMiddle = false;
     private bool isClose = false;
-    private bool isDanger = false;
-    private bool isSpreading = false;
-    public bool active = false;
     public bool canBlock = false;
-    public bool isBlocking = false;
+    public bool canDodge = false;
     // Other
+    public float attackTimer;
+    private float randomWander;
+    private float wanderTimer;
+    private float spacingTimer = 0f;
     private Vector3 curPos = Vector3.zero;
     public Collider[] attackHitboxes;
-    public float attack1Timer;
-    private float attack1TimeReset;
+    public int managerIndex;
 
     void Start()
     {
@@ -46,127 +46,208 @@ public class EnemyScript : MonoBehaviour
         maxhealth = health;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        attack1TimeReset = attack1Timer;
+        frontTargeter = transform.Find("FrontTargeter");
+        sideTargeter = transform.Find("SideTargeter");
+        attackTimer = 1f;
+        wanderTimer = Random.Range(2f, 4f);
+        randomWander = Random.Range(-1f, 1f);
     }
     
     void Update()
     {
         // While 'inactive' (out of range), just keep checking distance to the player.
-        if (!active)
+        if (state == "inactive")
         {
             if (player && GetDistance() < 80)
             {
-                active = true;
-                //enemyManager.GetComponent<GlobalEnemy>().AddEnemy();
+                enemyManager.GetComponent<GlobalEnemy>().AddEnemy(this.gameObject);
+                state = "neutral";
             }
         }
         // Enemy is active, do the following.
         else
         {
-            if (!isAttacking)
+            if (state == "neutral" || state == "approaching" || state == "dodgestart" || state == "dodging" || state == "dodgeend") // Enemy is in neutral stance or simply running at the player. Not attacking or blocking.
             {
-                if (!isBlocking) // Don't attack while blocking.
-                {
-                    attack1Timer -= Time.deltaTime;
-
-                    if (attack1Timer <= 0 && !isApproaching)
-                    {
-                        isApproaching = true;
-                    }
-
-                    if (isApproaching) // Running in for an attack
-                    {
-                        if (Vector3.Distance(agent.transform.position, player.transform.position) < 5)
-                        {
-                            isApproaching = false;
-                            StartCoroutine("Attack1");
-                        }
-                    }
-                }
-
-                // Try to block if the player is close enough and attacking, and if the enemy can block. Sets the block script's timer to 1, so it refreshes if the player attacks repeatedly.
-                if (Vector3.Distance(agent.transform.position, player.transform.position) < 5 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
+                agent.destination = player.transform.position;
+                TrackPlayer();
+                if (GetDistance() < 10 && canBlock && player.gameObject.GetComponent<Player>().isAttacking)
                 {
                     SendMessage("Block");
                 }
+                if (GetDistance() < 10 && canDodge && player.gameObject.GetComponent<Player>().isAttacking)
+                {
+                    SendMessage("Dodge");
+                }
             }
 
-            if (!InterruptingMovement()) // Movement and tracking scripts. Overridden by enemy actions.
+            if (state == "approaching" && GetDistance() < 5)
             {
-                TrackPlayer();
-                GetState();
-                DoMovement();
+                StartCoroutine("Attack1");
+            }
+            GetMoveState(); // Tells the enemy how far it is from the player.
+            DoMovement(); // Does movement based on distance and state.
+        }
+
+        // Attack readiness counter for the enemy manager.
+        if (!attackReady)
+        {
+            attackTimer -= Time.deltaTime;
+            if (attackTimer <= 0)
+            {
+                attackReady = true;
+                enemyManager.GetComponent<GlobalEnemy>().EnemyReady(managerIndex);
             }
         }
+
+        // Random 'strafing' that gets added to certain movements
+        wanderTimer -= Time.deltaTime;
+        if (wanderTimer <= 0)
+        {
+            wanderTimer = Random.Range(2f, 4f);
+            randomWander = Random.Range(-0.8f, 0.8f);
+        }
+
+        // Spacing if another enemy gets too close
+        if (spacingTimer > 0)
+        {
+            spacingTimer -= Time.deltaTime;
+        }
+        else
+        {
+            closestEnemy = GetClosestEnemy();
+            if (Vector3.Distance(agent.transform.position, closestEnemy.position) < 8)
+            {
+                if (GetFlatAngle(closestEnemy.position) > 0)
+                {
+                    randomWander = Mathf.Abs(randomWander);
+                }
+                else
+                {
+                    randomWander = -Mathf.Abs(randomWander);
+                }
+            }
+            spacingTimer = Random.Range(1f,2f);
+        }
+
         // HP bar billboarding
         HPBar.LookAt(Camera.main.transform.position, -Vector3.up);
     }
 
-    private void GetState() // Gets distance state in relation to the player
+    private void GetMoveState() // Gets distance state in relation to the player
     {
         float distance = GetDistance();
-        isFar = (GetDistance() > followDistanceUpper);
-        isMiddle = (!isFar && GetDistance() > followDistanceLower);
-        isClose = (!isMiddle && GetDistance() < followDistanceLower);
-        isDanger = (isMiddle || isClose);
+        isFar = (distance > followDistanceUpper);
+        isMiddle = (!isFar && distance > followDistanceLower);
+        isClose = (!isMiddle && distance < followDistanceLower);
+    }
+
+    private Transform GetClosestEnemy()
+    {
+        Transform enemy;
+        float closestDist = 100;
+        List<GameObject> relevantEnemies = enemyManager.GetComponent<GlobalEnemy>().battleRing;
+        if (relevantEnemies.Count > 1)
+        {
+            enemy = this.transform;
+            for (int i = 0; i < relevantEnemies.Count; i++)
+            {
+                float distToThisEnemy = Vector3.Distance(agent.transform.position, relevantEnemies[i].transform.position);
+                if (distToThisEnemy < closestDist && distToThisEnemy >= 0.2f)
+                {
+                    closestDist = Vector3.Distance(agent.transform.position, relevantEnemies[i].transform.position);
+                    enemy = relevantEnemies[i].transform;
+                }
+            }
+        }
+        else
+        {
+            enemy = this.transform;
+        }
+        return enemy;
     }
 
     private void DoMovement()
     {
-        agent.destination = player.transform.position;
-        if (isFar)
+        if (state == "neutral")
         {
-            anim.SetBool("isIdle", false);
-            agent.speed = speed;
-        }
-        else if (isMiddle)
-        {
-            anim.SetBool("isIdle", true);
-            agent.speed = 0.0f;
-        }
-        else if (isClose)
-        {
-            agent.speed = 0.0f;
-            transform.Translate(Vector3.forward / 10);
-            anim.SetBool("isIdle", false);
-        }
+            if (isFar)
+            {
+                anim.SetBool("isIdle", false);
+                agent.speed = speed;
+            }
+            else if (isMiddle)
+            {
+                // Slowly move towards the middle of the center ring
+                float mod = .01f;
+                if (GetDistance() < 15)
+                {
+                    mod = mod * -1;
+                }
 
-        if (isApproaching) // Attack approach overrides other movements
+                anim.SetBool("isIdle", true);
+                agent.speed = speed * 0.0f;
+                agent.Move(((player.transform.position - transform.position).normalized * mod));
+                agent.Move((sideTargeter.position - transform.position).normalized * randomWander);
+            }
+            else if (isClose)
+            {
+                anim.SetBool("isIdle", false);
+                agent.speed = 0.0f;
+                agent.Move((player.transform.position - transform.position).normalized * -.07f);
+                agent.Move(((sideTargeter.position - transform.position).normalized * randomWander)/2);
+            }
+        }
+        else if (state == "approaching")
         {
             agent.speed = speed;
             anim.SetBool("isIdle", false);
+        }
+        else if (state == "stagger")
+        {
+            agent.speed = 0.0f;
+            agent.Move((player.transform.position - transform.position).normalized * -.02f);
+        }
+        else if (state == "blockstagger")
+        {
+            agent.speed = 0.0f;
+            agent.Move((player.transform.position - transform.position).normalized * -.02f);
         }
     }
 
     private void TrackPlayer() // Smooth turn towards the player using turnSpeed, and set destination.
     {
-        agent.destination = player.transform.position;
-        Vector3 targetDir = -1 * (player.transform.position - transform.position);
-        float step = turnSpeed * Time.deltaTime;
-        Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
-        transform.rotation = Quaternion.LookRotation(newDir);
+        if (Mathf.Abs(GetFlatAngle(player.transform.position)) > 5f)
+        {
+            Vector3 targetDir = -1 * (player.transform.position - transform.position);
+            float step = turnSpeed * Time.deltaTime;
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
+            transform.rotation = Quaternion.LookRotation(newDir);
+        }
     }
 
     IEnumerator Attack1()
     {
         anim.SetTrigger("Punch");
-        isAttacking = true;
+        state = "attacking";
         // overlapSphere is best if applicable
         Collider attack = attackHitboxes[0];
         Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
         bool hitPlayer = false;
-        float timer = 0f;
 
-        while(isAttacking)
+        while(state == "attacking")
         {
-            timer += Time.deltaTime;
-            if (timer > 0.0f && timer < 0.3f)
+            for (float i = 0f; i < 0.3f; i += Time.deltaTime)
             {
-                agent.speed = speed * 1.5f;
+                agent.Move((frontTargeter.position - transform.position).normalized * -0.5f);
+                yield return null;
             }
-            if(timer > 0.3f && timer < 0.5f)
+            // Reset attack readiness as soon as the hitbox appears rather than the end of the attack sequence.
+            attackReady = false;
+            attackTimer = Random.Range(5f, 10f);
+            for (float i = 0f; i < 0.2f; i += Time.deltaTime)
             {
-                agent.speed = speed * 0.5f;
+                agent.Move((frontTargeter.position - transform.position).normalized * -2f);
                 if (!hitPlayer)
                 {
                     foreach (Collider c in cols)
@@ -178,30 +259,42 @@ public class EnemyScript : MonoBehaviour
                         }
                     }
                 }
+                yield return null;
             }
-            if (timer > 0.5f && timer < 0.8f)
+            for (float i = 0f; i < 0.3f; i += Time.deltaTime)
             {
-                agent.speed = speed * 0.25f;
+                agent.Move((frontTargeter.position - transform.position).normalized * -0.5f);
+                yield return null;
             }
-            if (timer >= 0.8f)
-            {
-                isAttacking = false;
-                attack1Timer = attack1TimeReset;
-            }
+            state = "neutral";
             yield return null;
         }
     }
 
+    // Returns distance between the enemy and the player
     public float GetDistance()
     {
         return Vector3.Distance(agent.transform.position, player.transform.position);
     }
 
+    // Returns the angle between the enemy and a coordinate, without the Y axis
+    public float GetFlatAngle(Vector3 coord)
+    {
+        Vector3 fvec = transform.forward;
+        Vector3 pvec = transform.position - coord;
+        return Vector3.SignedAngle(new Vector3(fvec.x, 0, fvec.z), new Vector3(pvec.x, 0 ,pvec.z), Vector3.up);
+    }
+
     public void DecreaseHealth(int damage)
     {
-        if (isBlocking) //Take no damage if blocking.
+        if (state == "blocking" || state == "blockstagger") // If blocking, take no damage but get pushed back a little.
         {
-            Debug.Log("get blocked idiot");
+            Debug.Log("blocked idiot");
+            StartCoroutine("BlockStagger");
+        }
+        else if (state == "dodging") // If dodge frames are active, take no damage.
+        {
+            Debug.Log("dodged idiot");
         }
         else
         {
@@ -217,27 +310,24 @@ public class EnemyScript : MonoBehaviour
 
     IEnumerator Stagger()
     {
-        isStaggered = true;
+        state = "stagger";
         anim.SetTrigger("Stagger");
-        float timer = 0;
-        while (timer < 0.5f)
-        {
-            timer += Time.deltaTime;
-            transform.Translate(Vector3.forward / 5);
-            yield return null;
-        }
-        isStaggered = false;
+        yield return new WaitForSeconds(0.5f);
+        state = "neutral";
+    }
+
+    IEnumerator BlockStagger()
+    {
+        state = "blockstagger";
+        transform.LookAt(2 * transform.position - player.transform.position);
+        yield return new WaitForSeconds(0.1f);
+        state = "blocking";
     }
 
     private void Die()
     {
-        //enemyManager.GetComponent<GlobalEnemy>().RemoveEnemy();
+        enemyManager.GetComponent<GlobalEnemy>().RemoveEnemy(managerIndex);
         Destroy(this.gameObject);
-    }
-
-    private bool InterruptingMovement()
-    {
-        return (isAttacking || isBlocking || isStaggered);
     }
 
     protected void LateUpdate()

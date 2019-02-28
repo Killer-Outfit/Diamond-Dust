@@ -21,12 +21,12 @@ public class EnemyBlockBasic : MonoBehaviour
     // Updates the block timer if blocking.
     void Update()
     {
-        if (thisEnemyScript.isBlocking = true)
+        if (thisEnemyScript.state == "blocking")
         {
             blocktime -= Time.deltaTime;
             if (blocktime <= 0)
             {
-                thisEnemyScript.isBlocking = false;
+                thisEnemyScript.state = "neutral";
                 anim.SetBool("Block", false);
             }
         }
@@ -36,7 +36,9 @@ public class EnemyBlockBasic : MonoBehaviour
     public void Block()
     {
         blocktime = 1;
-        thisEnemyScript.isBlocking = true;
+        thisEnemyScript.attackReady = false;
+        thisEnemyScript.attackTimer = 1f;
+        thisEnemyScript.state = "blocking";
         anim.SetBool("Block", true);
     }
 }
