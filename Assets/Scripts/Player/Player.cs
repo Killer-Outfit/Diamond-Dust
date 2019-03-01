@@ -31,21 +31,22 @@ public class Player : MonoBehaviour
     private float inputStartTime;
     private float shield;
     private int currentHitNumber;
+    private float[,] punchTimes;
 
     // Create an animator variable and animation overrider for outfit switching
     Animator anim;
     AnimatorOverrideController animatorOverrideController;
     
-    
-   
-
-
-    
-    
-
     // Initialize animator, current health and healthbar value
     void Start()
     {
+        punchTimes = new float[,]
+        {
+            {.2f, .2f, 10f},
+            {.3f, .1f, 10f},
+            {.2f, .4f, 10f},
+            {.1f, .3f, 10f}
+        };
         controller = GetComponent<CharacterController>();
         checkpoint.updateCheckpoint(transform.position);
         //transform.localScale = new Vector3(0.35F, 0.35f, 0.35f);
@@ -64,30 +65,32 @@ public class Player : MonoBehaviour
     // Get user inputs
     void Update()
     {
-        // Don't call attacks if the player is mid-attack already.
-        if (!this.isAttacking) 
+        if (Input.GetButtonDown("XButton"))
         {
+            inputQueue[0] = "punch";
+        }
+        // Activate kick when user presses Y
+        if (Input.GetButtonDown("YButton"))
+        {
+            /*
+            if (inputQueue.Count < 3)
+            {
+                inputQueue.Add("kick");
+            }*/
+            killPlayer();
+        }
+        // Add misc attack to input queue
+        if (Input.GetButtonDown("AButton"))
+        {
+            inputQueue[0] = "misc";
+        }
+        // Don't call attacks if the player is mid-attack already.
+        if (!isAttacking) 
+        {
+
             currentInputTimer += Time.deltaTime;
             // Add punch to input queue
-            if (Input.GetButtonDown("XButton"))
-            {
-                inputQueue[0] = "punch";
-            }
-            // Activate kick when user presses Y
-            if (Input.GetButtonDown("YButton"))
-            {
-                /*
-                if (inputQueue.Count < 3)
-                {
-                    inputQueue.Add("kick");
-                }*/
-                killPlayer();
-            }
-            // Add misc attack to input queue
-            if (Input.GetButtonDown("AButton"))
-            {
-                inputQueue[0] = "misc";
-            }
+            
             // Block initiation
             if (Input.GetButton("BButton"))
             {
@@ -120,15 +123,6 @@ public class Player : MonoBehaviour
                 currentHitNumber = 0;
                 checkQueue();
             }
-            // Check if player is in a queue check animation if it is check the queue
-            foreach (var stateName in animQueueStateNames)
-            {
-                if (anim.GetCurrentAnimatorStateInfo(0).IsName(stateName))
-                {
-                    checkQueue();
-                }
-            }
-
         }
     }
     // Decrease the current health and update health bar
@@ -172,6 +166,7 @@ public class Player : MonoBehaviour
     {
         // Set the collider beig used based on current attack type
         Collider attack = null;
+        int timeListIncrement = 0;
         if(attackType == "punch")
         {
             attack = punchHitboxes[currentHitNumber];
@@ -185,31 +180,41 @@ public class Player : MonoBehaviour
             attack = miscHitBoxes[currentHitNumber];
         }
         
-        this.isAttacking = true;
+        isAttacking = true;
         gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
         // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
-        yield return new WaitForSeconds(0.01f); 
+        yield return new WaitForSeconds(punchTimes[currentHitNumber, timeListIncrement]);
+        timeListIncrement++;
         //overlapSphere is best if applicable
-        // Create a list of all objects that have collided with the attack hitbox
-        Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
-        // Iterate through each collision eventc
-        foreach(Collider c in cols)
+        for (float i = 0f; i < punchTimes[currentHitNumber, timeListIncrement]; i += Time.deltaTime)
         {
-            // If you collided with an enemy damage them
-            if (c.tag == "Enemy")
+            // Create a list of all objects that have collided with the attack hitbox
+            Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
+            // Iterate through each collision eventc
+            foreach (Collider c in cols)
             {
-                // Decrease the hit target's health by 10 CHANGE TO ATTACK DAMAGE
-                c.SendMessageUpwards("DecreaseHealth", 10);
+                // If you collided with an enemy  them
+                if (c.tag == "Enemy")
+                {
+                    // Decrease the hit target's health by 10 CHANGE TO ATTACK DAMAGE
+                    c.SendMessageUpwards("DecreaseHealth", 10);
+                }
             }
+            yield return null;
         }
+        timeListIncrement++;
         // "Cooldown" time
-        yield return new WaitForSeconds(0.01f); 
-        this.isAttacking = false;
+        Debug.Log(punchTimes[currentHitNumber, timeListIncrement]);
+        yield return new WaitForSeconds(punchTimes[currentHitNumber, timeListIncrement]); 
+        Debug.Log("checkQueue");
+        checkQueue();
+        isAttacking = false;
         gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
     }
     // Activate punch
     public void pressX()
     {
+        Debug.Log("pressed x");
         inputStartTime = currentInputTimer;
         anim.SetTrigger("punch");
         attackType = "punch";
@@ -254,6 +259,11 @@ public class Player : MonoBehaviour
             {
                 pressA();
             }
+        }else
+        {
+            Debug.Log("here");
+            anim.SetTrigger("idle");
+            //trigger idle
         }
     }
     // Change outfit function takes in the new outfit 
