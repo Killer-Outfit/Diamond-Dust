@@ -1,41 +1,44 @@
 fileFormatVersion: 2
-guid: 4718a8367debc09459e4e14f9671fda5
+guid: 5610a1e275572dc4c9054746d594ff4b
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Bottom Rung
-    100002: //RootNode
-    100004: Camera
-    100006: Sign
-    100008: Top Rung
-    400000: Bottom Rung
-    400002: //RootNode
-    400004: Camera
-    400006: Sign
-    400008: Top Rung
-    2000000: Camera
-    2100000: Material.001
-    2100002: Material
-    2300000: Bottom Rung
-    2300002: Sign
-    2300004: Top Rung
-    3300000: Bottom Rung
-    3300002: Sign
-    3300004: Top Rung
-    4300000: Bottom Rung
-    4300002: Top Rung
-    4300004: Sign
+    100000: //RootNode
+    400000: //RootNode
+    2100000: White
+    2100002: GreyHandles
+    2100004: Black
+    2100006: LightWindows
+    2100008: TealGreen
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Zaraha
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material
-    second: {fileID: 2100000, guid: 61a462360d5077343bce8fa681d113e2, type: 2}
+      name: Black
+    second: {fileID: 2100000, guid: e3b05bea3e33a694f99691fead522743, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material.001
-    second: {fileID: 2100000, guid: d374676fb9e928f47b5437a9a98d0e31, type: 2}
+      name: GreyHandles
+    second: {fileID: 2100000, guid: e8c1dbf96df06ee4eb972b973f8d161f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: LightWindows
+    second: {fileID: 2100000, guid: e525ba02946a213438d9fb73e602ba67, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TealGreen
+    second: {fileID: 2100000, guid: 22bc1b14f516a1f439e359d5d9525f74, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: White
+    second: {fileID: 2100000, guid: d08d7b1c7764a464cbed680b0207ec0b, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
