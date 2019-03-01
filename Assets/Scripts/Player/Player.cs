@@ -13,30 +13,34 @@ public class Player : MonoBehaviour
     public float currentHealth;
     // State bools
     public bool isAttacking = false;
-    private bool blocking;
     // Create a list of attack hitboxes
     public Collider[] punchHitboxes;
     public Collider[] kickHitBoxes;
     public Collider[] miscHitBoxes;
     public GameObject canvas;
+    // Reference to the health bar
+    public Slider healthbar;
+
     private string attackType;
     // Create single element input queue
     private string[] inputQueue;
     // Queue check 
     private List<string> animQueueStateNames;
+    private bool isBlocking;
+    private float currentInputTimer;
+    private float inputStartTime;
+    private float shield;
+    private int currentHitNumber;
 
     // Create an animator variable and animation overrider for outfit switching
     Animator anim;
     AnimatorOverrideController animatorOverrideController;
     
-    // Reference to the health bar
-    public Slider healthbar;
+    
+   
 
 
-    private float currentInputTimer;
-    private float inputStartTime;
-    private float shield;
-    private int currentHitNumber;
+    
     
 
     // Initialize animator, current health and healthbar value
@@ -47,7 +51,7 @@ public class Player : MonoBehaviour
         //transform.localScale = new Vector3(0.35F, 0.35f, 0.35f);
         attackType = "";
         shield = 100;
-        blocking = false;
+        isBlocking = false;
         inputQueue = new string[1] { "" };
         animQueueStateNames = new List<string>() { "checkQueueState1", "checkQueueState2", "checkQueueState3" };
         currentHitNumber = 0;
@@ -87,18 +91,18 @@ public class Player : MonoBehaviour
             // Block initiation
             if (Input.GetButton("BButton"))
             {
-                if (!blocking)
+                if (!isBlocking)
                 {
                     anim.SetTrigger("block");
-                    blocking = true;
-                    // Disable player motion when blocking
+                    isBlocking = true;
+                    // Disable player motion when isBlocking
                     gameObject.GetComponent<PlayerMove>().changeBlock();
                 }
             }
-            // Enable player motion after blocking is complete  
-            else if (blocking)
+            // Enable player motion after isBlocking is complete  
+            else if (isBlocking)
             {
-                blocking = false;
+                isBlocking = false;
                 gameObject.GetComponent<PlayerMove>().changeBlock();
                 anim.SetTrigger("block");
             }
@@ -130,7 +134,7 @@ public class Player : MonoBehaviour
     // Decrease the current health and update health bar
     public void DecreaseHealth(float damage)
     {
-        if (!blocking)
+        if (!isBlocking)
         {
             currentHealth -= damage;
             healthbar.value = currentHealth / maxHealth;
@@ -145,7 +149,7 @@ public class Player : MonoBehaviour
             decreaseShield(damage);
         }
     }
-    // Shield damage if blocking
+    // Shield damage if isBlocking
     public void decreaseShield(float damage)
     {
         shield -= damage;
