@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class Player : MonoBehaviour
+public class PlayerWithDecreasingHealth : MonoBehaviour
 {
-    CharacterController controller;
-    public CheckpointManager checkpoint;
     // Set health variables
     public float maxHealth;
     public float currentHealth;
@@ -28,7 +25,7 @@ public class Player : MonoBehaviour
     // Create an animator variable and animation overrider for outfit switching
     Animator anim;
     AnimatorOverrideController animatorOverrideController;
-    
+
     // Reference to the health bar
     public Slider healthbar;
 
@@ -37,13 +34,12 @@ public class Player : MonoBehaviour
     private float inputStartTime;
     private float shield;
     private int currentHitNumber;
-    
+    private float killTimer;
+
 
     // Initialize animator, current health and healthbar value
     void Start()
     {
-        controller = GetComponent<CharacterController>();
-        checkpoint.updateCheckpoint(transform.position);
         //transform.localScale = new Vector3(0.35F, 0.35f, 0.35f);
         attackType = "";
         shield = 100;
@@ -55,13 +51,19 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         currentHealth = maxHealth;
         healthbar.value = currentHealth / maxHealth;
+        killTimer = 1.0f;
+
+
+        //animatorOverrideController = new AnimatorOverrideController(anim.runtimeAnimatorController);
+        //anim.runtimeAnimatorController = animatorOverrideController;
+        //var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
 
     }
     // Get user inputs
     void Update()
     {
         // Don't call attacks if the player is mid-attack already.
-        if (!this.isAttacking) 
+        if (!this.isAttacking)
         {
             currentInputTimer += Time.deltaTime;
             // Add punch to input queue
@@ -70,15 +72,13 @@ public class Player : MonoBehaviour
                 inputQueue[0] = "punch";
             }
             // Activate kick when user presses Y
-            if (Input.GetButtonDown("YButton"))
+            /*if (Input.GetButtonDown("YButton"))
             {
-                /*
                 if (inputQueue.Count < 3)
                 {
                     inputQueue.Add("kick");
-                }*/
-                killPlayer();
-            }
+                }
+            }*/
             // Add misc attack to input queue
             if (Input.GetButtonDown("AButton"))
             {
@@ -126,6 +126,14 @@ public class Player : MonoBehaviour
             }
 
         }
+
+        killTimer -= Time.deltaTime;
+        if (killTimer <= 0.0f)
+        {
+            Debug.Log("killTimer Updated");
+            killTimer = 1.0f;
+            DecreaseHealth(20);
+        }
     }
     // Decrease the current health and update health bar
     public void DecreaseHealth(float damage)
@@ -153,22 +161,16 @@ public class Player : MonoBehaviour
     // Kill the player
     private void killPlayer()
     {
-        controller.enabled = false;
-        controller.transform.position = checkpoint.getCheckpoint();
-        controller.enabled = true;
-        Debug.Log(checkpoint.getCheckpoint());
-        //Destroy(this.gameObject);
-        currentHealth = maxHealth;
-		healthbar.value = currentHealth / maxHealth;
-        //transform.position = checkpoint.getCheckpoint();
-        //canvas.SendMessage("PlayerDead", true);
+        Destroy(this.gameObject);
+        //currentHealth = maxHealth;
+        canvas.SendMessage("PlayerDead", true);
     }
     // Make the attack activate
     IEnumerator launchAttack()
     {
         // Set the collider beig used based on current attack type
         Collider attack = null;
-        if(attackType == "punch")
+        if (attackType == "punch")
         {
             attack = punchHitboxes[currentHitNumber];
         }
@@ -180,16 +182,16 @@ public class Player : MonoBehaviour
         {
             attack = miscHitBoxes[currentHitNumber];
         }
-        
+
         this.isAttacking = true;
         gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
         // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
-        yield return new WaitForSeconds(0.01f); 
+        yield return new WaitForSeconds(0.01f);
         //overlapSphere is best if applicable
         // Create a list of all objects that have collided with the attack hitbox
         Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
         // Iterate through each collision eventc
-        foreach(Collider c in cols)
+        foreach (Collider c in cols)
         {
             // If you collided with an enemy damage them
             if (c.tag == "Enemy")
@@ -199,7 +201,7 @@ public class Player : MonoBehaviour
             }
         }
         // "Cooldown" time
-        yield return new WaitForSeconds(0.01f); 
+        yield return new WaitForSeconds(0.01f);
         this.isAttacking = false;
         gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
     }
@@ -237,7 +239,7 @@ public class Player : MonoBehaviour
         if (inputQueue[0] != "")
         {
             input = inputQueue[0];
-            inputQueue[0]= "";
+            inputQueue[0] = "";
             if (input == "punch")
             {
                 pressX();
