@@ -37,7 +37,7 @@ public class EnemyBlockBasic : MonoBehaviour
     public void Block()
     {
         blocktime = 1;
-        thisEnemyScript.attackReady = false;
+        thisEnemyScript.isAttackReady = false;
         thisEnemyScript.attackTimer = 1f;
         thisEnemyScript.state = "blocking";
         anim.SetBool("Block", true);

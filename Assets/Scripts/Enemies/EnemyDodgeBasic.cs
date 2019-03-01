@@ -71,7 +71,7 @@ public class EnemyDodgeBasic : MonoBehaviour
     public void Dodge()
     {
         dodgeTime = 0.9f;
-        thisEnemyScript.attackReady = false;
+        thisEnemyScript.isAttackReady = false;
         thisEnemyScript.attackTimer = 1f;
         thisEnemyScript.state = "dodgestart";
         speed = 0f;

@@ -58,7 +58,7 @@ public class GlobalEnemy : MonoBehaviour
             for (int i = numAttackers; i > 0; i--)
             {
                 randIndex = Random.Range(0, availableFighters.Count);
-                if (availableFighters[randIndex].GetComponent<EnemyScript>().attackReady)
+                if (availableFighters[randIndex].GetComponent<EnemyScript>().isAttackReady)
                 {
                     availableFighters[randIndex].GetComponent<EnemyScript>().state = "approaching";
                     availableFighters.RemoveAt(randIndex);

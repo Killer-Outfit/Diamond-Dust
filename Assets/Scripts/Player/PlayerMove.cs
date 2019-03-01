@@ -175,7 +175,7 @@ public class PlayerMove : MonoBehaviour {
 
         if (Input.GetAxis("rightTrigger") > 0 && !isLock)
         {
-            if (mainCameraScript.lockOn)
+            if (mainCameraScript.isLockedOn)
             {
                 isLock = true;
             }
