@@ -10,7 +10,7 @@ public class globalCrowd : MonoBehaviour
     public static int numCrowd = 200;
     public static GameObject[] allCrowd = new GameObject[numCrowd];
     //public static int spaceHeight = 1960;
-    public static Vector3 goalPos = Vector3.zero;
+    public static Vector3 goalPos = Vector3.zero;;
 
     //private static Vector3 pPos = Vector3.zero
 

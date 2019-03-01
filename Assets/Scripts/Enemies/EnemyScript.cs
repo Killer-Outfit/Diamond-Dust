@@ -24,24 +24,33 @@ public class EnemyScript : MonoBehaviour
     public float followDistanceLower;
     public int health;
     // Flags
-    public string state = "inactive";
-    public bool attackReady = false;
-    private bool isFar = false;
-    private bool isMiddle = false;
-    private bool isClose = false;
-    public bool canBlock = false;
-    public bool canDodge = false;
+    public string state;
+    public bool isAttackReady;
+    private bool isFar;
+    private bool isMiddle;
+    private bool isClose;
+    public bool canBlock;
+    public bool canDodge;
     // Other
     public float attackTimer;
     private float randomWander;
     private float wanderTimer;
-    private float spacingTimer = 0f;
-    private Vector3 curPos = Vector3.zero;
+    private float spacingTimer;
+    private Vector3 curPos;
     public Collider[] attackHitboxes;
     public int managerIndex;
 
     void Start()
     {
+        isFar = false;
+        isMiddle = false;
+        isClose = false;
+        canBlock = false;
+        canDodge = false;
+        isAttackReady = false;
+        state = "inactive";
+        spacingTimer = 0f;
+        curPos = Vector3.zero;
         player = GameObject.FindWithTag("Player");
         maxhealth = health;
         agent = GetComponent<NavMeshAgent>();
@@ -90,12 +99,12 @@ public class EnemyScript : MonoBehaviour
         }
 
         // Attack readiness counter for the enemy manager.
-        if (!attackReady)
+        if (!isAttackReady)
         {
             attackTimer -= Time.deltaTime;
             if (attackTimer <= 0)
             {
-                attackReady = true;
+                isAttackReady = true;
                 enemyManager.GetComponent<GlobalEnemy>().EnemyReady(managerIndex);
             }
         }
@@ -243,7 +252,7 @@ public class EnemyScript : MonoBehaviour
                 yield return null;
             }
             // Reset attack readiness as soon as the hitbox appears rather than the end of the attack sequence.
-            attackReady = false;
+            isAttackReady = false;
             attackTimer = Random.Range(5f, 10f);
             for (float i = 0f; i < 0.2f; i += Time.deltaTime)
             {

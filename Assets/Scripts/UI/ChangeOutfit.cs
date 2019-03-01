@@ -7,6 +7,7 @@ public class ChangeOutfit : MonoBehaviour
     public outfit outfit1;
     public outfit outfit2;
     public GameObject player;
+
     private bool outfit1TopOn = true;
 
     public void changeOutfit()

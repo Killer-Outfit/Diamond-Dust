@@ -7,12 +7,13 @@ public class EnemyBlockBasic : MonoBehaviour
 
     // Store the attached EnemyScript
     private EnemyScript thisEnemyScript;
-    private float blocktime = 0;
+    private float blocktime;
     private Animator anim;
 
     // Allows the attached enemy to block.
     void Start()
     {
+        blocktime = 0;
         thisEnemyScript = this.gameObject.GetComponent<EnemyScript>();
         anim = GetComponent<Animator>();
         thisEnemyScript.canBlock = true;

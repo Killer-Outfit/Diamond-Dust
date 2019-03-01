@@ -6,8 +6,6 @@ public class FollowCamera : MonoBehaviour
 {
     // Set target to player, creating reference to camera transform
     public Transform target;
-    private Transform myTransform;
-
     // Variables for camera speed and location
     public float maxRotation;
     public float minRotation;
@@ -16,23 +14,22 @@ public class FollowCamera : MonoBehaviour
     public float camHeight;
     public float XrotateSpeed;
     public float YrotateSpeed;
-    private float x;
-    private float y;
-    float lockTargetHeight;
-
-    // Location where maker is when hidden
-    Vector3 hiddenMarker;
-
+    public bool isLockedOn;
     // Objects to hold the lock Marker and target
     public GameObject lockMarker;
     public GameObject lockTarget;
 
-    // Name of the current lock target, used to check if the object exists after it is destroyed
-    string currentLockTargetName;
+    private float x;
+    private float y;
+    private Transform myTransform;
 
     // Bool to check if the player has locked on and already inputted a target change
-    public bool lockOn = false;
-    bool allowToChangeTarget = true;
+    bool canChangeTarget;
+    float lockTargetHeight;
+    // Name of the current lock target, used to check if the object exists after it is destroyed
+    string currentLockTargetName;
+    // Location where maker is when hidden
+    Vector3 hiddenMarker;
 
 
     void Start()
@@ -46,21 +43,23 @@ public class FollowCamera : MonoBehaviour
         currentLockTargetName = "none";
         // Position of marker when not locked on
         hiddenMarker = new Vector3(0, -200, 0);
+        canChangeTarget = true;
+        isLockedOn = false;
     }
 
     // Using late update so camera moves after player moves in update for smoother looking motion
     void LateUpdate()
     {
         // Only lock on when the right trigger or are pressed, when its not already locked on, and when enemies exist
-        if((Input.GetAxis("rightTrigger") > 0 || Input.GetButtonDown("L")) && !lockOn && enemiesExist())
+        if((Input.GetAxis("rightTrigger") > 0 || Input.GetButtonDown("L")) && !isLockedOn && enemiesExist())
         {
             lockOnToTarget();
-        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetButtonDown("L")) && lockOn) || GameObject.Find(currentLockTargetName) == null && lockOn)
+        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetButtonDown("L")) && isLockedOn) || GameObject.Find(currentLockTargetName) == null && isLockedOn)
         {
-            endLockOn();
+            endisLockedOn();
         }
         // Different updates depending on the camera lock state
-        if (!lockOn)
+        if (!isLockedOn)
         {
             UnlockUpdate();
         }else
@@ -116,14 +115,14 @@ public class FollowCamera : MonoBehaviour
         Vector3 markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2.1f, lockTarget.transform.position.z);
         lockMarker.transform.position = markerPos;
         // Reset the condition to change target
-        if (Input.GetAxis("RStick X") == 0 && !allowToChangeTarget)
+        if (Input.GetAxis("RStick X") == 0 && !canChangeTarget)
         {
-            allowToChangeTarget = true;
+            canChangeTarget = true;
         }
         // Change target if it is allowed to and the user pushes the right stick
-        if (Input.GetAxis("RStick X") != 0 && allowToChangeTarget)
+        if (Input.GetAxis("RStick X") != 0 && canChangeTarget)
         {
-            allowToChangeTarget = false;
+            canChangeTarget = false;
             // Change the target to the right, else to the left
             if (Input.GetAxis("RStick X") > 0)
             {
@@ -249,7 +248,7 @@ public class FollowCamera : MonoBehaviour
         {
             currentLockTargetName = lockTarget.name;
             ChangeLockTargetHeight();
-            lockOn = true;
+            isLockedOn = true;
         }
     }
     // Change the lock target height variable
@@ -257,10 +256,10 @@ public class FollowCamera : MonoBehaviour
     {
         lockTargetHeight = lockTarget.GetComponent<CapsuleCollider>().height;
     }
-    // Move the lockMarker and end lockOn
-    public void endLockOn()
+    // Move the lockMarker and end isLockedOn
+    public void endisLockedOn()
     {
         lockMarker.transform.position = hiddenMarker;
-        lockOn = false;
+        isLockedOn = false;
     }
 }

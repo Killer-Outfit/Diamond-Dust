@@ -5,12 +5,13 @@ using UnityEngine.AI;
 
 public class crowd : MonoBehaviour
 {
-    public float sensorLength = 5.0f;
-    public float speed = 0.001f;
-    float rotationSpeed = 1.0f;
+    public float sensorLength;
+    public float speed;
+
+    float rotationSpeed;
     Vector3 averageHeading;
     Vector3 averagePosition;
-    float neighborDistance = 3.0f;
+    float neighborDistance;
 
     Collider myCollider;
     NavMeshAgent agent;
@@ -20,6 +21,9 @@ public class crowd : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        sensorLength = 5.0f;
+        rotationSpeed = 1.0f;
+        neighborDistance = 3.0f;
         myCollider = transform.GetComponent<Collider>();
         speed = Random.Range(1f, 5);
         agent = GetComponent<NavMeshAgent>();
