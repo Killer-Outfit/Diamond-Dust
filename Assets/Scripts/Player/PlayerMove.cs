@@ -7,19 +7,24 @@ public class PlayerMove : MonoBehaviour {
     public float turningSpeed;
     public float dashSpeed;
     public float maxDashTime;
+    // Use with cam relative motion 2
+    public Transform camPivot;
+    public Transform cam;
+
     private float currenDashTime;
     private float dashTimeIncriment;
     private float inputIntervalMax = 1f;
     private float inputTime;
     private float inputTimeIncriment;
-    float lockSpeed;
-
+    // States for blocking, attacking, dashing and locking
+    private bool isBlocking;
+    private bool isAttacking;
+    private bool hasDashed;
+    private bool isLock;
+    private bool hasStickPushed;
     private float horizontalDash;
-    Quaternion targetRotation;
 
-    // Use with cam relative motion 2
-    public Transform camPivot;
-    public Transform cam;
+    Quaternion targetRotation;    
     float heading;
     // Set up character controller for motion and vector 
     CharacterController controller;
@@ -28,12 +33,7 @@ public class PlayerMove : MonoBehaviour {
     // Main camera and its script
     GameObject mainCamera;
     FollowCamera mainCameraScript;
-    // States for blocking, attacking, dashing and locking
-    private bool isBlocking;
-    private bool isAttacking;
-    private bool dashed;
-    private bool isLock;
-    private bool stickPushed;
+    float lockSpeed;
     // Animator
     Animator anim;
 
@@ -43,10 +43,10 @@ public class PlayerMove : MonoBehaviour {
         currenDashTime = maxDashTime;
         dashTimeIncriment = 0.1f;
         horizontalDash = 0f;
-        dashed = false;
+        hasDashed = false;
         isBlocking = false;
         isAttacking = false;
-        stickPushed = false;
+        hasStickPushed = false;
         vVelocity = 0;
         isLock = false;
         anim = GetComponent<Animator>();
@@ -70,15 +70,15 @@ public class PlayerMove : MonoBehaviour {
              normalMovement();
          }else if(isBlocking)
          {
-             if(Input.GetAxis("LStick X") != 0 && !dashed)
+             if(Input.GetAxis("LStick X") != 0 && !hasDashed)
              {
                  horizontalDash = Input.GetAxis("LStick X") * dashSpeed * Time.deltaTime;
-                 dashed = true;
+                 hasDashed = true;
                  dash(horizontalDash);
-             }else if(Input.GetAxis("LStick X") == 0 && dashed)
+             }else if(Input.GetAxis("LStick X") == 0 && hasDashed)
              {
                  dash(horizontalDash);
-                 dashed = false;
+                 hasDashed = false;
              }
          }else if (isAttacking)
         {
@@ -211,7 +211,6 @@ public class PlayerMove : MonoBehaviour {
         }
         else
         {
-            //
             if (System.Math.Abs(horizontal) < vertical)
             {
                 lockSpeed = movementSpeed;
@@ -228,7 +227,7 @@ public class PlayerMove : MonoBehaviour {
             controller.Move(movementVector * Time.deltaTime * lockSpeed);
             
         }
-        //play run animation when the player is moving
+        // play run animation when the player is moving
         if (vertical != 0 || horizontal != 0)
         {
             //anim.Play("HumanoidRun");
