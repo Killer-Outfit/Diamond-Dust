@@ -13,16 +13,19 @@ public class PlayerMove : MonoBehaviour {
 
     private float currenDashTime;
     private float dashTimeIncriment;
-    private float inputIntervalMax = 1f;
+    private float inputIntervalMax = 10f;
     private float inputTime;
     private float inputTimeIncriment;
     // States for blocking, attacking, dashing and locking
     private bool isBlocking;
     private bool isAttacking;
     private bool hasDashed;
+    private bool isDashing;
     private bool isLock;
     private bool hasStickPushed;
+    private bool hasBPressed;
     private float horizontalDash;
+    private float verticalDash;
 
     Quaternion targetRotation;    
     float heading;
@@ -43,10 +46,13 @@ public class PlayerMove : MonoBehaviour {
         currenDashTime = maxDashTime;
         dashTimeIncriment = 0.1f;
         horizontalDash = 0f;
+        verticalDash = 0f;
         hasDashed = false;
+        isDashing = false;
         isBlocking = false;
         isAttacking = false;
         hasStickPushed = false;
+        hasBPressed = false;
         vVelocity = 0;
         isLock = false;
         anim = GetComponent<Animator>();
@@ -65,32 +71,55 @@ public class PlayerMove : MonoBehaviour {
         {
             isAttacking = true;
         }
-            if (!isBlocking && !isAttacking)
-         {
-             normalMovement();
-         }else if(isBlocking)
-         {
-             if(Input.GetAxis("LStick X") != 0 && !hasDashed)
-             {
-                 horizontalDash = Input.GetAxis("LStick X") * dashSpeed * Time.deltaTime;
-                 hasDashed = true;
-                 dash(horizontalDash);
-             }else if(Input.GetAxis("LStick X") == 0 && hasDashed)
-             {
-                 dash(horizontalDash);
-                 hasDashed = false;
-             }
-         }else if (isAttacking)
+        if (!isBlocking && !isAttacking && !isDashing)
         {
-            stationaryRotate();
+             normalMovement();
+        }
+        else if (isAttacking)
+        {
+             stationaryRotate();
+        }
+        if (Input.GetAxis("LStick X") != 0 && !hasStickPushed)
+        {
+             horizontalDash = Input.GetAxis("LStick X") * dashSpeed * Time.deltaTime;
+             verticalDash = Input.GetAxis("LStick Y") * movementSpeed * Time.deltaTime;
+             hasStickPushed = true;
+             StartCoroutine("inputChecker");
+            //dash(horizontalDash);
         }
     }
-
-    private void dash(float horizontal)
+    IEnumerator inputChecker()
     {
-        heading += horizontal;
+        for(float i = 0f; i < inputIntervalMax; i += Time.deltaTime)
+        {
+            if (Input.GetButtonDown("BButton"))
+            {
+                hasBPressed = true;
+            }
+            if(Input.GetAxis("LStick X") == 0)
+            {
+                hasStickPushed = true;
+            }else
+            {
+                hasStickPushed = false;
+            }
+            if (hasStickPushed && hasBPressed)
+            {
+                StartCoroutine("dash");
+                break;
+            }
+            yield return null;
+        }
+        
+    }
+    IEnumerator dash()
+    {
+        Debug.Log("dash");
+        isDashing = true;
+        //cam2 movement
+        heading += horizontalDash;
         camPivot.rotation = Quaternion.Euler(0, heading, 0);
-        Vector2 inputs = new Vector2(horizontal, 0);
+        Vector2 inputs = new Vector2(horizontalDash, verticalDash);
         inputs = Vector2.ClampMagnitude(inputs, 1); // CLAMP?
         Vector3 camF = cam.forward;
         Vector3 camR = cam.right;
@@ -103,14 +132,29 @@ public class PlayerMove : MonoBehaviour {
         vVelocity += Physics.gravity.y * Time.deltaTime;
         movementVector.y = vVelocity;
         controller.Move(movementVector * Time.deltaTime * dashSpeed);
-        if (horizontal > 0)
+        if (controller.isGrounded)
         {
-            controller.Move(Vector3.left * Time.deltaTime * dashSpeed);
-        }else
-        {
-            controller.Move(Vector3.right * Time.deltaTime * dashSpeed);
+            //Debug.Log("I am on the ground");
+            vVelocity = 0;
         }
+        //velocity.y += Physics.gravity.y * Time.deltaTime;
+        //controller.Move(velocity * Time.deltaTime);
+
+        //setting character rotation
+        if (inputs.x != 0 || inputs.y != 0)
+        {
+            //remove "-1 *" change -  to plus to invert rotation
+            var rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * dashSpeed));
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
+        }
+        hasDashed = true;
+        Debug.Log("start waiting");
+        yield return new WaitForSeconds(2f);
+        Debug.Log("done waiting");
+        isDashing = false;
+        hasDashed = false;
     }
+    
     private void stationaryRotate()
     {
         //get stick inputs
