@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public float maxHealth;
     public float currentHealth;
     // State bools
+    public string state;
     public bool isAttacking = false;
     // Create a list of attack hitboxes
     public Collider[] punchHitboxes;
@@ -40,12 +41,13 @@ public class Player : MonoBehaviour
     // Initialize animator, current health and healthbar value
     void Start()
     {
+        state = "idle";
         punchTimes = new float[,]
         {
-            {.2f, .2f, 10f},
-            {.3f, .1f, 10f},
-            {.2f, .4f, 10f},
-            {.1f, .3f, 10f}
+            {.2f, .2f, 2f},
+            {.3f, .1f, 2f},
+            {.2f, .4f, 2f},
+            {.1f, .3f, 2f}
         };
         controller = GetComponent<CharacterController>();
         checkpoint.updateCheckpoint(transform.position);
@@ -65,66 +67,95 @@ public class Player : MonoBehaviour
     // Get user inputs
     void Update()
     {
-        if (Input.GetButtonDown("XButton"))
+        // Buffer inputs if the player is not blocking, continue block otherwise.
+        if (state != "blocking")
         {
-            inputQueue[0] = "punch";
-        }
-        // Activate kick when user presses Y
-        if (Input.GetButtonDown("YButton"))
-        {
-            /*
-            if (inputQueue.Count < 3)
+            if (Input.GetButtonDown("XButton"))
             {
-                inputQueue.Add("kick");
-            }*/
-            killPlayer();
-        }
-        // Add misc attack to input queue
-        if (Input.GetButtonDown("AButton"))
-        {
-            inputQueue[0] = "misc";
-        }
-        // Don't call attacks if the player is mid-attack already.
-        if (!isAttacking) 
-        {
-
-            currentInputTimer += Time.deltaTime;
-            // Add punch to input queue
-            
-            // Block initiation
-            if (Input.GetButton("BButton"))
-            {
-                if (!isBlocking)
-                {
-                    anim.SetTrigger("block");
-                    isBlocking = true;
-                    // Disable player motion when isBlocking
-                    gameObject.GetComponent<PlayerMove>().changeBlock();
-                }
+                inputQueue[0] = "punch";
             }
-            // Enable player motion after isBlocking is complete  
-            else if (isBlocking)
+            else if (Input.GetButtonDown("YButton"))
             {
-                isBlocking = false;
+                inputQueue[0] = "kick";
+            }
+            else if (Input.GetButtonDown("AButton"))
+            {
+                inputQueue[0] = "misc";
+            }
+            else if (Input.GetButton("BButton"))
+            {
+                inputQueue[0] = "block";
+            }
+        }
+        else // Check if block has ended
+        {
+            if (Input.GetButton("BButton") == false)
+            {
+                state = "idle";
                 gameObject.GetComponent<PlayerMove>().changeBlock();
-                anim.SetTrigger("block");
+                anim.SetBool("block", false);
             }
+        }
 
-            // Resets the hit number when the plaer has reached a max of 4 hits or when 6 seconds has past without input
-            if (currentHitNumber == 4 || currentInputTimer - inputStartTime > 2)
-            {
-                currentHitNumber = 0;
-            }
-            // Occur when player is in idle
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                // Reset the hit#, allow non-attack movement, check the input queue
-                gameObject.GetComponent<PlayerMove>().changeAttacking(false);
-                currentHitNumber = 0;
-                checkQueue();
-            }
+        // Combo counter resets if 4 moves in a row have been done.
+        if (currentHitNumber == 4)
+        {
+            currentHitNumber = 0;
+        }
+
+        // When no actions are being performed, tell the movement script and check the queue.
+        if (state == "idle" || state == "run")
+        {
+            gameObject.GetComponent<PlayerMove>().changeAttacking(false);
+            CheckQueue();
         }
     }
+
+    // Check the input queue for what attack to use
+    public void CheckQueue()
+    {
+        string input = "";
+        if (inputQueue[0] != "")
+        {
+            input = inputQueue[0];
+            inputQueue[0] = "";
+            if (input == "punch")
+            {
+                pressX();
+            }
+            else if (input == "kick")
+            {
+                pressY();
+            }
+            else if (input == "misc")
+            {
+                pressA();
+            }
+            else if (input == "block")
+            {
+                gameObject.GetComponent<PlayerMove>().changeAttacking(false);
+                if (state == "attacking")
+                {
+                    anim.SetTrigger("backtoIdle");
+                }
+                anim.SetBool("block", true);
+                state = "blocking";
+                // Disable player motion when isBlocking
+                gameObject.GetComponent<PlayerMove>().changeBlock();
+            }
+        }
+        else // No inputs at the moment
+        {
+            if (state == "attacking")
+            {
+                gameObject.GetComponent<PlayerMove>().changeAttacking(false);
+                state = "idle";
+                anim.SetTrigger("backtoIdle");
+            }
+            Debug.Log("here");
+        }
+    }
+
     // Decrease the current health and update health bar
     public void DecreaseHealth(float damage)
     {
@@ -143,11 +174,13 @@ public class Player : MonoBehaviour
             decreaseShield(damage);
         }
     }
+
     // Shield damage if isBlocking
     public void decreaseShield(float damage)
     {
         shield -= damage;
     }
+
     // Kill the player
     private void killPlayer()
     {
@@ -161,10 +194,12 @@ public class Player : MonoBehaviour
         //transform.position = checkpoint.getCheckpoint();
         //canvas.SendMessage("PlayerDead", true);
     }
+
     // Make the attack activate
     IEnumerator launchAttack()
     {
-        // Set the collider beig used based on current attack type
+        // Set the collider being used based on current attack type
+        bool hit;
         Collider attack = null;
         int timeListIncrement = 0;
         if(attackType == "punch")
@@ -179,38 +214,43 @@ public class Player : MonoBehaviour
         {
             attack = miscHitBoxes[currentHitNumber];
         }
-        
-        isAttacking = true;
-        gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
-        // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
+
+        // Start lag
         yield return new WaitForSeconds(punchTimes[currentHitNumber, timeListIncrement]);
         timeListIncrement++;
-        //overlapSphere is best if applicable
+
+        // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
+        hit = false;
         for (float i = 0f; i < punchTimes[currentHitNumber, timeListIncrement]; i += Time.deltaTime)
         {
             // Create a list of all objects that have collided with the attack hitbox
             Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
-            // Iterate through each collision eventc
-            foreach (Collider c in cols)
+            // Iterate through each collision event if a hit hasn't been landed yet
+            if (hit == false)
             {
-                // If you collided with an enemy  them
-                if (c.tag == "Enemy")
+                foreach (Collider c in cols)
                 {
-                    // Decrease the hit target's health by 10 CHANGE TO ATTACK DAMAGE
-                    c.SendMessageUpwards("DecreaseHealth", 10);
+                    // If you collided with an enemy  them
+                    if (c.tag == "Enemy")
+                    {
+                        // Decrease the hit target's health by 10 CHANGE TO ATTACK DAMAGE
+                        c.SendMessageUpwards("DecreaseHealth", 10);
+                        hit = true;
+                    }
                 }
             }
             yield return null;
         }
         timeListIncrement++;
-        // "Cooldown" time
+
+        // End lag
         Debug.Log(punchTimes[currentHitNumber, timeListIncrement]);
         yield return new WaitForSeconds(punchTimes[currentHitNumber, timeListIncrement]); 
+        // Check the queue for a buffered input. Sets state to "idle" if none are found.
         Debug.Log("checkQueue");
-        checkQueue();
-        isAttacking = false;
-        gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
+        CheckQueue();
     }
+
     // Activate punch
     public void pressX()
     {
@@ -218,54 +258,36 @@ public class Player : MonoBehaviour
         inputStartTime = currentInputTimer;
         anim.SetTrigger("punch");
         attackType = "punch";
+        state = "attacking";
+        gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
         currentHitNumber += 1;
     }
+
     // Activate kick
     public void pressY()
     {
         inputStartTime = currentInputTimer;
         anim.SetTrigger("kick");
         attackType = "kick";
+        state = "attacking";
+        gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
         currentHitNumber += 1;
     }
+
     // Activate misc attack
     public void pressA()
     {
         inputStartTime = currentInputTimer;
         anim.SetTrigger("miscAttack");
         attackType = "misc";
+        state = "attacking";
+        gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
         currentHitNumber += 1;
     }
-    // Check the input queue for what attack to use
-    public void checkQueue()
-    {
-        string input = "";
-        if (inputQueue[0] != "")
-        {
-            input = inputQueue[0];
-            inputQueue[0]= "";
-            if (input == "punch")
-            {
-                pressX();
-            }
-            else if (input == "kick")
-            {
-                pressY();
-            }
-            else if (input == "misc")
-            {
-                pressA();
-            }
-        }else
-        {
-            Debug.Log("here");
-            anim.SetTrigger("idle");
-            //trigger idle
-        }
-    }
+
     // Change outfit function takes in the new outfit 
     public void changeOutfit(outfit newOutfit)
     {

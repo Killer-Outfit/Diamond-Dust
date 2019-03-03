@@ -17,7 +17,7 @@ public class PlayerMove : MonoBehaviour {
     private float inputTime;
     private float inputTimeIncriment;
     // States for blocking, attacking, dashing and locking
-    private bool isBlocking;
+    public bool isBlocking;
     private bool isAttacking;
     private bool hasDashed;
     private bool isDashing;
@@ -67,7 +67,8 @@ public class PlayerMove : MonoBehaviour {
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle") || anim.GetCurrentAnimatorStateInfo(0).IsName("run"))
         {
             isAttacking = false;
-        }else if(!anim.GetCurrentAnimatorStateInfo(0).IsName("block"))
+        }
+        else if(!anim.GetCurrentAnimatorStateInfo(0).IsName("block"))
         {
             isAttacking = true;
         }
@@ -99,7 +100,8 @@ public class PlayerMove : MonoBehaviour {
             if(Input.GetAxis("LStick X") == 0)
             {
                 hasStickPushed = true;
-            }else
+            }
+            else
             {
                 hasStickPushed = false;
             }
