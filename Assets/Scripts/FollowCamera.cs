@@ -105,7 +105,7 @@ public class FollowCamera : MonoBehaviour
         float step = 40 * Time.deltaTime;
         // Get the rotation toward the enemy
         var targetRotation = Quaternion.LookRotation(lockTarget.transform.position - transform.position);
-        Debug.Log(targetRotation);
+        //Debug.Log(targetRotation);
         // Move position of camera with player
         Vector3 position = targetRotation * new Vector3(0.0f, 0.0f, -minDistance) + target.position;
         // Rotate camera by 1 step from current rotate to the target rotation
@@ -146,13 +146,55 @@ public class FollowCamera : MonoBehaviour
         Vector3 right = lockTarget.transform.TransformDirection(Vector3.right);
         Vector3 toOther = potentialTarget.transform.position - lockTarget.transform.position;
         // Find the Dot product of the right vector and the enemy direction vector, if < 0 the enemy is to the left
-        if (Vector3.Dot(right, toOther) < 0)
+        /*if (Vector3.Dot(right, toOther) < 0)
         {
             return false;
         }else
         {
             return true;
+        }*/
+        /*Debug.Log(potentialTarget.transform.position);
+        Debug.Log(relativeDir);
+        if (relativeDir.x > 0)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }*/
+        /*Vector3 heading = potentialTarget.transform.position - lockTarget.transform.position;
+        Vector3 perp = Vector3.Cross(lockTarget.transform.forward, heading);
+        float dir = Vector3.Dot(perp, lockTarget.transform.up);
+        if (dir > 0f)
+        {
+            return true;
         }
+        else
+        {
+            return false;
+        }*/
+        /*Debug.Log(lockTarget.transform.right);
+        if (Vector3.Dot(lockTarget.transform.right, potentialTarget.transform.position) < 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }*/
+
+        Vector3 fvec = target.forward;
+        Vector3 pvec = target.position - potentialTarget.transform.position;
+        float angle = Vector3.SignedAngle(new Vector3(fvec.x, 0, fvec.z), new Vector3(pvec.x, 0, pvec.z), Vector3.up);
+        if (angle < 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
     }
     // Find the closest enemy in a particular relative direction
     public GameObject findClosestInDirection(bool right)
@@ -172,9 +214,9 @@ public class FollowCamera : MonoBehaviour
                 if (closest == null)
                 {
                     closest = enemy;
-                    closestDist = getDistance(enemy);
+                    closestDist = Vector3.Distance(enemy.transform.position, lockTarget.transform.position);
                 }
-                enemyDist = getDistance(enemy);
+                enemyDist = Vector3.Distance(enemy.transform.position, lockTarget.transform.position); 
                 // Check if the enemy is closest
                 if (enemyDist < closestDist)
                 {

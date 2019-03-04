@@ -15,9 +15,9 @@ public class Player : MonoBehaviour
     public string state;
     public bool isAttacking = false;
     // Create a list of attack hitboxes
-    public Collider[] punchHitboxes;
-    public Collider[] kickHitBoxes;
-    public Collider[] miscHitBoxes;
+    public outfit top;
+    public outfit misc;
+    public outfit bot;
     public GameObject canvas;
     // Reference to the health bar
     public Slider healthbar;
@@ -26,13 +26,9 @@ public class Player : MonoBehaviour
     // Create single element input queue
     private string[] inputQueue;
     // Queue check 
-    private List<string> animQueueStateNames;
     private bool isBlocking;
-    private float currentInputTimer;
-    private float inputStartTime;
     private float shield;
     private int currentHitNumber;
-    private float[,] punchTimes;
 
     // Create an animator variable and animation overrider for outfit switching
     Animator anim;
@@ -42,13 +38,6 @@ public class Player : MonoBehaviour
     void Start()
     {
         state = "idle";
-        punchTimes = new float[,]
-        {
-            {.2f, .2f, 2f},
-            {.3f, .1f, 2f},
-            {.2f, .4f, 2f},
-            {.1f, .3f, 2f}
-        };
         controller = GetComponent<CharacterController>();
         checkpoint.updateCheckpoint(transform.position);
         //transform.localScale = new Vector3(0.35F, 0.35f, 0.35f);
@@ -56,13 +45,10 @@ public class Player : MonoBehaviour
         shield = 100;
         isBlocking = false;
         inputQueue = new string[1] { "" };
-        animQueueStateNames = new List<string>() { "checkQueueState1", "checkQueueState2", "checkQueueState3" };
         currentHitNumber = 0;
-        currentInputTimer = 0;
         anim = GetComponent<Animator>();
         currentHealth = maxHealth;
         healthbar.value = currentHealth / maxHealth;
-
     }
     // Get user inputs
     void Update()
@@ -200,28 +186,30 @@ public class Player : MonoBehaviour
     {
         // Set the collider being used based on current attack type
         bool hit;
+        outfit currentOutfitItem = null;
+        // Set the collider beig used based on current attack type
         Collider attack = null;
         int timeListIncrement = 0;
         if(attackType == "punch")
         {
-            attack = punchHitboxes[currentHitNumber];
+            currentOutfitItem = top;
         }
         else if (attackType == "kick")
         {
-            attack = kickHitBoxes[currentHitNumber];
+            currentOutfitItem = bot;
         }
         else if (attackType == "misc")
         {
-            attack = miscHitBoxes[currentHitNumber];
+            currentOutfitItem = misc;
         }
-
-        // Start lag
-        yield return new WaitForSeconds(punchTimes[currentHitNumber, timeListIncrement]);
-        timeListIncrement++;
+        attack = currentOutfitItem.attackColliders[currentHitNumber];
 
         // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
+        yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
+        timeListIncrement++;
+
         hit = false;
-        for (float i = 0f; i < punchTimes[currentHitNumber, timeListIncrement]; i += Time.deltaTime)
+        for (float i = 0f; i < currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement); i += Time.deltaTime)
         {
             // Create a list of all objects that have collided with the attack hitbox
             Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
@@ -234,7 +222,7 @@ public class Player : MonoBehaviour
                     if (c.tag == "Enemy")
                     {
                         // Decrease the hit target's health by 10 CHANGE TO ATTACK DAMAGE
-                        c.SendMessageUpwards("DecreaseHealth", 10);
+                        c.SendMessageUpwards("DecreaseHealth", currentOutfitItem.attackDamage[currentHitNumber]);
                         hit = true;
                     }
                 }
@@ -243,10 +231,10 @@ public class Player : MonoBehaviour
         }
         timeListIncrement++;
 
-        // End lag
-        Debug.Log(punchTimes[currentHitNumber, timeListIncrement]);
-        yield return new WaitForSeconds(punchTimes[currentHitNumber, timeListIncrement]); 
-        // Check the queue for a buffered input. Sets state to "idle" if none are found.
+        // "Cooldown" time
+        Debug.Log(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
+        yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement)); 
+        
         Debug.Log("checkQueue");
         CheckQueue();
     }
@@ -255,7 +243,6 @@ public class Player : MonoBehaviour
     public void pressX()
     {
         Debug.Log("pressed x");
-        inputStartTime = currentInputTimer;
         anim.SetTrigger("punch");
         attackType = "punch";
         state = "attacking";
@@ -267,7 +254,6 @@ public class Player : MonoBehaviour
     // Activate kick
     public void pressY()
     {
-        inputStartTime = currentInputTimer;
         anim.SetTrigger("kick");
         attackType = "kick";
         state = "attacking";
@@ -279,7 +265,6 @@ public class Player : MonoBehaviour
     // Activate misc attack
     public void pressA()
     {
-        inputStartTime = currentInputTimer;
         anim.SetTrigger("miscAttack");
         attackType = "misc";
         state = "attacking";
@@ -291,6 +276,17 @@ public class Player : MonoBehaviour
     // Change outfit function takes in the new outfit 
     public void changeOutfit(outfit newOutfit)
     {
+        if(newOutfit.outfitType == "Top")
+        {
+            top = newOutfit;
+        }else if (newOutfit.outfitType == "Misc")
+        {
+            misc = newOutfit;
+        }
+        else if (newOutfit.outfitType == "Bot")
+        {
+            bot = newOutfit;
+        }
         // 
         newOutfit.outfitSkinRenderer.sharedMesh = newOutfit.outfitMesh;
         newOutfit.outfitSkinRenderer.material = newOutfit.outfitMaterial;
@@ -310,7 +306,5 @@ public class Player : MonoBehaviour
         // Override all animations in the anims list
         aoc.ApplyOverrides(anims);
         anim.runtimeAnimatorController = aoc;
-        // Change the hitboxes for player attacks
-        punchHitboxes = newOutfit.attackColliders;
     }
 }
