@@ -132,7 +132,6 @@ public class Player : MonoBehaviour
                 state = "idle";
                 anim.SetTrigger("backtoIdle");
             }
-            Debug.Log("here");
         }
     }
 
@@ -167,12 +166,11 @@ public class Player : MonoBehaviour
         controller.enabled = false;
         controller.transform.position = checkpoint.getCheckpoint();
         controller.enabled = true;
-        Debug.Log(checkpoint.getCheckpoint());
         //Destroy(this.gameObject);
         currentHealth = maxHealth;
 		healthbar.value = currentHealth / maxHealth;
         //transform.position = checkpoint.getCheckpoint();
-        canvas.SendMessage("PlayerDead", true);
+        //canvas.SendMessage("PlayerDead", true);
     }
 
     // Make the attack activate
@@ -196,13 +194,14 @@ public class Player : MonoBehaviour
         {
             currentOutfitItem = misc;
         }
-        Debug.Log(currentHitNumber);
         attack = currentOutfitItem.attackColliders[currentHitNumber];
 
-        // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
+        // Do hitbox calcuation after [ANIMATION TIME]
+        GetComponent<PlayerMove>().movementSpeed = 35;
         yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
         timeListIncrement++;
 
+        GetComponent<PlayerMove>().movementSpeed = 20;
         hit = false;
         for (float i = 0f; i < currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement); i += Time.deltaTime)
         {
@@ -227,10 +226,11 @@ public class Player : MonoBehaviour
         timeListIncrement++;
 
         // "Cooldown" time
+        GetComponent<PlayerMove>().movementSpeed = 10;
         Debug.Log(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
-        yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement)); 
-        
-        Debug.Log("checkQueue");
+        yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
+
+        GetComponent<PlayerMove>().movementSpeed = 60;
         currentHitNumber++;
         if (currentHitNumber == 4)
         {
@@ -298,7 +298,7 @@ public class Player : MonoBehaviour
         // For each animation in the current animation tree
         foreach (var a in aoc.animationClips)
             // If an animation name contains the outfitType(must be the word punch, kick, and misc)
-            if (a.name.Contains(newOutfit.attackType))
+            if (a.name.Contains(newOutfit.outfitType))
             {
                 anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(a, newOutfit.attacks[index]));
                 index += 1;
