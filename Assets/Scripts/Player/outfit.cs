@@ -14,6 +14,8 @@ public class outfit : MonoBehaviour
     public Material outfitMaterial;
     // The player skin renderer to use(top, mid, bottom dependent)
     public SkinnedMeshRenderer outfitSkinRenderer;
+    // The outfit menu skin renderer to use(top, mid, bottom dependent)
+    public SkinnedMeshRenderer outfitMenuSkinRenderer;
     // Outfit type must be (punch, Kick, Misc)
     public string outfitType;
     // Colliders for this outfit's attack

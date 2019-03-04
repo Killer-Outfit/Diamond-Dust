@@ -11,24 +11,31 @@ public class PauseScript : MonoBehaviour
 	GameObject close;
     GameObject mainCanvas;
     GameObject mainCamera;
-    Camera cam;
+    GameObject outfitCamera;
+    Camera cam1;
+    Camera cam2;
     Canvas outfitCanvas;
 	
     bool isPaused;
+    bool isOutfitMenuOpen;
 
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = GameObject.Find("Main Camera");
-        cam = mainCamera.GetComponent<Camera>();
+        outfitCamera = GameObject.Find("OutfitCamera");
+        cam1 = mainCamera.GetComponent<Camera>();
+        cam2 = outfitCamera.GetComponent<Camera>();
         menu = GameObject.Find("PauseMenuElements");
         playerHealth = GameObject.Find("Player Health");
         outfitMenu = GameObject.Find("OutfitMenuElements");
-        mainCanvas = GameObject.Find("MainCanvas");
+        mainCanvas = GameObject.Find("Canvas");
         outfitCanvas = mainCanvas.GetComponent<Canvas>();
         menu.SetActive(false);
         outfitMenu.SetActive(false);
         isPaused = false;
+        cam1.enabled = true;
+        cam2.enabled = false;
     }
 
     // Update is called once per frame
@@ -44,24 +51,40 @@ public class PauseScript : MonoBehaviour
             Time.timeScale = 0.0f;
             isPaused = true;
             Time.timeScale = 0.0f;
-        }else if (Input.GetButtonDown("StartButton") && isPaused)
+        }
+        else if (Input.GetButtonDown("StartButton") && isPaused && !isOutfitMenuOpen)
         {
             // Disable Pause Menu
-			menu.SetActive(false);
-			
-			// Enable Gameplay
+            menu.SetActive(false);
+
+            // Enable Gameplay
             Time.timeScale = 1f;
             isPaused = false;
             Time.timeScale = 1f;
         }
     }
 	
+    public void ResumeGame()
+    {
+        
+        // Disable Pause Menu
+        menu.SetActive(false);
+
+        // Enable Gameplay
+        Time.timeScale = 1f;
+        isPaused = false;
+        Time.timeScale = 1f;
+    }
+
     public void OpenOutfitMenu()
     {
         menu.SetActive(false);
         outfitMenu.SetActive(true);
         outfitCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-        outfitCanvas.worldCamera = cam;
+        cam1.enabled = false;
+        cam2.enabled = true;
+        outfitCanvas.worldCamera = cam2;
+        isOutfitMenuOpen = true;
     }
 
     public void CloseOutfitMenu()
@@ -69,6 +92,9 @@ public class PauseScript : MonoBehaviour
         outfitMenu.SetActive(false);
         menu.SetActive(true);
         outfitCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        cam1.enabled = true;
+        cam2.enabled = false;
+        isOutfitMenuOpen = false;
     }
 
 	// Loop Through Children
