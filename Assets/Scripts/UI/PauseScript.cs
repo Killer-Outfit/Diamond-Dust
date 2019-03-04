@@ -15,6 +15,7 @@ public class PauseScript : MonoBehaviour
     Canvas outfitCanvas;
 	
     bool isPaused;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +34,7 @@ public class PauseScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("StartButton") && !isPaused)
+        if ((Input.GetButtonDown("StartButton") || Input.GetKeyDown(KeyCode.Escape)) && !isPaused)
         {
             // Enable Pause Menu
 			menu.SetActive(true);
@@ -43,7 +44,7 @@ public class PauseScript : MonoBehaviour
             Time.timeScale = 0.0f;
             isPaused = true;
             Time.timeScale = 0.0f;
-        }else if (Input.GetButtonDown("StartButton") && isPaused)
+        }else if ((Input.GetButtonDown("StartButton") || Input.GetKeyDown(KeyCode.Escape)) && isPaused)
         {
             // Disable Pause Menu
 			menu.SetActive(false);

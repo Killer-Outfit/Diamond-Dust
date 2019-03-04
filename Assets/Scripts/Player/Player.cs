@@ -12,11 +12,12 @@ public class Player : MonoBehaviour
     public float maxHealth;
     public float currentHealth;
     // State bools
+    public string state;
     public bool isAttacking = false;
     // Create a list of attack hitboxes
-    public Collider[] punchHitboxes;
-    public Collider[] kickHitBoxes;
-    public Collider[] miscHitBoxes;
+    public outfit top;
+    public outfit misc;
+    public outfit bot;
     public GameObject canvas;
     // Reference to the health bar
     public Slider healthbar;
@@ -25,10 +26,7 @@ public class Player : MonoBehaviour
     // Create single element input queue
     private string[] inputQueue;
     // Queue check 
-    private List<string> animQueueStateNames;
     private bool isBlocking;
-    private float currentInputTimer;
-    private float inputStartTime;
     private float shield;
     private int currentHitNumber;
 
@@ -36,16 +34,10 @@ public class Player : MonoBehaviour
     Animator anim;
     AnimatorOverrideController animatorOverrideController;
     
-    
-   
-
-
-    
-    
-
     // Initialize animator, current health and healthbar value
     void Start()
     {
+        state = "idle";
         controller = GetComponent<CharacterController>();
         checkpoint.updateCheckpoint(transform.position);
         //transform.localScale = new Vector3(0.35F, 0.35f, 0.35f);
@@ -53,84 +45,96 @@ public class Player : MonoBehaviour
         shield = 100;
         isBlocking = false;
         inputQueue = new string[1] { "" };
-        animQueueStateNames = new List<string>() { "checkQueueState1", "checkQueueState2", "checkQueueState3" };
         currentHitNumber = 0;
-        currentInputTimer = 0;
         anim = GetComponent<Animator>();
         currentHealth = maxHealth;
         healthbar.value = currentHealth / maxHealth;
-
     }
     // Get user inputs
     void Update()
     {
-        // Don't call attacks if the player is mid-attack already.
-        if (!this.isAttacking) 
+        // Buffer inputs if the player is not blocking, continue block otherwise.
+        if (state != "blocking")
         {
-            currentInputTimer += Time.deltaTime;
-            // Add punch to input queue
-            if (Input.GetButtonDown("XButton"))
+            if (Input.GetButtonDown("XButton") || Input.GetMouseButtonDown(0))
             {
                 inputQueue[0] = "punch";
             }
-            // Activate kick when user presses Y
-            if (Input.GetButtonDown("YButton"))
+            else if (Input.GetButtonDown("YButton") || Input.GetMouseButtonDown(1))
             {
-                /*
-                if (inputQueue.Count < 3)
-                {
-                    inputQueue.Add("kick");
-                }*/
-                killPlayer();
+                inputQueue[0] = "kick";
             }
-            // Add misc attack to input queue
-            if (Input.GetButtonDown("AButton"))
+            else if (Input.GetButtonDown("AButton") || Input.GetKeyDown(KeyCode.Space))
             {
                 inputQueue[0] = "misc";
             }
-            // Block initiation
-            if (Input.GetButton("BButton"))
+            else if (Input.GetButton("BButton"))
             {
-                if (!isBlocking)
-                {
-                    anim.SetTrigger("block");
-                    isBlocking = true;
-                    // Disable player motion when isBlocking
-                    gameObject.GetComponent<PlayerMove>().changeBlock();
-                }
+                inputQueue[0] = "block";
             }
-            // Enable player motion after isBlocking is complete  
-            else if (isBlocking)
+        }
+        else // Check if block has ended
+        {
+            if (Input.GetButton("BButton") == false)
             {
-                isBlocking = false;
+                state = "idle";
                 gameObject.GetComponent<PlayerMove>().changeBlock();
-                anim.SetTrigger("block");
+                anim.SetBool("block", false);
             }
+        }
 
-            // Resets the hit number when the plaer has reached a max of 4 hits or when 6 seconds has past without input
-            if (currentHitNumber == 4 || currentInputTimer - inputStartTime > 2)
-            {
-                currentHitNumber = 0;
-            }
-            // Occur when player is in idle
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                // Reset the hit#, allow non-attack movement, check the input queue
-                gameObject.GetComponent<PlayerMove>().changeAttacking(false);
-                currentHitNumber = 0;
-                checkQueue();
-            }
-            // Check if player is in a queue check animation if it is check the queue
-            foreach (var stateName in animQueueStateNames)
-            {
-                if (anim.GetCurrentAnimatorStateInfo(0).IsName(stateName))
-                {
-                    checkQueue();
-                }
-            }
-
+        // When no actions are being performed, tell the movement script and check the queue.
+        if (state == "idle" || state == "run")
+        {
+            gameObject.GetComponent<PlayerMove>().changeAttacking(false);
+            CheckQueue();
         }
     }
+
+    // Check the input queue for what attack to use
+    public void CheckQueue()
+    {
+        string input = "";
+        if (inputQueue[0] != "")
+        {
+            input = inputQueue[0];
+            inputQueue[0] = "";
+            if (input == "punch")
+            {
+                pressX();
+            }
+            else if (input == "kick")
+            {
+                pressY();
+            }
+            else if (input == "misc")
+            {
+                pressA();
+            }
+            else if (input == "block")
+            {
+                gameObject.GetComponent<PlayerMove>().changeAttacking(false);
+                if (state == "attacking")
+                {
+                    anim.SetTrigger("backtoIdle");
+                }
+                anim.SetBool("block", true);
+                state = "blocking";
+                // Disable player motion when isBlocking
+                gameObject.GetComponent<PlayerMove>().changeBlock();
+            }
+        }
+        else // No inputs at the moment
+        {
+            if (state == "attacking")
+            {
+                gameObject.GetComponent<PlayerMove>().changeAttacking(false);
+                state = "idle";
+                anim.SetTrigger("backtoIdle");
+            }
+        }
+    }
+
     // Decrease the current health and update health bar
     public void DecreaseHealth(float damage)
     {
@@ -149,116 +153,140 @@ public class Player : MonoBehaviour
             decreaseShield(damage);
         }
     }
+
     // Shield damage if isBlocking
     public void decreaseShield(float damage)
     {
         shield -= damage;
     }
+
     // Kill the player
     private void killPlayer()
     {
         controller.enabled = false;
         controller.transform.position = checkpoint.getCheckpoint();
         controller.enabled = true;
-        Debug.Log(checkpoint.getCheckpoint());
         //Destroy(this.gameObject);
         currentHealth = maxHealth;
 		healthbar.value = currentHealth / maxHealth;
         //transform.position = checkpoint.getCheckpoint();
         //canvas.SendMessage("PlayerDead", true);
     }
+
     // Make the attack activate
     IEnumerator launchAttack()
     {
+        // Set the collider being used based on current attack type
+        bool hit;
+        outfit currentOutfitItem = null;
         // Set the collider beig used based on current attack type
         Collider attack = null;
+        int timeListIncrement = 0;
         if(attackType == "punch")
         {
-            attack = punchHitboxes[currentHitNumber];
+            currentOutfitItem = top;
         }
         else if (attackType == "kick")
         {
-            attack = kickHitBoxes[currentHitNumber];
+            currentOutfitItem = bot;
         }
         else if (attackType == "misc")
         {
-            attack = miscHitBoxes[currentHitNumber];
+            currentOutfitItem = misc;
         }
-        
-        this.isAttacking = true;
-        gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
-        // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
-        yield return new WaitForSeconds(0.01f); 
-        //overlapSphere is best if applicable
-        // Create a list of all objects that have collided with the attack hitbox
-        Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
-        // Iterate through each collision eventc
-        foreach(Collider c in cols)
+        attack = currentOutfitItem.attackColliders[currentHitNumber];
+
+        // Do hitbox calcuation after [ANIMATION TIME]
+        GetComponent<PlayerMove>().movementSpeed = 35;
+        yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
+        timeListIncrement++;
+
+        GetComponent<PlayerMove>().movementSpeed = 20;
+        hit = false;
+        for (float i = 0f; i < currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement); i += Time.deltaTime)
         {
-            // If you collided with an enemy damage them
-            if (c.tag == "Enemy")
+            // Create a list of all objects that have collided with the attack hitbox
+            Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
+            // Iterate through each collision event if a hit hasn't been landed yet
+            if (hit == false)
             {
-                // Decrease the hit target's health by 10 CHANGE TO ATTACK DAMAGE
-                c.SendMessageUpwards("DecreaseHealth", 10);
+                foreach (Collider c in cols)
+                {
+                    // If you collided with an enemy  them
+                    if (c.tag == "Enemy")
+                    {
+                        // Decrease the hit target's health by 10 CHANGE TO ATTACK DAMAGE
+                        c.SendMessageUpwards("DecreaseHealth", currentOutfitItem.attackDamage[currentHitNumber]);
+                        hit = true;
+                    }
+                }
             }
+            yield return null;
         }
+        timeListIncrement++;
+
         // "Cooldown" time
-        yield return new WaitForSeconds(0.01f); 
-        this.isAttacking = false;
-        gameObject.GetComponent<PlayerMove>().changeAttacking(isAttacking);
+        GetComponent<PlayerMove>().movementSpeed = 10;
+        Debug.Log(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
+        yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
+
+        GetComponent<PlayerMove>().movementSpeed = 60;
+        currentHitNumber++;
+        if (currentHitNumber == 4)
+        {
+            currentHitNumber = 0;
+        }
+        CheckQueue();
     }
+
     // Activate punch
     public void pressX()
     {
-        inputStartTime = currentInputTimer;
+        Debug.Log("pressed x");
         anim.SetTrigger("punch");
         attackType = "punch";
+        state = "attacking";
+        gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
-        currentHitNumber += 1;
+      
     }
+
     // Activate kick
     public void pressY()
     {
-        inputStartTime = currentInputTimer;
         anim.SetTrigger("kick");
         attackType = "kick";
+        state = "attacking";
+        gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
-        currentHitNumber += 1;
+      
     }
+
     // Activate misc attack
     public void pressA()
     {
-        inputStartTime = currentInputTimer;
         anim.SetTrigger("miscAttack");
         attackType = "misc";
+        state = "attacking";
+        gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
-        currentHitNumber += 1;
+   
     }
-    // Check the input queue for what attack to use
-    public void checkQueue()
-    {
-        string input = "";
-        if (inputQueue[0] != "")
-        {
-            input = inputQueue[0];
-            inputQueue[0]= "";
-            if (input == "punch")
-            {
-                pressX();
-            }
-            else if (input == "kick")
-            {
-                pressY();
-            }
-            else if (input == "misc")
-            {
-                pressA();
-            }
-        }
-    }
+
     // Change outfit function takes in the new outfit 
     public void changeOutfit(outfit newOutfit)
     {
+        if(newOutfit.outfitType == "Top")
+        {
+            top = newOutfit;
+        }else if (newOutfit.outfitType == "Misc")
+        {
+            misc = newOutfit;
+        }
+        else if (newOutfit.outfitType == "Bot")
+        {
+            bot = newOutfit;
+        }
         // 
         newOutfit.outfitSkinRenderer.sharedMesh = newOutfit.outfitMesh;
         newOutfit.outfitSkinRenderer.material = newOutfit.outfitMaterial;
@@ -278,7 +306,5 @@ public class Player : MonoBehaviour
         // Override all animations in the anims list
         aoc.ApplyOverrides(anims);
         anim.runtimeAnimatorController = aoc;
-        // Change the hitboxes for player attacks
-        punchHitboxes = newOutfit.attackColliders;
     }
 }

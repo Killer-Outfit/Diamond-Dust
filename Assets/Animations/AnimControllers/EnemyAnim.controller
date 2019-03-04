@@ -88,9 +88,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
-  m_TransitionOffset: 0
-  m_ExitTime: 0.45454544
+  m_TransitionDuration: 0.12474224
+  m_TransitionOffset: 0.02530463
+  m_ExitTime: 0.755164
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -344,9 +344,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.078866005
   m_TransitionOffset: 0
-  m_ExitTime: 0.45454544
+  m_ExitTime: 0.8652673
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -360,7 +360,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Stagger
-  m_Speed: 0.8
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101951712418941586}
@@ -374,7 +374,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400008, guid: a68390b872b4381428c56dc82d5fc5f4, type: 3}
+  m_Motion: {fileID: 7400000, guid: 415c33fccbdc1774d8428578c7dde7dc, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
