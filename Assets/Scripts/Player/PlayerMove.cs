@@ -72,11 +72,11 @@ public class PlayerMove : MonoBehaviour {
         {
             isAttacking = true;
         }
-        if (!isBlocking && !isAttacking && !isDashing)
+        if (!isBlocking && !isDashing)
         {
              normalMovement();
         }
-        else if (isAttacking)
+        else if (isBlocking)
         {
              stationaryRotate();
         }
@@ -232,7 +232,7 @@ public class PlayerMove : MonoBehaviour {
             isLock = false;
         }
 
-        if (!isLock)
+        if (!isLock || isAttacking)
         {
             //transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed;
             movementVector = (camF * inputs.y + camR * inputs.x);
@@ -263,7 +263,7 @@ public class PlayerMove : MonoBehaviour {
             }
             else
             {
-                lockSpeed = 50;
+                lockSpeed = movementSpeed / 1.5f;
             }
             //Debug.Log("lockspeed = " + lockSpeed);
             transform.rotation = Quaternion.LookRotation(-camF);
