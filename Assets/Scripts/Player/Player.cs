@@ -56,15 +56,15 @@ public class Player : MonoBehaviour
         // Buffer inputs if the player is not blocking, continue block otherwise.
         if (state != "blocking")
         {
-            if (Input.GetButtonDown("XButton"))
+            if (Input.GetButtonDown("XButton") || Input.GetMouseButtonDown(0))
             {
                 inputQueue[0] = "punch";
             }
-            else if (Input.GetButtonDown("YButton"))
+            else if (Input.GetButtonDown("YButton") || Input.GetMouseButtonDown(1))
             {
                 inputQueue[0] = "kick";
             }
-            else if (Input.GetButtonDown("AButton"))
+            else if (Input.GetButtonDown("AButton") || Input.GetKeyDown(KeyCode.Space))
             {
                 inputQueue[0] = "misc";
             }

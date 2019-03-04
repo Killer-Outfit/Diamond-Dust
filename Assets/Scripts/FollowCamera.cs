@@ -51,10 +51,10 @@ public class FollowCamera : MonoBehaviour
     void LateUpdate()
     {
         // Only lock on when the right trigger or are pressed, when its not already locked on, and when enemies exist
-        if((Input.GetAxis("rightTrigger") > 0 || Input.GetButtonDown("L")) && !isLockedOn && enemiesExist())
+        if((Input.GetAxis("rightTrigger") > 0 || Input.GetKeyDown(KeyCode.LeftShift)) && !isLockedOn && enemiesExist())
         {
             lockOnToTarget();
-        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetButtonDown("L")) && isLockedOn) || GameObject.Find(currentLockTargetName) == null && isLockedOn)
+        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetKeyDown(KeyCode.LeftShift))  && isLockedOn) || GameObject.Find(currentLockTargetName) == null && isLockedOn)
         {
             endisLockedOn();
         }
