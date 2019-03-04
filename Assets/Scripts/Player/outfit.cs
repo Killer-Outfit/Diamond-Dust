@@ -42,7 +42,20 @@ public class outfit : MonoBehaviour
 
     public float getTimeInterval(int list,int element)
     {
-        Debug.Log(attackTimes);
-        return attackTimes[list, element];
+        if(list == 0)
+        {
+            return attack1Time[element];
+        }else if (list == 1)
+        {
+            return attack2Time[element];
+        }else if (list == 2)
+        {
+            return attack3Time[element];
+        }
+        else
+        {
+            return attack4Time[element];
+        }
+        
     }
 }

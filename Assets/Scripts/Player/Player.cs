@@ -83,12 +83,6 @@ public class Player : MonoBehaviour
             }
         }
 
-        // Combo counter resets if 4 moves in a row have been done.
-        if (currentHitNumber == 4)
-        {
-            currentHitNumber = 0;
-        }
-
         // When no actions are being performed, tell the movement script and check the queue.
         if (state == "idle" || state == "run")
         {
@@ -202,6 +196,7 @@ public class Player : MonoBehaviour
         {
             currentOutfitItem = misc;
         }
+        Debug.Log(currentHitNumber);
         attack = currentOutfitItem.attackColliders[currentHitNumber];
 
         // Do hitbox calcuation after 0.2 seconds. ADJUST THIS TO MATCH ANIMATION TIME LATER?
@@ -236,6 +231,11 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement)); 
         
         Debug.Log("checkQueue");
+        currentHitNumber++;
+        if (currentHitNumber == 4)
+        {
+            currentHitNumber = 0;
+        }
         CheckQueue();
     }
 
@@ -248,7 +248,7 @@ public class Player : MonoBehaviour
         state = "attacking";
         gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
-        currentHitNumber += 1;
+      
     }
 
     // Activate kick
@@ -259,7 +259,7 @@ public class Player : MonoBehaviour
         state = "attacking";
         gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
-        currentHitNumber += 1;
+      
     }
 
     // Activate misc attack
@@ -270,7 +270,7 @@ public class Player : MonoBehaviour
         state = "attacking";
         gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
-        currentHitNumber += 1;
+   
     }
 
     // Change outfit function takes in the new outfit 
