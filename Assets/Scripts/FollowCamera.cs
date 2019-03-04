@@ -50,11 +50,12 @@ public class FollowCamera : MonoBehaviour
     // Using late update so camera moves after player moves in update for smoother looking motion
     void LateUpdate()
     {
+
         // Only lock on when the right trigger or are pressed, when its not already locked on, and when enemies exist
-        if((Input.GetAxis("rightTrigger") > 0 || Input.GetKeyDown(KeyCode.LeftShift)) && !isLockedOn && enemiesExist())
+        if((Input.GetAxis("rightTrigger") > 0 || Input.GetKey(KeyCode.LeftShift)) && !isLockedOn && enemiesExist())
         {
             lockOnToTarget();
-        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetKeyDown(KeyCode.LeftShift))  && isLockedOn) || GameObject.Find(currentLockTargetName) == null && isLockedOn)
+        }else if(((Input.GetAxis("rightTrigger") == 0 && !Input.GetKey(KeyCode.LeftShift))  && isLockedOn) || GameObject.Find(currentLockTargetName) == null && isLockedOn)
         {
             endisLockedOn();
         }
