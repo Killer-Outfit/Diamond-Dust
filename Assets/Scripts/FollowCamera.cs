@@ -6,8 +6,6 @@ public class FollowCamera : MonoBehaviour
 {
     // Set target to player, creating reference to camera transform
     public Transform target;
-    private Transform myTransform;
-
     // Variables for camera speed and location
     public float maxRotation;
     public float minRotation;
@@ -16,23 +14,22 @@ public class FollowCamera : MonoBehaviour
     public float camHeight;
     public float XrotateSpeed;
     public float YrotateSpeed;
-    private float x;
-    private float y;
-    float lockTargetHeight;
-
-    // Location where maker is when hidden
-    Vector3 hiddenMarker;
-
+    public bool isLockedOn;
     // Objects to hold the lock Marker and target
     public GameObject lockMarker;
     public GameObject lockTarget;
 
-    // Name of the current lock target, used to check if the object exists after it is destroyed
-    string currentLockTargetName;
+    private float x;
+    private float y;
+    private Transform myTransform;
 
     // Bool to check if the player has locked on and already inputted a target change
-    public bool lockOn = false;
-    bool allowToChangeTarget = true;
+    bool canChangeTarget;
+    float lockTargetHeight;
+    // Name of the current lock target, used to check if the object exists after it is destroyed
+    string currentLockTargetName;
+    // Location where maker is when hidden
+    Vector3 hiddenMarker;
 
 
     void Start()
@@ -46,21 +43,23 @@ public class FollowCamera : MonoBehaviour
         currentLockTargetName = "none";
         // Position of marker when not locked on
         hiddenMarker = new Vector3(0, -200, 0);
+        canChangeTarget = true;
+        isLockedOn = false;
     }
 
     // Using late update so camera moves after player moves in update for smoother looking motion
     void LateUpdate()
     {
         // Only lock on when the right trigger or are pressed, when its not already locked on, and when enemies exist
-        if((Input.GetAxis("rightTrigger") > 0 || Input.GetButtonDown("L")) && !lockOn && enemiesExist())
+        if((Input.GetAxis("rightTrigger") > 0 || Input.GetKeyDown(KeyCode.LeftShift)) && !isLockedOn && enemiesExist())
         {
             lockOnToTarget();
-        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetButtonDown("L")) && lockOn) || GameObject.Find(currentLockTargetName) == null && lockOn)
+        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetKeyDown(KeyCode.LeftShift))  && isLockedOn) || GameObject.Find(currentLockTargetName) == null && isLockedOn)
         {
-            endLockOn();
+            endisLockedOn();
         }
         // Different updates depending on the camera lock state
-        if (!lockOn)
+        if (!isLockedOn)
         {
             UnlockUpdate();
         }else
@@ -106,7 +105,7 @@ public class FollowCamera : MonoBehaviour
         float step = 40 * Time.deltaTime;
         // Get the rotation toward the enemy
         var targetRotation = Quaternion.LookRotation(lockTarget.transform.position - transform.position);
-        Debug.Log(targetRotation);
+        //Debug.Log(targetRotation);
         // Move position of camera with player
         Vector3 position = targetRotation * new Vector3(0.0f, 0.0f, -minDistance) + target.position;
         // Rotate camera by 1 step from current rotate to the target rotation
@@ -116,14 +115,14 @@ public class FollowCamera : MonoBehaviour
         Vector3 markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2.1f, lockTarget.transform.position.z);
         lockMarker.transform.position = markerPos;
         // Reset the condition to change target
-        if (Input.GetAxis("RStick X") == 0 && !allowToChangeTarget)
+        if (Input.GetAxis("RStick X") == 0 && !canChangeTarget)
         {
-            allowToChangeTarget = true;
+            canChangeTarget = true;
         }
         // Change target if it is allowed to and the user pushes the right stick
-        if (Input.GetAxis("RStick X") != 0 && allowToChangeTarget)
+        if (Input.GetAxis("RStick X") != 0 && canChangeTarget)
         {
-            allowToChangeTarget = false;
+            canChangeTarget = false;
             // Change the target to the right, else to the left
             if (Input.GetAxis("RStick X") > 0)
             {
@@ -147,13 +146,55 @@ public class FollowCamera : MonoBehaviour
         Vector3 right = lockTarget.transform.TransformDirection(Vector3.right);
         Vector3 toOther = potentialTarget.transform.position - lockTarget.transform.position;
         // Find the Dot product of the right vector and the enemy direction vector, if < 0 the enemy is to the left
-        if (Vector3.Dot(right, toOther) < 0)
+        /*if (Vector3.Dot(right, toOther) < 0)
         {
             return false;
         }else
         {
             return true;
+        }*/
+        /*Debug.Log(potentialTarget.transform.position);
+        Debug.Log(relativeDir);
+        if (relativeDir.x > 0)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }*/
+        /*Vector3 heading = potentialTarget.transform.position - lockTarget.transform.position;
+        Vector3 perp = Vector3.Cross(lockTarget.transform.forward, heading);
+        float dir = Vector3.Dot(perp, lockTarget.transform.up);
+        if (dir > 0f)
+        {
+            return true;
         }
+        else
+        {
+            return false;
+        }*/
+        /*Debug.Log(lockTarget.transform.right);
+        if (Vector3.Dot(lockTarget.transform.right, potentialTarget.transform.position) < 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }*/
+
+        Vector3 fvec = target.forward;
+        Vector3 pvec = target.position - potentialTarget.transform.position;
+        float angle = Vector3.SignedAngle(new Vector3(fvec.x, 0, fvec.z), new Vector3(pvec.x, 0, pvec.z), Vector3.up);
+        if (angle < 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
     }
     // Find the closest enemy in a particular relative direction
     public GameObject findClosestInDirection(bool right)
@@ -173,9 +214,9 @@ public class FollowCamera : MonoBehaviour
                 if (closest == null)
                 {
                     closest = enemy;
-                    closestDist = getDistance(enemy);
+                    closestDist = Vector3.Distance(enemy.transform.position, lockTarget.transform.position);
                 }
-                enemyDist = getDistance(enemy);
+                enemyDist = Vector3.Distance(enemy.transform.position, lockTarget.transform.position); 
                 // Check if the enemy is closest
                 if (enemyDist < closestDist)
                 {
@@ -249,7 +290,7 @@ public class FollowCamera : MonoBehaviour
         {
             currentLockTargetName = lockTarget.name;
             ChangeLockTargetHeight();
-            lockOn = true;
+            isLockedOn = true;
         }
     }
     // Change the lock target height variable
@@ -257,10 +298,10 @@ public class FollowCamera : MonoBehaviour
     {
         lockTargetHeight = lockTarget.GetComponent<CapsuleCollider>().height;
     }
-    // Move the lockMarker and end lockOn
-    public void endLockOn()
+    // Move the lockMarker and end isLockedOn
+    public void endisLockedOn()
     {
         lockMarker.transform.position = hiddenMarker;
-        lockOn = false;
+        isLockedOn = false;
     }
 }
