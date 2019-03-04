@@ -165,7 +165,7 @@ public class Player : MonoBehaviour
         currentHealth = maxHealth;
 		healthbar.value = currentHealth / maxHealth;
         //transform.position = checkpoint.getCheckpoint();
-        //canvas.SendMessage("PlayerDead", true);
+        canvas.SendMessage("PlayerDead", true);
     }
     // Make the attack activate
     IEnumerator launchAttack()
