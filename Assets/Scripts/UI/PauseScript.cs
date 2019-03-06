@@ -24,7 +24,7 @@ public class PauseScript : MonoBehaviour
         menu = GameObject.Find("PauseMenuElements");
         playerHealth = GameObject.Find("Player Health");
         outfitMenu = GameObject.Find("OutfitMenuElements");
-        mainCanvas = GameObject.Find("MainCanvas");
+        mainCanvas = GameObject.Find("Canvas");
         outfitCanvas = mainCanvas.GetComponent<Canvas>();
         menu.SetActive(false);
         outfitMenu.SetActive(false);
@@ -55,7 +55,10 @@ public class PauseScript : MonoBehaviour
             Time.timeScale = 1f;
         }
     }
-	
+	public bool checkPause()
+    {
+        return isPaused;
+    }
     public void OpenOutfitMenu()
     {
         menu.SetActive(false);

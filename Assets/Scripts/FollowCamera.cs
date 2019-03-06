@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FollowCamera : MonoBehaviour
 {
+    public Camera mainCam;
+    public GameObject gameManager;
     // Set target to player, creating reference to camera transform
     public Transform target;
     // Variables for camera speed and location
@@ -50,21 +52,26 @@ public class FollowCamera : MonoBehaviour
     // Using late update so camera moves after player moves in update for smoother looking motion
     void LateUpdate()
     {
-        // Only lock on when the right trigger or are pressed, when its not already locked on, and when enemies exist
-        if((Input.GetAxis("rightTrigger") > 0 || Input.GetKeyDown(KeyCode.LeftShift)) && !isLockedOn && enemiesExist())
+        if (!gameManager.GetComponent<PauseScript>().checkPause())
         {
-            lockOnToTarget();
-        }else if(((Input.GetAxis("rightTrigger") == 0 || Input.GetKeyDown(KeyCode.LeftShift))  && isLockedOn) || GameObject.Find(currentLockTargetName) == null && isLockedOn)
-        {
-            endisLockedOn();
-        }
-        // Different updates depending on the camera lock state
-        if (!isLockedOn)
-        {
-            UnlockUpdate();
-        }else
-        {
-            LockUpdate();
+            // Only lock on when the right trigger or are pressed, when its not already locked on, and when enemies exist
+            if ((Input.GetAxis("rightTrigger") > 0 || Input.GetKey(KeyCode.LeftShift)) && !isLockedOn && enemiesExist())
+            {
+                lockOnToTarget();
+            }
+            else if (((Input.GetAxis("rightTrigger") == 0 && !Input.GetKey(KeyCode.LeftShift)) && isLockedOn) || GameObject.Find(currentLockTargetName) == null && isLockedOn)
+            {
+                endisLockedOn();
+            }
+            // Different updates depending on the camera lock state
+            if (!isLockedOn)
+            {
+                UnlockUpdate();
+            }
+            else
+            {
+                LockUpdate();
+            }
         }
     }
     // Update to occur when it is not locked
@@ -183,7 +190,7 @@ public class FollowCamera : MonoBehaviour
             return true;
         }*/
 
-        Vector3 fvec = target.forward;
+        /*Vector3 fvec = target.forward;
         Vector3 pvec = target.position - potentialTarget.transform.position;
         float angle = Vector3.SignedAngle(new Vector3(fvec.x, 0, fvec.z), new Vector3(pvec.x, 0, pvec.z), Vector3.up);
         if (angle < 0)
@@ -193,6 +200,17 @@ public class FollowCamera : MonoBehaviour
         else
         {
             return true;
+        }*/
+
+        Vector3 curTargetPortPos = mainCam.WorldToViewportPoint(lockTarget.transform.position);
+        Vector3 potentialTargetPortPos = mainCam.WorldToViewportPoint(potentialTarget.transform.position);
+        Debug.Log(curTargetPortPos);
+        if(curTargetPortPos.x - potentialTargetPortPos.x < 0)
+        {
+            return true;
+        }else
+        {
+            return false;
         }
 
     }
@@ -244,21 +262,38 @@ public class FollowCamera : MonoBehaviour
         // Iterate through enemy list
         foreach (GameObject enemy in enemies)
         {
-            // Initialize closest to the first enemy
-            if (closest == null)
+            if (isEnemyOnScreen(enemy.transform.position))
             {
-                closest = enemy;
-                closestDist = getDistance(enemy);
-            }
-            enemyDist = getDistance(enemy);
-            // Check if the enemy is closest
-            if (enemyDist < closestDist)
-            {
-                closest = enemy;
-                closestDist = enemyDist;
+                // Initialize closest to the first enemy
+                if (closest == null)
+                {
+                    closest = enemy;
+                    closestDist = getDistance(enemy);
+                }
+                enemyDist = getDistance(enemy);
+                // Check if the enemy is closest
+                if (enemyDist < closestDist)
+                {
+                    closest = enemy;
+                    closestDist = enemyDist;
+                }
             }
         }
         return closest;
+    }
+    public bool isEnemyOnScreen(Vector3 worldPos)
+    {
+        Vector3 camRelativePos = mainCam.WorldToViewportPoint(worldPos);
+        if(camRelativePos.x < 0 || camRelativePos.y < 0 || camRelativePos.z < 0)
+        {
+            return false;
+        }else if (camRelativePos.x > mainCam.pixelWidth || camRelativePos.y > mainCam.pixelHeight)
+        {
+            return false;
+        }else
+        {
+            return true;
+        }
     }
     // Get the distance between an enemy and the player
     public float getDistance(GameObject enemy)

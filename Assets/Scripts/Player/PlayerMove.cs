@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour {
+    public GameObject gameManager;
     public float movementSpeed;
     public float turningSpeed;
     public float dashSpeed;

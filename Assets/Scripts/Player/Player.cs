@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    public GameObject gameManager;
     CharacterController controller;
     public CheckpointManager checkpoint;
     // Set health variables
@@ -53,41 +54,44 @@ public class Player : MonoBehaviour
     // Get user inputs
     void Update()
     {
-        // Buffer inputs if the player is not blocking, continue block otherwise.
-        if (state != "blocking")
+        if (!gameManager.GetComponent<PauseScript>().checkPause())
         {
-            if (Input.GetButtonDown("XButton") || Input.GetMouseButtonDown(0))
+            // Buffer inputs if the player is not blocking, continue block otherwise.
+            if (state != "blocking")
             {
-                inputQueue[0] = "punch";
+                if (Input.GetButtonDown("XButton") || Input.GetMouseButtonDown(0))
+                {
+                    inputQueue[0] = "punch";
+                }
+                else if (Input.GetButtonDown("YButton") || Input.GetMouseButtonDown(1))
+                {
+                    inputQueue[0] = "kick";
+                }
+                else if (Input.GetButtonDown("AButton") || Input.GetKeyDown(KeyCode.Space))
+                {
+                    inputQueue[0] = "misc";
+                }
+                else if (Input.GetButton("BButton"))
+                {
+                    inputQueue[0] = "block";
+                }
             }
-            else if (Input.GetButtonDown("YButton") || Input.GetMouseButtonDown(1))
+            else // Check if block has ended
             {
-                inputQueue[0] = "kick";
+                if (Input.GetButton("BButton") == false)
+                {
+                    state = "idle";
+                    gameObject.GetComponent<PlayerMove>().changeBlock();
+                    anim.SetBool("block", false);
+                }
             }
-            else if (Input.GetButtonDown("AButton") || Input.GetKeyDown(KeyCode.Space))
-            {
-                inputQueue[0] = "misc";
-            }
-            else if (Input.GetButton("BButton"))
-            {
-                inputQueue[0] = "block";
-            }
-        }
-        else // Check if block has ended
-        {
-            if (Input.GetButton("BButton") == false)
-            {
-                state = "idle";
-                gameObject.GetComponent<PlayerMove>().changeBlock();
-                anim.SetBool("block", false);
-            }
-        }
 
-        // When no actions are being performed, tell the movement script and check the queue.
-        if (state == "idle" || state == "run")
-        {
-            gameObject.GetComponent<PlayerMove>().changeAttacking(false);
-            CheckQueue();
+            // When no actions are being performed, tell the movement script and check the queue.
+            if (state == "idle" || state == "run")
+            {
+                gameObject.GetComponent<PlayerMove>().changeAttacking(false);
+                CheckQueue();
+            }
         }
     }
 
@@ -298,7 +302,7 @@ public class Player : MonoBehaviour
         // For each animation in the current animation tree
         foreach (var a in aoc.animationClips)
             // If an animation name contains the outfitType(must be the word punch, kick, and misc)
-            if (a.name.Contains(newOutfit.outfitType))
+            if (a.name.Contains(newOutfit.attackType))
             {
                 anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(a, newOutfit.attacks[index]));
                 index += 1;
