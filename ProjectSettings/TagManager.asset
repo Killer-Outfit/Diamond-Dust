@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - OutfitTop
   - StateMachine
+  - CamTarget
   layers:
   - Default
   - TransparentFX

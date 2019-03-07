@@ -92,6 +92,16 @@ public class Player : MonoBehaviour
                 gameObject.GetComponent<PlayerMove>().changeAttacking(false);
                 CheckQueue();
             }
+            if(state == "attacking")
+            {
+
+                GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
+                cam.GetComponent<FollowCamera>().isAttacking = true;
+            }else
+            {
+                GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
+                cam.GetComponent<FollowCamera>().isAttacking = false;
+            }
         }
     }
 
