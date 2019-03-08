@@ -15,6 +15,9 @@ public class outfit : MonoBehaviour
     // The player skin renderer to use(top, mid, bottom dependent)
     public SkinnedMeshRenderer outfitSkinRenderer;
     // Outfit type must be (Top, Bot, Misc)
+    // The outfit menu skin renderer to use(top, mid, bottom dependent)
+    public SkinnedMeshRenderer outfitMenuSkinRenderer;
+    // Outfit type must be (punch, Kick, Misc)
     public string outfitType;
     // Attack type must be (punch, Kick, misc)
     public string attackType;
