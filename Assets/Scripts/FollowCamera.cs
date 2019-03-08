@@ -149,7 +149,9 @@ public class FollowCamera : MonoBehaviour
         Vector3 position = targetRotation * new Vector3(0.0f, 0.0f, -camDistance) + target.position;
         // Rotate camera by 1 step from current rotate to the target rotation
         Quaternion rotation = Quaternion.Lerp(transform.rotation, targetRotation, step);
+        // Prevent camera motion that is too high or too low
         myTransform.rotation = rotation;
+        Debug.Log(myTransform.rotation);
         myTransform.position = position;
         // Move the lockMarker to slightly above the position of the lockTarget 
         Vector3 markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2.1f, lockTarget.transform.position.z);
@@ -190,8 +192,6 @@ public class FollowCamera : MonoBehaviour
             return true;
         }
         return false;
-        
-
     }
     // Find the closest enemy in a particular relative direction
     public GameObject findClosestInDirection(bool right)
@@ -205,7 +205,7 @@ public class FollowCamera : MonoBehaviour
         foreach (GameObject enemy in enemies)
         {
             // Check if the enemy is on screen and in the correct direction
-            if (getDistance(enemy) <= 30)
+            if (getDistance(enemy) <= 30 && enemy != lockTarget)
             {
                 if (CheckRelativeDirection(enemy) == right && isEnemyOnScreen(enemy.transform.position))
                 {
