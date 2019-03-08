@@ -556,6 +556,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: d6e6fe290ff528c4a96582b16845e4af, type: 3}
   outfitMaterial: {fileID: 2100000, guid: d6e6fe290ff528c4a96582b16845e4af, type: 3}
   outfitSkinRenderer: {fileID: 13700000, guid: d6e6fe290ff528c4a96582b16845e4af, type: 3}
+  outfitMenuSkinRenderer: {fileID: 0}
   outfitType: top
   attackType: punch
   attackColliders:
@@ -676,6 +677,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
   outfitMaterial: {fileID: 2100000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
   outfitSkinRenderer: {fileID: 13700000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
+  outfitMenuSkinRenderer: {fileID: 0}
   outfitType: misc
   attackType: misc
   attackColliders:
@@ -686,24 +688,24 @@ MonoBehaviour:
   attack1Time:
   - 0.2
   - 0.1
-  - 0.1
+  - 0.2
   attack1Move:
-  - 40
+  - 25
   - 10
-  - 0
+  - 10
   attack1Acc:
   - 0
   - 0
   - 0
   attack1Active: 000100
   attack2Time:
-  - 0.3
   - 0.1
+  - 0.2
   - 0.1
   attack2Move:
+  - 10
   - 40
   - 10
-  - 0
   attack2Acc:
   - 0
   - 0
@@ -712,11 +714,11 @@ MonoBehaviour:
   attack3Time:
   - 0.3
   - 0.1
-  - 0.1
+  - 0.2
   attack3Move:
-  - 40
+  - 25
   - 20
-  - 0
+  - 10
   attack3Acc:
   - 0
   - 0
@@ -724,17 +726,20 @@ MonoBehaviour:
   attack3Active: 000100
   attack4Time:
   - 0.5
+  - 0.3
   - 0.1
-  - 0.6
+  - 0.3
   attack4Move:
-  - 40
   - 20
-  - 0
+  - 50
+  - 30
+  - 20
   attack4Acc:
+  - 0.5
+  - 1
   - 0
   - 0
-  - 0
-  attack4Active: 000100
+  attack4Active: 00010000
   animSpeedMultiplier:
   - 1
   - 1
@@ -952,6 +957,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: 0b52a4440cd6344459180e9b6b62d049, type: 3}
   outfitMaterial: {fileID: 2100000, guid: 61fdc667552cc074aba533d8b63e718d, type: 2}
   outfitSkinRenderer: {fileID: 3985736901482605409}
+  outfitMenuSkinRenderer: {fileID: 0}
   outfitType: top
   attackType: punch
   attackColliders:
@@ -965,8 +971,8 @@ MonoBehaviour:
   - 0.1
   attack1Move:
   - 40
-  - 10
-  - 10
+  - 0
+  - 0
   attack1Acc:
   - 0
   - 0
@@ -978,7 +984,7 @@ MonoBehaviour:
   - 0.1
   attack2Move:
   - 40
-  - 10
+  - 20
   - 10
   attack2Acc:
   - 0
@@ -1003,9 +1009,9 @@ MonoBehaviour:
   - 0.1
   - 0.6
   attack4Move:
-  - 30
-  - 10
-  - 10
+  - 25
+  - 20
+  - 20
   attack4Acc:
   - 1
   - 0
@@ -1160,6 +1166,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
   outfitMaterial: {fileID: 2100000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
   outfitSkinRenderer: {fileID: 13700000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
+  outfitMenuSkinRenderer: {fileID: 0}
   outfitType: bot
   attackType: kick
   attackColliders:
@@ -1172,7 +1179,7 @@ MonoBehaviour:
   - 0.1
   - 0.1
   attack1Move:
-  - 40
+  - 25
   - 10
   - 0
   attack1Acc:
@@ -1183,9 +1190,9 @@ MonoBehaviour:
   attack2Time:
   - 0.3
   - 0.1
-  - 0.1
+  - 0.2
   attack2Move:
-  - 40
+  - 25
   - 10
   - 0
   attack2Acc:
@@ -1195,25 +1202,25 @@ MonoBehaviour:
   attack2Active: 000100
   attack3Time:
   - 0.3
-  - 0.1
+  - 0.2
   - 0.1
   attack3Move:
-  - 40
-  - 20
-  - 0
+  - 30
+  - 50
+  - 30
   attack3Acc:
   - 0
   - 0
   - 0
   attack3Active: 000100
   attack4Time:
-  - 0.5
-  - 0.1
-  - 0.6
+  - 0.45
+  - 0.4
+  - 0.2
   attack4Move:
-  - 40
   - 20
-  - 0
+  - 50
+  - 15
   attack4Acc:
   - 0
   - 0
