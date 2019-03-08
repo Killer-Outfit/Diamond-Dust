@@ -59,7 +59,7 @@ public class EnemyScript : MonoBehaviour
         sideTargeter = transform.Find("SideTargeter");
         attackTimer = 1f;
         wanderTimer = Random.Range(2f, 4f);
-        randomWander = Random.Range(-1f, 1f);
+        randomWander = Random.Range(-20f, 20f);
     }
     
     void Update()
@@ -114,7 +114,7 @@ public class EnemyScript : MonoBehaviour
         if (wanderTimer <= 0)
         {
             wanderTimer = Random.Range(2f, 4f);
-            randomWander = Random.Range(-0.8f, 0.8f);
+            randomWander = Random.Range(-20f, 20f);
         }
 
         // Spacing if another enemy gets too close
@@ -188,7 +188,7 @@ public class EnemyScript : MonoBehaviour
             else if (isMiddle)
             {
                 // Slowly move towards the middle of the center ring
-                float mod = .01f;
+                float mod = 2f;
                 if (GetDistance() < 15)
                 {
                     mod = mod * -1;
@@ -196,15 +196,15 @@ public class EnemyScript : MonoBehaviour
 
                 anim.SetBool("isIdle", true);
                 agent.speed = speed * 0.0f;
-                agent.Move(((player.transform.position - transform.position).normalized * mod));
-                agent.Move((sideTargeter.position - transform.position).normalized * randomWander);
+                agent.Move(((player.transform.position - transform.position).normalized * mod * Time.deltaTime));
+                agent.Move((sideTargeter.position - transform.position).normalized * randomWander * Time.deltaTime);
             }
             else if (isClose)
             {
                 anim.SetBool("isIdle", false);
                 agent.speed = 0.0f;
-                agent.Move((player.transform.position - transform.position).normalized * -.07f);
-                agent.Move(((sideTargeter.position - transform.position).normalized * randomWander)/2);
+                agent.Move((player.transform.position - transform.position).normalized * -5f * Time.deltaTime);
+                agent.Move(((sideTargeter.position - transform.position).normalized * randomWander) * Time.deltaTime / 2);
             }
         }
         else if (state == "approaching")
@@ -248,7 +248,7 @@ public class EnemyScript : MonoBehaviour
         {
             for (float i = 0f; i < 0.3f; i += Time.deltaTime)
             {
-                agent.Move((frontTargeter.position - transform.position).normalized * -0.5f);
+                agent.Move((frontTargeter.position - transform.position).normalized * -15f * Time.deltaTime);
                 yield return null;
             }
             // Reset attack readiness as soon as the hitbox appears rather than the end of the attack sequence.
@@ -256,7 +256,7 @@ public class EnemyScript : MonoBehaviour
             attackTimer = Random.Range(5f, 10f);
             for (float i = 0f; i < 0.2f; i += Time.deltaTime)
             {
-                agent.Move((frontTargeter.position - transform.position).normalized * -2f);
+                agent.Move((frontTargeter.position - transform.position).normalized * -20f * Time.deltaTime);
                 if (!hitPlayer)
                 {
                     foreach (Collider c in cols)
@@ -272,7 +272,7 @@ public class EnemyScript : MonoBehaviour
             }
             for (float i = 0f; i < 0.3f; i += Time.deltaTime)
             {
-                agent.Move((frontTargeter.position - transform.position).normalized * -0.5f);
+                agent.Move((frontTargeter.position - transform.position).normalized * -15f * Time.deltaTime);
                 yield return null;
             }
             state = "neutral";
