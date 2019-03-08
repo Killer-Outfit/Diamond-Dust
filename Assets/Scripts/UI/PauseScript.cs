@@ -53,7 +53,7 @@ public class PauseScript : MonoBehaviour
         //curButton = EventSystem.current.currentSelectedGameObject;
         //curButton.GetComponent<Button>().GetComponent<Image>().color = Color.red;
 
-        if (Input.GetButtonDown("StartButton") || Input.GetKeyDown(KeyCode.Escape)) && !isPaused)
+        if (Input.GetButtonDown("StartButton") || Input.GetKeyDown(KeyCode.Escape) && !isPaused)
         {
             // Enable Pause Menu
             menu.SetActive(true);
@@ -64,7 +64,7 @@ public class PauseScript : MonoBehaviour
             isPaused = true;
             Time.timeScale = 0.0f;
         }
-        else if (Input.GetButtonDown("StartButton") || Input.GetKeyDown(KeyCode.Escape)) && isPaused && !isOutfitMenuOpen)
+        else if (Input.GetButtonDown("StartButton") || Input.GetKeyDown(KeyCode.Escape) && isPaused && !isOutfitMenuOpen)
         {
             // Disable Pause Menu
             menu.SetActive(false);
