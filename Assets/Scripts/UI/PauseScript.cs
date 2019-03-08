@@ -17,7 +17,7 @@ public class PauseScript : MonoBehaviour
     GameObject mainCanvas;
     GameObject mainCamera;
     GameObject outfitCamera;
-    GameObject curButton;
+    //GameObject curButton;
     GameObject controls;
     Camera cam1;
     Camera cam2;
@@ -50,8 +50,8 @@ public class PauseScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        curButton = EventSystem.current.currentSelectedGameObject;
-        curButton.GetComponent<Button>().GetComponent<Image>().color = Color.red;
+        //curButton = EventSystem.current.currentSelectedGameObject;
+        //curButton.GetComponent<Button>().GetComponent<Image>().color = Color.red;
 
         if (Input.GetButtonDown("StartButton") && !isPaused)
         {
