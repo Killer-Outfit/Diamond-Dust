@@ -10,7 +10,7 @@ public class JukeBox : MonoBehaviour
 	//A float between zero and one. Set to 1 during combat, and to 0 when outside combat
 	public float InBattle
 	{
-		get 
+		get
 		{
 			float val;
 			inBattle.getValue(out val);
