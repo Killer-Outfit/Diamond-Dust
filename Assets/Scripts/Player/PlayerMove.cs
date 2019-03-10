@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour {
     public GameObject gameManager;
-    public float movementSpeed;
-    public float turningSpeed;
+    public float baseSpeed;
+    public float baseTurnSpeed;
     public float dashSpeed;
     public float maxDashTime;
+
+    // Hidden temp values
+    [HideInInspector]
+    public float movementSpeed;
+    [HideInInspector]
+    public float turningSpeed;
+
     // Use with cam relative motion 2
     public Transform camPivot;
     public Transform cam;
@@ -43,6 +50,8 @@ public class PlayerMove : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        movementSpeed = baseSpeed;
+        turningSpeed = baseTurnSpeed;
         inputTime = inputIntervalMax;
         currenDashTime = maxDashTime;
         dashTimeIncriment = 0.1f;
@@ -65,14 +74,6 @@ public class PlayerMove : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle") || anim.GetCurrentAnimatorStateInfo(0).IsName("run"))
-        {
-            isAttacking = false;
-        }
-        else if(!anim.GetCurrentAnimatorStateInfo(0).IsName("block"))
-        {
-            isAttacking = true;
-        }
         if (!isBlocking && !isDashing)
         {
              normalMovement();
@@ -81,6 +82,7 @@ public class PlayerMove : MonoBehaviour {
         {
              stationaryRotate();
         }
+
         if (Input.GetAxis("LStick X") != 0 && !hasStickPushed)
         {
              horizontalDash = Input.GetAxis("LStick X") * dashSpeed * Time.deltaTime;
@@ -233,7 +235,27 @@ public class PlayerMove : MonoBehaviour {
             isLock = false;
         }
 
-        if (!isLock || isAttacking)
+        if (isAttacking)
+        {
+            movementVector = -transform.forward;
+            vVelocity += Physics.gravity.y * Time.deltaTime;
+            movementVector.y = vVelocity;
+            controller.Move(movementVector * Time.deltaTime * movementSpeed);
+            if (controller.isGrounded)
+            {
+                //Debug.Log("I am on the ground");
+                vVelocity = 0;
+            }
+
+            //setting character rotation
+            if (inputs.x != 0 || inputs.y != 0)
+            {
+                //remove "-1 *" change -  to plus to invert rotation
+                var rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * movementSpeed));
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
+            }
+        }
+        else if (!isLock)
         {
             //transform.position += (camF * inputs.y + camR * inputs.x) * Time.deltaTime * movementSpeed;
             movementVector = (camF * inputs.y + camR * inputs.x);
@@ -286,6 +308,7 @@ public class PlayerMove : MonoBehaviour {
             anim.SetBool("isIdle", true);
         }
     }
+
     // Block to change state
     public void changeBlock()
     {
@@ -297,9 +320,22 @@ public class PlayerMove : MonoBehaviour {
             isBlocking = true;
         }
     }
+
     // Set attacking state
     public void changeAttacking(bool action)
     {
         isAttacking = action;
+    }
+
+    // Reset player speed to default
+    public void DefaultSpeed()
+    {
+        movementSpeed = baseSpeed;
+    }
+
+    // Reset player turnspeed to default
+    public void DefaultTurn()
+    {
+        turningSpeed = baseTurnSpeed;
     }
 }

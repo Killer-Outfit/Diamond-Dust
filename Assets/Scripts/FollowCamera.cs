@@ -90,7 +90,7 @@ public class FollowCamera : MonoBehaviour
                 }
                 if (!isShaking)
                 {
-                    StartCoroutine(shake(.15f, .7f));
+                    //StartCoroutine(shake(.15f, .7f));
                 }
 
             }else

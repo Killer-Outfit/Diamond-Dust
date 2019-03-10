@@ -227,7 +227,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!143 &1323638556
 CharacterController:
@@ -241,10 +241,10 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 12
-  m_Radius: 1.5
+  m_Radius: 2.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.1
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 5, z: 0}
 --- !u!114 &1323638554
@@ -260,10 +260,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  movementSpeed: 60
-  turningSpeed: 10
+  baseSpeed: 50
+  baseTurnSpeed: 10
   dashSpeed: 100
   maxDashTime: 0
+  movementSpeed: 50
+  turningSpeed: 10
   camPivot: {fileID: 1773588909}
   cam: {fileID: 0}
   isBlocking: 0
@@ -576,6 +578,10 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  attack1TurnSpeed:
+  - 10
+  - 0
+  - 0
   attack1Active: 000100
   attack2Time:
   - 0.3
@@ -587,6 +593,10 @@ MonoBehaviour:
   - 0
   attack2Acc:
   - 0
+  - 0
+  - 0
+  attack2TurnSpeed:
+  - 10
   - 0
   - 0
   attack2Active: 000100
@@ -602,6 +612,10 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  attack3TurnSpeed:
+  - 10
+  - 0
+  - 0
   attack3Active: 000100
   attack4Time:
   - 0.5
@@ -613,6 +627,10 @@ MonoBehaviour:
   - 0
   attack4Acc:
   - 0
+  - 0
+  - 0
+  attack4TurnSpeed:
+  - 10
   - 0
   - 0
   attack4Active: 000100
@@ -697,6 +715,10 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  attack1TurnSpeed:
+  - 10
+  - 0
+  - 5
   attack1Active: 000100
   attack2Time:
   - 0.1
@@ -710,6 +732,10 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  attack2TurnSpeed:
+  - 10
+  - 0
+  - 0
   attack2Active: 000100
   attack3Time:
   - 0.3
@@ -721,6 +747,10 @@ MonoBehaviour:
   - 10
   attack3Acc:
   - 0
+  - 0
+  - 0
+  attack3TurnSpeed:
+  - 10
   - 0
   - 0
   attack3Active: 000100
@@ -739,6 +769,11 @@ MonoBehaviour:
   - 1
   - 0
   - 0
+  attack4TurnSpeed:
+  - 10
+  - 0
+  - 0
+  - 5
   attack4Active: 00010000
   animSpeedMultiplier:
   - 1
@@ -970,50 +1005,66 @@ MonoBehaviour:
   - 0.1
   - 0.1
   attack1Move:
-  - 40
-  - 0
-  - 0
+  - 10
+  - 20
+  - 5
   attack1Acc:
   - 0
   - 0
-  - -1
+  - 0
+  attack1TurnSpeed:
+  - 10
+  - 0
+  - 0
   attack1Active: 000100
   attack2Time:
   - 0.3
   - 0.1
   - 0.1
   attack2Move:
-  - 40
   - 20
   - 10
+  - 0
   attack2Acc:
   - 0
   - 0
-  - -1
+  - 0
+  attack2TurnSpeed:
+  - 10
+  - 0
+  - 0
   attack2Active: 000100
   attack3Time:
   - 0.3
   - 0.1
   - 0.1
   attack3Move:
-  - 40
   - 20
   - 10
+  - 0
   attack3Acc:
   - 0
   - 0
-  - -1
+  - 0
+  attack3TurnSpeed:
+  - 10
+  - 0
+  - 0
   attack3Active: 000100
   attack4Time:
   - 0.5
-  - 0.1
-  - 0.6
+  - 0.2
+  - 0.4
   attack4Move:
-  - 25
-  - 20
-  - 20
+  - 10
+  - 30
+  - 5
   attack4Acc:
   - 1
+  - 0
+  - 0
+  attack4TurnSpeed:
+  - 10
   - 0
   - 0
   attack4Active: 000100
@@ -1186,6 +1237,10 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  attack1TurnSpeed:
+  - 10
+  - 0
+  - 0
   attack1Active: 000100
   attack2Time:
   - 0.3
@@ -1197,6 +1252,10 @@ MonoBehaviour:
   - 0
   attack2Acc:
   - 0
+  - 0
+  - 0
+  attack2TurnSpeed:
+  - 10
   - 0
   - 0
   attack2Active: 000100
@@ -1212,6 +1271,10 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  attack3TurnSpeed:
+  - 10
+  - 0
+  - 0
   attack3Active: 000100
   attack4Time:
   - 0.45
@@ -1223,6 +1286,10 @@ MonoBehaviour:
   - 15
   attack4Acc:
   - 0
+  - 0
+  - 0
+  attack4TurnSpeed:
+  - 10
   - 0
   - 0
   attack4Active: 000100
@@ -1326,6 +1393,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1323638553}
     m_Modifications:
+    - target: {fileID: 3502809330578735611, guid: c409912fb6cfbbb479668a40ec77704f,
+        type: 3}
+      propertyPath: m_Name
+      value: CamTarget
+      objectReference: {fileID: 0}
     - target: {fileID: 3502809330578735610, guid: c409912fb6cfbbb479668a40ec77704f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1396,11 +1468,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 3502809330578735611, guid: c409912fb6cfbbb479668a40ec77704f,
-        type: 3}
-      propertyPath: m_Name
-      value: CamTarget
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c409912fb6cfbbb479668a40ec77704f, type: 3}
 --- !u!4 &1773588909 stripped
@@ -1416,10 +1483,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1323638553}
     m_Modifications:
-    - target: {fileID: 13700004, guid: 100f1a4fcb04a80499faf5cca45aea72, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 61fdc667552cc074aba533d8b63e718d, type: 2}
     - target: {fileID: 100060, guid: 100f1a4fcb04a80499faf5cca45aea72, type: 3}
       propertyPath: m_Name
       value: Initial_Outfit_1
@@ -1480,6 +1543,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.6
       objectReference: {fileID: 0}
+    - target: {fileID: 13700004, guid: 100f1a4fcb04a80499faf5cca45aea72, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 61fdc667552cc074aba533d8b63e718d, type: 2}
     - target: {fileID: 13700000, guid: 100f1a4fcb04a80499faf5cca45aea72, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
