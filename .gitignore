@@ -1,12 +1,11 @@
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-Assets/AssetStoreTools*
-
+[Bb]uild/* #star for FMOD exception
 #exception for FMOD builds
 !Music/Killer Outfit/Build
+[Bb]uilds/
+Assets/AssetStoreTools*
 
 # Visual Studio cache directory
 .vs/
