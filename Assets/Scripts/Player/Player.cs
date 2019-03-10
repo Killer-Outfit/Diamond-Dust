@@ -215,6 +215,8 @@ public class Player : MonoBehaviour
             // Reset hit counter and set speed
             hit = false;
             GetComponent<PlayerMove>().movementSpeed = currentOutfitItem.GetPhaseMove(currentHitNumber, i);
+            GetComponent<PlayerMove>().collideMaxSpeed = currentOutfitItem.GetPhaseMove(currentHitNumber, i);
+            GetComponent<PlayerMove>().turningSpeed = currentOutfitItem.GetPhaseTurnSpeed(currentHitNumber, i);
 
             // Go through this phase's timer
             for (float j = 0; j < currentOutfitItem.GetPhaseTime(currentHitNumber, i); j += Time.deltaTime)
@@ -240,7 +242,8 @@ public class Player : MonoBehaviour
             }
         }
 
-        GetComponent<PlayerMove>().movementSpeed = 60;
+        GetComponent<PlayerMove>().DefaultTurn();
+        GetComponent<PlayerMove>().DefaultSpeed();
         currentHitNumber++;
         if (currentHitNumber == 4)
         {
