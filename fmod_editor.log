@@ -7,7 +7,7 @@
 [LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
 [LOG] Thread::initThread                       : Init FMOD stream thread. Priority: 2, Stack Size: 65536, Semaphore: No, Sleep Time: 10, Looping: Yes.
 [LOG] Thread::initThread                       : Init FMOD mixer thread. Priority: 3, Stack Size: 49152, Semaphore: No, Sleep Time: 0, Looping: Yes.
-[LOG] AsyncManager::init                       : manager 000000003F3330C8 isAsync 0 updatePeriod 0.02
+[LOG] AsyncManager::init                       : manager 000000006A20F238 isAsync 0 updatePeriod 0.02
 [LOG] AsyncManager::init                       : done
 [LOG] PlaybackSystem::init                     : 
 [LOG] Thread::initThread                       : Init FMOD Studio sample load thread. Priority: 0, Stack Size: 65536, Semaphore: No, Sleep Time: 1, Looping: No.
@@ -21,96 +21,10 @@
 [LOG] Manager::readBank                        : fileversion = 103, compatVersion = 99 (oldest = 44, newest = 103)
 [LOG] Manager::readBank                        : fileversion = 103, compatVersion = 99 (oldest = 44, newest = 103)
 [LOG] PlaybackSystem::acquireMasterBus         : Setting master channel group format to 6
-[LOG] Manager::readBank                        : fileversion = 103, compatVersion = 99 (oldest = 44, newest = 103)
-[LOG] PlaybackSystem::acquireMasterBus         : Setting master channel group format to 6
-[LOG] SystemI::createSound                     : filename = C:\Users\gegsmith\Documents\GitHub\Diamond-Dust\Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.bank : mode 02010082
-[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] Thread::initThread                       : Init FMOD nonblocking thread (0). Priority: 1, Stack Size: 81920, Semaphore: Yes, Sleep Time: 0, Looping: Yes.
-[LOG] SystemI::createSound                     : setdata soundi = 00000000179FA8B8 : node = 000000003F136600
-[LOG] SystemI::createSound                     : add node to async list : head = 0000000055FD9868.  list count = 0
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000000179FA8B8
-[LOG] SystemI::createSoundInternal             :     Create name='C:\Users\gegsmith\Documents\GitHub\Diamond-Dust\Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.bank', mode=0x02010082
-[LOG] SystemI::createSound                     :     filename = C:\Users\gegsmith\Documents\GitHub\Diamond-Dust\Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.bank : mode 02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
-[LOG] SystemI::createSound                     :     FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2496896
-[LOG] SystemI::createSound                     :     setdata soundi = 00000000179FD648 : node = 000000003F137860
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 19264
-[LOG] SystemI::createSound                     :     add node to async list : head = 0000000055FD9868.  list count = 0
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 000000003F136718
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='District One - Out of Combat Drum Layer', format=2, channels=2, frequency=48000, lengthbytes=281984, lengthpcm=1228800, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.989716.
-[LOG] Thread::initThread                       :     Init FMOD file thread. Priority: 1, Stack Size: 16384, Semaphore: No, Sleep Time: 10, Looping: Yes.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000000179FA8B8
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000000179FD648
-[LOG] SystemI::createSoundInternal             :     Create name='C:\Users\gegsmith\Documents\GitHub\Diamond-Dust\Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.bank', mode=0x02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2496896
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 19264
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 000000003F137978
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='District One - Out of Combat', format=2, channels=2, frequency=48000, lengthbytes=257760, lengthpcm=1228800, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.999969.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000000179FD648
-[LOG] SoundI::getSubSound                      : sound 00000000179FA8B8.  Subsound index 0 / 1
-[LOG] SoundI::getSubSound                      : sound 00000000179FD648.  Subsound index 0 / 1
-[LOG] SystemI::createSound                     : filename = C:\Users\gegsmith\Documents\GitHub\Diamond-Dust\Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.bank : mode 02010082
-[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] SystemI::createSound                     : setdata soundi = 00000000179FBEA8 : node = 000000003F136750
-[LOG] SystemI::createSound                     : add node to async list : head = 0000000055FD9868.  list count = 0
-[LOG] SystemI::createSound                     : filename = C:\Users\gegsmith\Documents\GitHub\Diamond-Dust\Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.bank : mode 02010082
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000000179FBEA8
-[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] SystemI::createSoundInternal             :     Create name='C:\Users\gegsmith\Documents\GitHub\Diamond-Dust\Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.bank', mode=0x02010082
-[LOG] SystemI::createSound                     :     setdata soundi = 00000000179FC058 : node = 000000003F1368A0
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
-[LOG] SystemI::createSound                     :     add node to async list : head = 0000000055FD9868.  list count = 0
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2496896
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 19264
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 000000003F136868
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='District One - Out of Combat Drum Layer', format=2, channels=2, frequency=48000, lengthbytes=281984, lengthpcm=1228800, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.989716.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000000179FBEA8
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000000179FC058
-[LOG] SystemI::createSoundInternal             :     Create name='C:\Users\gegsmith\Documents\GitHub\Diamond-Dust\Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.bank', mode=0x02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2496896
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 19264
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 000000003F1369B8
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='District One - Out of Combat', format=2, channels=2, frequency=48000, lengthbytes=257760, lengthpcm=1228800, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.999969.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000000179FC058
-[LOG] SoundI::getSubSound                      : sound 00000000179FBEA8.  Subsound index 0 / 1
-[LOG] SoundI::getSubSound                      : sound 00000000179FC058.  Subsound index 0 / 1
-[LOG] SoundI::release                          : District One - Out of Combat (00000000179FD648)
-[LOG] SoundI::release                          :     District One - Out of Combat (0000000055FDBC78)
-[LOG] SoundI::release                          :     District One - Out of Combat (00000000179FB2D8)
-[LOG] SoundI::release                          : District One - Out of Combat Drum Layer (00000000179FA8B8)
-[LOG] SoundI::release                          :     District One - Out of Combat Drum Layer (0000000055FD8EF8)
-[LOG] SoundI::release                          :     District One - Out of Combat Drum Layer (00000000179FF808)
-[LOG] SoundI::release                          : District One - Out of Combat (00000000179FC058)
-[LOG] SoundI::release                          :     District One - Out of Combat (0000000055FD98B8)
-[LOG] SoundI::release                          :     District One - Out of Combat (00000000179FC568)
-[LOG] SoundI::release                          : District One - Out of Combat Drum Layer (00000000179FBEA8)
-[LOG] SoundI::release                          :     District One - Out of Combat Drum Layer (0000000055FDB798)
-[LOG] SoundI::release                          :     District One - Out of Combat Drum Layer (00000000179FC3B8)
 [LOG] Thread::callback                         : FMOD Studio bank load thread finished.
 [LOG] Thread::callback                         : FMOD Studio sample load thread finished.
 [LOG] LiveUpdate::release                      : 
 [LOG] LiveUpdate::reset                        : Reset connection (reason Disconnected)
 [LOG] Thread::callback                         : FMOD stream thread finished.
 [LOG] Thread::callback                         : FMOD mixer thread finished.
-[LOG] Thread::callback                         : FMOD nonblocking thread (0) finished.
-[LOG] Thread::callback                         : FMOD file thread finished.
 [LOG] SystemI::close                           : Closed.
