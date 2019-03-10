@@ -5,6 +5,9 @@
 [Bb]uilds/
 Assets/AssetStoreTools*
 
+#exception for FMOD builds
+!Music/Killer Outfit/Build
+
 # Visual Studio cache directory
 .vs/
 
