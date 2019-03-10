@@ -13,6 +13,8 @@ public class PlayerMove : MonoBehaviour {
     [HideInInspector]
     public float movementSpeed;
     [HideInInspector]
+    public float collideMaxSpeed;
+    [HideInInspector]
     public float turningSpeed;
 
     // Use with cam relative motion 2
@@ -51,6 +53,7 @@ public class PlayerMove : MonoBehaviour {
     // Use this for initialization
     void Start () {
         movementSpeed = baseSpeed;
+        collideMaxSpeed = baseSpeed;
         turningSpeed = baseTurnSpeed;
         inputTime = inputIntervalMax;
         currenDashTime = maxDashTime;
@@ -331,11 +334,30 @@ public class PlayerMove : MonoBehaviour {
     public void DefaultSpeed()
     {
         movementSpeed = baseSpeed;
+        collideMaxSpeed = baseSpeed;
     }
 
     // Reset player turnspeed to default
     public void DefaultTurn()
     {
         turningSpeed = baseTurnSpeed;
+    }
+
+    // Slow down when colliding with enemy
+    private void OnCollisionStay(Collision col)
+    {
+        if (col.gameObject.tag == "Enemy" && movementSpeed > 5)
+        {
+            movementSpeed -= 0.5f;
+        }
+    }
+
+    // Go back to top speed when not colliding
+    private void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.tag == "Enemy")
+        {
+            movementSpeed = collideMaxSpeed;
+        }
     }
 }

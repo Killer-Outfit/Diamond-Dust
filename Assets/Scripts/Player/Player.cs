@@ -215,6 +215,7 @@ public class Player : MonoBehaviour
             // Reset hit counter and set speed
             hit = false;
             GetComponent<PlayerMove>().movementSpeed = currentOutfitItem.GetPhaseMove(currentHitNumber, i);
+            GetComponent<PlayerMove>().collideMaxSpeed = currentOutfitItem.GetPhaseMove(currentHitNumber, i);
             GetComponent<PlayerMove>().turningSpeed = currentOutfitItem.GetPhaseTurnSpeed(currentHitNumber, i);
 
             // Go through this phase's timer
