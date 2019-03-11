@@ -24,6 +24,7 @@ public class PauseScript : MonoBehaviour
     Canvas outfitCanvas;
 
     bool isPaused;
+    bool isControlsOpen;
     bool isOutfitMenuOpen;
 
     // Start is called before the first frame update
@@ -43,6 +44,7 @@ public class PauseScript : MonoBehaviour
         outfitMenu.SetActive(false);
         controls.SetActive(false);
         isPaused = false;
+        isControlsOpen = false;
         cam1.enabled = true;
         cam2.enabled = false;
     }
@@ -53,7 +55,7 @@ public class PauseScript : MonoBehaviour
         //curButton = EventSystem.current.currentSelectedGameObject;
         //curButton.GetComponent<Button>().GetComponent<Image>().color = Color.red;
 
-        if (Input.GetButtonDown("StartButton") || Input.GetKeyDown(KeyCode.Escape) && !isPaused)
+        if (Input.GetButtonDown("StartButton") && !isPaused && !isControlsOpen)
         {
             // Enable Pause Menu
             menu.SetActive(true);
@@ -64,9 +66,10 @@ public class PauseScript : MonoBehaviour
             isPaused = true;
             Time.timeScale = 0.0f;
         }
-        else if (Input.GetButtonDown("StartButton") || Input.GetKeyDown(KeyCode.Escape) && isPaused && !isOutfitMenuOpen)
+        else if ((Input.GetButtonDown("StartButton") || Input.GetButtonDown("Cancel")) && isPaused && !isOutfitMenuOpen && !isControlsOpen)
         {
             // Disable Pause Menu
+            firstSelected.Select();
             menu.SetActive(false);
 
             // Enable Gameplay
@@ -74,15 +77,14 @@ public class PauseScript : MonoBehaviour
             isPaused = false;
             Time.timeScale = 1f;
         }
-        else if (Input.GetButtonDown("Cancel") && isPaused && !isOutfitMenuOpen)
-        {
-            // Disable Pause Menu
-            menu.SetActive(false);
 
-            // Enable Gameplay
-            Time.timeScale = 1f;
-            isPaused = false;
-            Time.timeScale = 1f;
+        if (Input.GetButtonDown("ViewControls") && !isPaused)
+        {
+            ViewControls();
+        }
+        else if ((Input.GetButtonDown("ViewControls") || Input.GetButtonDown("Cancel") || Input.GetButtonDown("Submit")) && isPaused)
+        {
+            ResumeGame();
         }
     }
 	public bool checkPause()
@@ -92,8 +94,9 @@ public class PauseScript : MonoBehaviour
 	
     public void ResumeGame()
     {
-        
+
         // Disable Pause Menu
+        firstSelected.Select();
         menu.SetActive(false);
         controls.SetActive(false);
         
@@ -101,6 +104,7 @@ public class PauseScript : MonoBehaviour
         // Enable Gameplay
         Time.timeScale = 1f;
         isPaused = false;
+        isControlsOpen = false;
         Time.timeScale = 1f;
 
     }
@@ -111,6 +115,7 @@ public class PauseScript : MonoBehaviour
         // Disable Gameplay
         Time.timeScale = 0.0f;
         isPaused = true;
+        isControlsOpen = true;
         Time.timeScale = 0.0f;
 
         controls.SetActive(true);

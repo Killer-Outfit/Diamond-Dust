@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7342929790835541392}
   - component: {fileID: 7342929790835541393}
   m_Layer: 5
-  m_Name: ViewControls (Button) 1
+  m_Name: ViewControls (Button)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

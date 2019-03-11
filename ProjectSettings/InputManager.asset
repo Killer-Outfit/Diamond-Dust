@@ -54,7 +54,7 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Dpad Up
+    m_Name: Dpad Y
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -70,7 +70,23 @@ InputManager:
     axis: 6
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Dpad Right
+    m_Name: Dpad Y
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: s
+    positiveButton: w
+    altNegativeButton: down
+    altPositiveButton: up
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 1
+    invert: 0
+    type: 0
+    axis: 1
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: Dpad Y
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -80,10 +96,58 @@ InputManager:
     gravity: 0
     dead: 0.19
     sensitivity: 1
-    snap: 1
+    snap: 0
+    invert: 1
+    type: 2
+    axis: 1
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: Dpad X
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
     invert: 0
     type: 2
     axis: 5
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: Dpad X
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: a
+    positiveButton: d
+    altNegativeButton: left
+    altPositiveButton: right
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 1
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: Dpad X
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
+    invert: 1
+    type: 2
+    axis: 0
     joyNum: 0
   - serializedVersion: 3
     m_Name: MouseY
@@ -252,7 +316,23 @@ InputManager:
     negativeButton: 
     positiveButton: joystick button 0
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: enter
+    gravity: 1000
+    dead: 0
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: Submit
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: return
+    altNegativeButton: 
+    altPositiveButton: space
     gravity: 1000
     dead: 0
     sensitivity: 1
@@ -268,7 +348,7 @@ InputManager:
     negativeButton: 
     positiveButton: joystick button 1
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: escape
     gravity: 1000
     dead: 0
     sensitivity: 1
@@ -284,7 +364,7 @@ InputManager:
     negativeButton: 
     positiveButton: joystick button 7
     altNegativeButton: 
-    altPositiveButton: m
+    altPositiveButton: escape
     gravity: 1000
     dead: 0
     sensitivity: 1
@@ -294,16 +374,16 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: L
+    m_Name: ViewControls
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: l
+    positiveButton: joystick button 6
     altNegativeButton: 
-    altPositiveButton: 
-    gravity: 3
+    altPositiveButton: tab
+    gravity: 1000
     dead: 0
-    sensitivity: 3
+    sensitivity: 1
     snap: 0
     invert: 0
     type: 0
