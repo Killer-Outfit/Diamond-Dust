@@ -62,7 +62,7 @@ public class Player : MonoBehaviour
             {
                 if (Input.GetButtonDown("XButton") || Input.GetMouseButtonDown(0))
                 {
-                    Instantiate(laser, transform.position, transform.rotation);
+                    //Instantiate(laser, transform.position, transform.rotation);
                     inputQueue[0] = "punch";
                 }
                 else if (Input.GetButtonDown("YButton") || Input.GetMouseButtonDown(1))

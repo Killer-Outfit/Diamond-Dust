@@ -96,16 +96,16 @@ public class EnemyScript : MonoBehaviour
             }
             GetMoveState(); // Tells the enemy how far it is from the player.
             DoMovement(); // Does movement based on distance and state.
-        }
 
-        // Attack readiness counter for the enemy manager.
-        if (!isAttackReady)
-        {
-            attackTimer -= Time.deltaTime;
-            if (attackTimer <= 0)
+            // Attack readiness counter for the enemy manager.
+            if (!isAttackReady)
             {
-                isAttackReady = true;
-                enemyManager.GetComponent<GlobalEnemy>().EnemyReady(managerIndex);
+                attackTimer -= Time.deltaTime;
+                if (attackTimer <= 0)
+                {
+                    isAttackReady = true;
+                    enemyManager.GetComponent<GlobalEnemy>().EnemyReady(managerIndex);
+                }
             }
         }
 
