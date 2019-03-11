@@ -22,8 +22,8 @@ public class FollowCamera : MonoBehaviour
     public GameObject lockMarker;
     public GameObject lockTarget;
 
-    private float x;
-    private float y;
+    public float x;
+    public float y;
     private float camDistance;
     private Transform myTransform;
     private bool isShaking;
@@ -136,6 +136,8 @@ public class FollowCamera : MonoBehaviour
     // Update when lock is on 
     public void LockUpdate()
     {
+        y = myTransform.rotation.eulerAngles.y;
+        x = myTransform.rotation.eulerAngles.x;
         // The step size is equal to rotate speed times frame time
         float step = 40 * Time.deltaTime;
         // Get the rotation toward the enemy
@@ -303,11 +305,15 @@ public class FollowCamera : MonoBehaviour
     public void lockOnToTarget()
     {
         lockTarget = findClosest();
-        if (getDistance(lockTarget) < 30)
+        Debug.Log(lockTarget);
+        if (lockTarget != null)
         {
-            currentLockTargetName = lockTarget.name;
-            ChangeLockTargetHeight();
-            isLockedOn = true;
+            if (getDistance(lockTarget) < 30)
+            {
+                currentLockTargetName = lockTarget.name;
+                ChangeLockTargetHeight();
+                isLockedOn = true;
+            }
         }
     }
     // Change the lock target height variable

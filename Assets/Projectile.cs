@@ -6,12 +6,15 @@ public class Projectile : MonoBehaviour
 {
     public float lifeTime;
     public int damage;
+    public bool hasHit;
 
     private float currentTime;
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        hasHit = false;
         currentTime = 0.0f;
     }
     void Update()
@@ -29,6 +32,7 @@ public class Projectile : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy")
         {
+            hasHit = true;
             collision.gameObject.GetComponent<EnemyScript>().DecreaseHealth(damage);
         }
     }
