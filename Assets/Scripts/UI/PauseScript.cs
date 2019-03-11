@@ -9,6 +9,7 @@ public class PauseScript : MonoBehaviour
     public Button firstSelected;
     public Button outfitSelected;
 
+    GameObject lastSelected;
     GameObject menu;
     GameObject outfitMenu;
     GameObject playerHealth;
@@ -78,11 +79,11 @@ public class PauseScript : MonoBehaviour
             Time.timeScale = 1f;
         }
 
-        if (Input.GetButtonDown("ViewControls") && !isPaused)
+        if (Input.GetButtonDown("ViewControls") && !isPaused && !isControlsOpen)
         {
             ViewControls();
         }
-        else if ((Input.GetButtonDown("ViewControls") || Input.GetButtonDown("Cancel") || Input.GetButtonDown("Submit")) && isPaused)
+        else if ((Input.GetButtonDown("ViewControls") || Input.GetButtonDown("Cancel") || Input.GetButtonDown("Submit")) && isPaused && isControlsOpen)
         {
             ResumeGame();
         }
@@ -143,6 +144,21 @@ public class PauseScript : MonoBehaviour
         isOutfitMenuOpen = false;
         firstSelected.Select();
     }
+
+    //public void OnPointerEnter(PointerEventData eventData)
+    //{
+    //    if (!EventSystem.current.alreadySelecting)
+    //    {
+    //        EventSystem.current.SetSelectedGameObject(this.gameObject);
+    //        lastSelected = this.gameObject;
+    //    }
+    //}
+ 
+    //public void OnDeselect(BaseEventData eventData)
+    //{
+    //    this.GetComponent<Selectable>().OnPointerExit(null);
+    //    EventSystem.current.SetSelectedGameObject(lastSelected);
+    //}
 
 	// Loop Through Children
 	/*
