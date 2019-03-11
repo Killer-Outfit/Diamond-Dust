@@ -86,10 +86,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 4
-  m_Height: 18.9292
+  m_Radius: 5
+  m_Height: 20
   m_Direction: 1
-  m_Center: {x: 0.041175842, y: 8.055267, z: 0}
+  m_Center: {x: 0, y: 9, z: 0}
 --- !u!114 &24666742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,6 +102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b63bbc58fb6b7e4bb5c34d53130ec86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  agent: {fileID: 0}
   HPBarSprite: {fileID: 5094065518771958199}
   HPBar: {fileID: 283501901888429332}
   enemyManager: {fileID: 0}
@@ -111,8 +113,10 @@ MonoBehaviour:
   followDistanceLower: 10
   health: 50
   state: inactive
+  isAttackReady: 0
   canBlock: 0
-  isBlocking: 0
+  canDodge: 0
+  attackTimer: 0
   attackHitboxes:
   - {fileID: 2027557192}
   managerIndex: 0
@@ -125,7 +129,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 24666741}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 5
   m_Speed: 1
   m_Acceleration: 1000
   avoidancePriority: 50

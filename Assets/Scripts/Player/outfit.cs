@@ -26,29 +26,33 @@ public class outfit : MonoBehaviour
     public Collider[] attackColliders;
 
     // Attack variables for phase timing, movement speed, acceleration and active hitbox. All arrays for each attack need to be the same size.
+    [Header("Attack1")]
     public float[] attack1Time;
     public float[] attack1Move;
     public float[] attack1Acc;
+    public float[] attack1TurnSpeed;
     public bool[] attack1Active;
-
+    [Header("Attack2")]
     public float[] attack2Time;
     public float[] attack2Move;
     public float[] attack2Acc;
+    public float[] attack2TurnSpeed;
     public bool[] attack2Active;
-
+    [Header("Attack3")]
     public float[] attack3Time;
     public float[] attack3Move;
     public float[] attack3Acc;
+    public float[] attack3TurnSpeed;
     public bool[] attack3Active;
-
+    [Header("Attack4")]
     public float[] attack4Time;
     public float[] attack4Move;
     public float[] attack4Acc;
+    public float[] attack4TurnSpeed;
     public bool[] attack4Active;
 
     // Multiplier to change an attack animation
     public float[] animSpeedMultiplier;
-    private float[,] attackTimes;
 
     void start()
     {
@@ -115,6 +119,27 @@ public class outfit : MonoBehaviour
         else
         {
             return attack4Acc[phase];
+        }
+    }
+
+    // Get the turn speed of a certain phase of an attack
+    public float GetPhaseTurnSpeed(int attack, int phase)
+    {
+        if (attack == 0)
+        {
+            return attack2TurnSpeed[phase];
+        }
+        else if (attack == 1)
+        {
+            return attack2TurnSpeed[phase];
+        }
+        else if (attack == 2)
+        {
+            return attack3TurnSpeed[phase];
+        }
+        else
+        {
+            return attack4TurnSpeed[phase];
         }
     }
 
