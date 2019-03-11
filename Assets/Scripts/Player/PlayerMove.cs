@@ -225,7 +225,7 @@ public class PlayerMove : MonoBehaviour {
         camF = camF.normalized;
         camR = camR.normalized;
 
-        if (Input.GetAxis("rightTrigger") > 0 && !isLock)
+        if ((Input.GetAxis("rightTrigger") > 0 || Input.GetKey(KeyCode.LeftShift)) && !isLock)
         {
             if (mainCameraScript.isLockedOn)
             {
@@ -233,7 +233,7 @@ public class PlayerMove : MonoBehaviour {
             }
             
         }
-        else if (Input.GetAxis("rightTrigger") == 0 && isLock)
+        else if ((Input.GetAxis("rightTrigger") == 0 && !Input.GetKey(KeyCode.LeftShift)) && isLock)
         {
             isLock = false;
         }
@@ -251,10 +251,16 @@ public class PlayerMove : MonoBehaviour {
             }
 
             //setting character rotation
+            Quaternion rotation;
             if (inputs.x != 0 || inputs.y != 0)
             {
                 //remove "-1 *" change -  to plus to invert rotation
-                var rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * movementSpeed));
+                rotation = Quaternion.LookRotation(((-1 * camF * inputs.y - camR * inputs.x) * Time.deltaTime * movementSpeed));
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
+            }
+            else if (isLock)
+            {
+                rotation = Quaternion.LookRotation(-camF);
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * turningSpeed);
             }
         }
