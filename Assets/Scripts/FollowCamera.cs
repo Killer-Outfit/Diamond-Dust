@@ -323,6 +323,7 @@ public class FollowCamera : MonoBehaviour
     }
     IEnumerator shake(float duration, float magnitude)
     {
+        
         float timeChanged = 0.0f;
         isShaking = true;
         Vector3 originalPos = myTransform.localPosition;
@@ -332,11 +333,12 @@ public class FollowCamera : MonoBehaviour
             Vector3 curPos = myTransform.localPosition;
             float x = Random.Range(-1f, 1f) * magnitude;
             float y = Random.Range(-1f, 1f) * magnitude;
-            myTransform.localPosition = new Vector3(curPos.x + x, curPos.y + y, curPos.z);
+            //myTransform.localPosition = new Vector3(curPos.x + x, curPos.y + y, curPos.z);
             timeChanged += Time.deltaTime;
             yield return null;
         }
-        myTransform.position = originalPos;
+        //myTransform.position = originalPos;
         isShaking = false;
+        
     }
 }

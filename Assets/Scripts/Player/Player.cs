@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    public Collider laser;
     public GameObject gameManager;
     CharacterController controller;
     public CheckpointManager checkpoint;
@@ -61,6 +62,7 @@ public class Player : MonoBehaviour
             {
                 if (Input.GetButtonDown("XButton") || Input.GetMouseButtonDown(0))
                 {
+                    Instantiate(laser, transform.position, transform.rotation);
                     inputQueue[0] = "punch";
                 }
                 else if (Input.GetButtonDown("YButton") || Input.GetMouseButtonDown(1))
