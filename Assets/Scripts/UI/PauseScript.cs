@@ -1,9 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class PauseScript : MonoBehaviour
 {
+    public Button firstSelected;
+    public Button outfitSelected;
+
     GameObject menu;
     GameObject outfitMenu;
     GameObject playerHealth;
@@ -17,7 +22,7 @@ public class PauseScript : MonoBehaviour
     Camera cam1;
     Camera cam2;
     Canvas outfitCanvas;
-	
+
     bool isPaused;
     bool isControlsOpen;
     bool isOutfitMenuOpen;
@@ -26,14 +31,18 @@ public class PauseScript : MonoBehaviour
     void Start()
     {
         mainCamera = GameObject.Find("Main Camera");
-        cam = mainCamera.GetComponent<Camera>();
+        outfitCamera = GameObject.Find("OutfitCamera");
+        cam1 = mainCamera.GetComponent<Camera>();
+        cam2 = outfitCamera.GetComponent<Camera>();
         menu = GameObject.Find("PauseMenuElements");
+        controls = GameObject.Find("Controls");
         playerHealth = GameObject.Find("Player Health");
         outfitMenu = GameObject.Find("OutfitMenuElements");
         mainCanvas = GameObject.Find("Canvas");
         outfitCanvas = mainCanvas.GetComponent<Canvas>();
         menu.SetActive(false);
         outfitMenu.SetActive(false);
+        controls.SetActive(false);
         isPaused = false;
         isControlsOpen = false;
         cam1.enabled = true;
@@ -51,7 +60,7 @@ public class PauseScript : MonoBehaviour
             // Enable Pause Menu
             menu.SetActive(true);
             //playerHealth.
-
+            firstSelected.Select();
             // Disable Gameplay
             Time.timeScale = 0.0f;
             isPaused = true;
@@ -117,7 +126,11 @@ public class PauseScript : MonoBehaviour
         menu.SetActive(false);
         outfitMenu.SetActive(true);
         outfitCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-        outfitCanvas.worldCamera = cam;
+        cam1.enabled = false;
+        cam2.enabled = true;
+        outfitCanvas.worldCamera = cam2;
+        isOutfitMenuOpen = true;
+        outfitSelected.Select();
     }
 
     public void CloseOutfitMenu()
@@ -125,6 +138,10 @@ public class PauseScript : MonoBehaviour
         outfitMenu.SetActive(false);
         menu.SetActive(true);
         outfitCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        cam1.enabled = true;
+        cam2.enabled = false;
+        isOutfitMenuOpen = false;
+        firstSelected.Select();
     }
 
 	// Loop Through Children
