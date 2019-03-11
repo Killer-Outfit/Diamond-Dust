@@ -11,19 +11,22 @@ public class FollowCamera : MonoBehaviour
     // Variables for camera speed and location
     public float maxRotation;
     public float minRotation;
-    public float minDistance;
-    public float maxDistance;
+    public float normalDistance;
+    public float fightDistance;
     public float camHeight;
     public float XrotateSpeed;
     public float YrotateSpeed;
     public bool isLockedOn;
+    public bool isAttacking;
     // Objects to hold the lock Marker and target
     public GameObject lockMarker;
     public GameObject lockTarget;
 
-    private float x;
-    private float y;
+    public float x;
+    public float y;
+    private float camDistance;
     private Transform myTransform;
+    private bool isShaking;
 
     // Bool to check if the player has locked on and already inputted a target change
     bool canChangeTarget;
@@ -33,9 +36,15 @@ public class FollowCamera : MonoBehaviour
     // Location where maker is when hidden
     Vector3 hiddenMarker;
 
+    Animator anim;
+
 
     void Start()
     {
+        anim = GetComponent<Animator>();
+        isShaking = false;
+        camDistance = normalDistance;
+        isAttacking = false;
         // Instantiate the transform for better performance
         myTransform = transform;
         // Initial cam setup
@@ -72,6 +81,25 @@ public class FollowCamera : MonoBehaviour
             {
                 LockUpdate();
             }
+
+            if (isAttacking)
+            {
+                if(camDistance < fightDistance)
+                {
+                    camDistance++;
+                }
+                if (!isShaking)
+                {
+                    //StartCoroutine(shake(.15f, .7f));
+                }
+
+            }else
+            {
+                if(camDistance > normalDistance)
+                {
+                    camDistance--;
+                }
+            }
         }
     }
     // Update to occur when it is not locked
@@ -100,7 +128,7 @@ public class FollowCamera : MonoBehaviour
         }
         // Create rotation and the position vectors
         var rotation = Quaternion.Euler(y, x, 0);
-        Vector3 position = rotation * new Vector3(0.0f, 0.0f, -minDistance) + target.position;
+        Vector3 position = rotation * new Vector3(0.0f, 0.0f, -camDistance) + target.position;
         // Rotate and move the camera
         myTransform.rotation = rotation;
         myTransform.position = position;
@@ -108,15 +136,24 @@ public class FollowCamera : MonoBehaviour
     // Update when lock is on 
     public void LockUpdate()
     {
+        y = myTransform.rotation.eulerAngles.y;
+        x = myTransform.rotation.eulerAngles.x;
         // The step size is equal to rotate speed times frame time
         float step = 40 * Time.deltaTime;
         // Get the rotation toward the enemy
         var targetRotation = Quaternion.LookRotation(lockTarget.transform.position - transform.position);
+        if(myTransform.rotation.x > 35)
+        {
+            targetRotation.x = 0;
+        }
         //Debug.Log(targetRotation);
         // Move position of camera with player
-        Vector3 position = targetRotation * new Vector3(0.0f, 0.0f, -minDistance) + target.position;
+        Vector3 position = targetRotation * new Vector3(0.0f, 0.0f, -camDistance) + target.position;
         // Rotate camera by 1 step from current rotate to the target rotation
-        myTransform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, step);
+        Quaternion rotation = Quaternion.Lerp(transform.rotation, targetRotation, step);
+        // Prevent camera motion that is too high or too low
+        myTransform.rotation = rotation;
+        Debug.Log(myTransform.rotation);
         myTransform.position = position;
         // Move the lockMarker to slightly above the position of the lockTarget 
         Vector3 markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2.1f, lockTarget.transform.position.z);
@@ -148,71 +185,15 @@ public class FollowCamera : MonoBehaviour
     // Returns true if to the right, returns false if to the left
     public bool CheckRelativeDirection(GameObject potentialTarget)
     {
-        // Get direction of the potential target, the vector toward the potential enemy and the right vector of the current target
-        var relativeDir = lockTarget.transform.InverseTransformPoint(potentialTarget.transform.position);
-        Vector3 right = lockTarget.transform.TransformDirection(Vector3.right);
-        Vector3 toOther = potentialTarget.transform.position - lockTarget.transform.position;
-        // Find the Dot product of the right vector and the enemy direction vector, if < 0 the enemy is to the left
-        /*if (Vector3.Dot(right, toOther) < 0)
-        {
-            return false;
-        }else
-        {
-            return true;
-        }*/
-        /*Debug.Log(potentialTarget.transform.position);
-        Debug.Log(relativeDir);
-        if (relativeDir.x > 0)
-        {
-            return true;
-        }else
-        {
-            return false;
-        }*/
-        /*Vector3 heading = potentialTarget.transform.position - lockTarget.transform.position;
-        Vector3 perp = Vector3.Cross(lockTarget.transform.forward, heading);
-        float dir = Vector3.Dot(perp, lockTarget.transform.up);
-        if (dir > 0f)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }*/
-        /*Debug.Log(lockTarget.transform.right);
-        if (Vector3.Dot(lockTarget.transform.right, potentialTarget.transform.position) < 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }*/
-
-        /*Vector3 fvec = target.forward;
-        Vector3 pvec = target.position - potentialTarget.transform.position;
-        float angle = Vector3.SignedAngle(new Vector3(fvec.x, 0, fvec.z), new Vector3(pvec.x, 0, pvec.z), Vector3.up);
-        if (angle < 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }*/
-
+        // Get the viewport point position of current target and potential target
         Vector3 curTargetPortPos = mainCam.WorldToViewportPoint(lockTarget.transform.position);
         Vector3 potentialTargetPortPos = mainCam.WorldToViewportPoint(potentialTarget.transform.position);
-        Debug.Log(curTargetPortPos);
+
         if(curTargetPortPos.x - potentialTargetPortPos.x < 0)
         {
             return true;
-        }else
-        {
-            return false;
         }
-
+        return false;
     }
     // Find the closest enemy in a particular relative direction
     public GameObject findClosestInDirection(bool right)
@@ -225,21 +206,24 @@ public class FollowCamera : MonoBehaviour
         // Iterate through enemy list
         foreach (GameObject enemy in enemies)
         {
-            // Check the enemies relative direction
-            if (CheckRelativeDirection(enemy) == right)
+            // Check if the enemy is on screen and in the correct direction
+            if (getDistance(enemy) <= 30 && enemy != lockTarget)
             {
-                // Initialize closest to the first enemy
-                if (closest == null)
+                if (CheckRelativeDirection(enemy) == right && isEnemyOnScreen(enemy.transform.position))
                 {
-                    closest = enemy;
-                    closestDist = Vector3.Distance(enemy.transform.position, lockTarget.transform.position);
-                }
-                enemyDist = Vector3.Distance(enemy.transform.position, lockTarget.transform.position); 
-                // Check if the enemy is closest
-                if (enemyDist < closestDist)
-                {
-                    closest = enemy;
-                    closestDist = enemyDist;
+                    // Initialize closest to the first enemy
+                    if (closest == null)
+                    {
+                        closest = enemy;
+                        closestDist = Vector3.Distance(enemy.transform.position, lockTarget.transform.position);
+                    }
+                    enemyDist = Vector3.Distance(enemy.transform.position, lockTarget.transform.position);
+                    // Check if the enemy is closest
+                    if (enemyDist < closestDist)
+                    {
+                        closest = enemy;
+                        closestDist = enemyDist;
+                    }
                 }
             }
         }
@@ -304,7 +288,7 @@ public class FollowCamera : MonoBehaviour
     // Set initial position and look target to the player
     public void CameraSetup()
     {
-        myTransform.position = new Vector3(target.position.x, target.position.y + camHeight, target.position.z - minDistance);
+        myTransform.position = new Vector3(target.position.x, target.position.y + camHeight, target.position.z - camDistance);
         myTransform.LookAt(target);
     }
     // Check if there are enemies in the scene
@@ -321,11 +305,15 @@ public class FollowCamera : MonoBehaviour
     public void lockOnToTarget()
     {
         lockTarget = findClosest();
-        if (getDistance(lockTarget) < 30)
+        Debug.Log(lockTarget);
+        if (lockTarget != null)
         {
-            currentLockTargetName = lockTarget.name;
-            ChangeLockTargetHeight();
-            isLockedOn = true;
+            if (getDistance(lockTarget) < 30)
+            {
+                currentLockTargetName = lockTarget.name;
+                ChangeLockTargetHeight();
+                isLockedOn = true;
+            }
         }
     }
     // Change the lock target height variable
@@ -338,5 +326,25 @@ public class FollowCamera : MonoBehaviour
     {
         lockMarker.transform.position = hiddenMarker;
         isLockedOn = false;
+    }
+    IEnumerator shake(float duration, float magnitude)
+    {
+        
+        float timeChanged = 0.0f;
+        isShaking = true;
+        Vector3 originalPos = myTransform.localPosition;
+
+        while (timeChanged < duration)
+        {
+            Vector3 curPos = myTransform.localPosition;
+            float x = Random.Range(-1f, 1f) * magnitude;
+            float y = Random.Range(-1f, 1f) * magnitude;
+            //myTransform.localPosition = new Vector3(curPos.x + x, curPos.y + y, curPos.z);
+            timeChanged += Time.deltaTime;
+            yield return null;
+        }
+        //myTransform.position = originalPos;
+        isShaking = false;
+        
     }
 }

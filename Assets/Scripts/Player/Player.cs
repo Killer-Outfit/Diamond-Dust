@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    public Collider laser;
     public GameObject gameManager;
     CharacterController controller;
     public CheckpointManager checkpoint;
@@ -61,6 +62,7 @@ public class Player : MonoBehaviour
             {
                 if (Input.GetButtonDown("XButton") || Input.GetMouseButtonDown(0))
                 {
+                    Instantiate(laser, transform.position, transform.rotation);
                     inputQueue[0] = "punch";
                 }
                 else if (Input.GetButtonDown("YButton") || Input.GetMouseButtonDown(1))
@@ -91,6 +93,16 @@ public class Player : MonoBehaviour
             {
                 gameObject.GetComponent<PlayerMove>().changeAttacking(false);
                 CheckQueue();
+            }
+            if(state == "attacking")
+            {
+
+                GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
+                cam.GetComponent<FollowCamera>().isAttacking = true;
+            }else
+            {
+                GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
+                cam.GetComponent<FollowCamera>().isAttacking = false;
             }
         }
     }
@@ -130,6 +142,7 @@ public class Player : MonoBehaviour
         }
         else // No inputs at the moment
         {
+            currentHitNumber = 0;
             if (state == "attacking")
             {
                 gameObject.GetComponent<PlayerMove>().changeAttacking(false);
@@ -180,12 +193,10 @@ public class Player : MonoBehaviour
     // Make the attack activate
     IEnumerator launchAttack()
     {
-        // Set the collider being used based on current attack type
         bool hit;
         outfit currentOutfitItem = null;
-        // Set the collider beig used based on current attack type
+        // Set the collider being used based on current attack type
         Collider attack = null;
-        int timeListIncrement = 0;
         if(attackType == "punch")
         {
             currentOutfitItem = top;
@@ -200,41 +211,41 @@ public class Player : MonoBehaviour
         }
         attack = currentOutfitItem.attackColliders[currentHitNumber];
 
-        // Do hitbox calcuation after [ANIMATION TIME]
-        GetComponent<PlayerMove>().movementSpeed = 35;
-        yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
-        timeListIncrement++;
-
-        GetComponent<PlayerMove>().movementSpeed = 20;
-        hit = false;
-        for (float i = 0f; i < currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement); i += Time.deltaTime)
+        // Go through each phase of the attack based on the outfit attack stats
+        for (int i = 0; i < currentOutfitItem.GetPhases(currentHitNumber); i++)
         {
-            // Create a list of all objects that have collided with the attack hitbox
-            Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
-            // Iterate through each collision event if a hit hasn't been landed yet
-            if (hit == false)
+            // Reset hit counter and set speed
+            hit = false;
+            GetComponent<PlayerMove>().movementSpeed = currentOutfitItem.GetPhaseMove(currentHitNumber, i);
+            GetComponent<PlayerMove>().collideMaxSpeed = currentOutfitItem.GetPhaseMove(currentHitNumber, i);
+            GetComponent<PlayerMove>().turningSpeed = currentOutfitItem.GetPhaseTurnSpeed(currentHitNumber, i);
+
+            // Go through this phase's timer
+            for (float j = 0; j < currentOutfitItem.GetPhaseTime(currentHitNumber, i); j += Time.deltaTime)
             {
-                foreach (Collider c in cols)
+                // Apply acceleration
+                GetComponent<PlayerMove>().movementSpeed += currentOutfitItem.GetPhaseAcc(currentHitNumber, i);
+
+                // if this phase is an active hitbox and hasn't hit an enemy yet, try to hit an enemy
+                if (currentOutfitItem.GetPhaseActive(currentHitNumber, i) && hit == false)
                 {
-                    // If you collided with an enemy  them
-                    if (c.tag == "Enemy")
+                    Collider[] cols = Physics.OverlapBox(attack.bounds.center, attack.bounds.extents, attack.transform.rotation, LayerMask.GetMask("Hitbox"));
+                    foreach (Collider c in cols)
                     {
-                        // Decrease the hit target's health by 10 CHANGE TO ATTACK DAMAGE
-                        c.SendMessageUpwards("DecreaseHealth", currentOutfitItem.attackDamage[currentHitNumber]);
-                        hit = true;
+                        if (c.tag == "Enemy")
+                        {
+                            // Decrease the hit target's health based on the attack's damage
+                            c.SendMessageUpwards("DecreaseHealth", currentOutfitItem.attackDamage[currentHitNumber]);
+                            hit = true;
+                        }
                     }
                 }
+                yield return null;
             }
-            yield return null;
         }
-        timeListIncrement++;
 
-        // "Cooldown" time
-        GetComponent<PlayerMove>().movementSpeed = 10;
-        Debug.Log(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
-        yield return new WaitForSeconds(currentOutfitItem.getTimeInterval(currentHitNumber, timeListIncrement));
-
-        GetComponent<PlayerMove>().movementSpeed = 60;
+        GetComponent<PlayerMove>().DefaultTurn();
+        GetComponent<PlayerMove>().DefaultSpeed();
         currentHitNumber++;
         if (currentHitNumber == 4)
         {

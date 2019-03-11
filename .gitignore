@@ -1,7 +1,9 @@
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
-[Bb]uild/
+[Bb]uild/* #star for FMOD exception
+#exception for FMOD builds
+!Music/Killer Outfit/Build/Desktop
 [Bb]uilds/
 Assets/AssetStoreTools*
 
