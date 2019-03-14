@@ -12,7 +12,27 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: Cube
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Black
+    second: {fileID: 2100000, guid: 14c1ee00a1a98d847aac28626eb24908, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BrownWall
+    second: {fileID: 2100000, guid: 6655374e84e4c8f4a8ad902d0b461869, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DefaultWall
+    second: {fileID: 2100000, guid: fa67bb67c0817b1488009f9d96710d44, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: LightWindow
+    second: {fileID: 2100000, guid: eb66b174ac89acd43b2144432802953c, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

@@ -14,7 +14,32 @@ ModelImporter:
     3300000: //RootNode
     4300000: Cube
     2186277476908879412: ImportLogs
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Black
+    second: {fileID: 2100000, guid: 30112342044ed4d47bcac95ed8a6b0ed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: LightWindow
+    second: {fileID: 2100000, guid: 26d3c9c374143b84985336deec0ab926, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Overhang
+    second: {fileID: 2100000, guid: a0ed3c03ebceb124280b6d3a441b8a67, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WhiteWalls
+    second: {fileID: 2100000, guid: ab9e03c1d02261f4b9fccf32c037731e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Windows
+    second: {fileID: 2100000, guid: e56cf048a4be1a3488ca1535aaf87777, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
