@@ -92,12 +92,21 @@ public class FollowCamera : MonoBehaviour
                 {
                     //StartCoroutine(shake(.15f, .7f));
                 }
+                if (myTransform.position.y > 23)
+                {
+                    myTransform.position = new Vector3(myTransform.position.x, 23, myTransform.position.z);
+                }
 
-            }else
+            }
+            else
             {
                 if(camDistance > normalDistance)
                 {
                     camDistance--;
+                }
+                if (myTransform.position.y > 21)
+                {
+                    myTransform.position = new Vector3(myTransform.position.x, 21, myTransform.position.z);
                 }
             }
         }
@@ -118,13 +127,21 @@ public class FollowCamera : MonoBehaviour
             y += Input.GetAxis("MouseY") * YrotateSpeed;
         }
         // Prevent camera motion that is too high or too low
-        if( y > maxRotation)
+        if (y > maxRotation)
         {
             y = maxRotation;
         }
-        if( y < minRotation)
+        if (y < minRotation)
         {
             y = minRotation;
+        }
+        if (x > 180)
+        {
+            x = -180;
+        }
+        if (x < -180)
+        {
+            x = 180;
         }
         // Create rotation and the position vectors
         var rotation = Quaternion.Euler(y, x, 0);
@@ -136,24 +153,27 @@ public class FollowCamera : MonoBehaviour
     // Update when lock is on 
     public void LockUpdate()
     {
-        y = myTransform.rotation.eulerAngles.y;
-        x = myTransform.rotation.eulerAngles.x;
+        x = GetCurrentX();
+        y = GetCurrentY();
+        // Prevent camera motion that is too high or too low
+        if (y > maxRotation)
+        {
+            y = maxRotation;
+        }
+        if (y < minRotation)
+        {
+            y = minRotation;
+        }
         // The step size is equal to rotate speed times frame time
         float step = 40 * Time.deltaTime;
         // Get the rotation toward the enemy
         var targetRotation = Quaternion.LookRotation(lockTarget.transform.position - transform.position);
-        if(myTransform.rotation.x > 35)
-        {
-            targetRotation.x = 0;
-        }
-        //Debug.Log(targetRotation);
         // Move position of camera with player
         Vector3 position = targetRotation * new Vector3(0.0f, 0.0f, -camDistance) + target.position;
         // Rotate camera by 1 step from current rotate to the target rotation
         Quaternion rotation = Quaternion.Lerp(transform.rotation, targetRotation, step);
-        // Prevent camera motion that is too high or too low
-        myTransform.rotation = rotation;
-        Debug.Log(myTransform.rotation);
+        //myTransform.rotation = rotation;
+        myTransform.rotation = Quaternion.Euler(y, rotation.eulerAngles.y, 0);
         myTransform.position = position;
         // Move the lockMarker to slightly above the position of the lockTarget 
         Vector3 markerPos = new Vector3(lockTarget.transform.position.x, lockTarget.transform.position.y + lockTargetHeight / 2.1f, lockTarget.transform.position.z);
@@ -182,6 +202,7 @@ public class FollowCamera : MonoBehaviour
             }
         }
     }
+
     // Returns true if to the right, returns false if to the left
     public bool CheckRelativeDirection(GameObject potentialTarget)
     {
@@ -195,6 +216,7 @@ public class FollowCamera : MonoBehaviour
         }
         return false;
     }
+
     // Find the closest enemy in a particular relative direction
     public GameObject findClosestInDirection(bool right)
     {
@@ -235,6 +257,7 @@ public class FollowCamera : MonoBehaviour
         // Dont change the target if there is no valid new one
         return lockTarget;
     }
+
     // Finding the closest enemy in any direction
     public GameObject findClosest()
     {
@@ -265,6 +288,7 @@ public class FollowCamera : MonoBehaviour
         }
         return closest;
     }
+
     public bool isEnemyOnScreen(Vector3 worldPos)
     {
         Vector3 camRelativePos = mainCam.WorldToViewportPoint(worldPos);
@@ -279,18 +303,21 @@ public class FollowCamera : MonoBehaviour
             return true;
         }
     }
+
     // Get the distance between an enemy and the player
     public float getDistance(GameObject enemy)
     {
         float distance = Vector3.Distance(enemy.transform.position, target.transform.position);
         return distance;
     }
+
     // Set initial position and look target to the player
     public void CameraSetup()
     {
         myTransform.position = new Vector3(target.position.x, target.position.y + camHeight, target.position.z - camDistance);
         myTransform.LookAt(target);
     }
+
     // Check if there are enemies in the scene
     public bool enemiesExist()
     {
@@ -301,6 +328,7 @@ public class FollowCamera : MonoBehaviour
         }
         return false;
     }
+
     // Lock onto target if the target is less than 30 distance away
     public void lockOnToTarget()
     {
@@ -316,17 +344,20 @@ public class FollowCamera : MonoBehaviour
             }
         }
     }
+
     // Change the lock target height variable
     public void ChangeLockTargetHeight()
     {
         lockTargetHeight = lockTarget.GetComponent<CapsuleCollider>().height;
     }
+
     // Move the lockMarker and end isLockedOn
     public void endisLockedOn()
     {
         lockMarker.transform.position = hiddenMarker;
         isLockedOn = false;
     }
+
     IEnumerator shake(float duration, float magnitude)
     {
         
@@ -346,5 +377,18 @@ public class FollowCamera : MonoBehaviour
         //myTransform.position = originalPos;
         isShaking = false;
         
+    }
+
+    private float GetCurrentX()
+    {
+        Vector3 fvec = transform.forward;
+        Vector3 pvec = Vector3.forward;
+        return -Vector3.SignedAngle(new Vector3(fvec.x, 0, fvec.z), new Vector3(pvec.x, 0, pvec.z), Vector3.up);
+    }
+    private float GetCurrentY()
+    {
+        Vector3 fvec = transform.forward;
+        Vector3 pvec = lockTarget.transform.position;
+        return Vector3.SignedAngle(new Vector3(0, fvec.y, fvec.z), new Vector3(0, pvec.y, pvec.z), Vector3.up);
     }
 }

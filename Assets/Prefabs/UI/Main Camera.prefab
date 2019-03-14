@@ -98,8 +98,8 @@ MonoBehaviour:
   mainCam: {fileID: 541795003594292866}
   gameManager: {fileID: 0}
   target: {fileID: 0}
-  maxRotation: 30
-  minRotation: -30
+  maxRotation: 40
+  minRotation: -40
   normalDistance: 15
   fightDistance: 30
   camHeight: 0
@@ -109,3 +109,5 @@ MonoBehaviour:
   isAttacking: 0
   lockMarker: {fileID: 0}
   lockTarget: {fileID: 0}
+  x: 0
+  y: 0
