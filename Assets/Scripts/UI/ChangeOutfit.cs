@@ -6,6 +6,10 @@ public class ChangeOutfit : MonoBehaviour
 {
     public outfit outfit1;
     public outfit outfit2;
+    public outfit outfit1Bot;
+    public outfit outfit2Bot;
+    public outfit outfit1M;
+    public outfit outfit2M;
     public GameObject player;
     public GameObject outfitModel;
 
