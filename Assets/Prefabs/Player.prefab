@@ -561,6 +561,8 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: d6e6fe290ff528c4a96582b16845e4af, type: 3}
   outfitMaterial: {fileID: 2100000, guid: d6e6fe290ff528c4a96582b16845e4af, type: 3}
   outfitSkinRenderer: {fileID: 13700000, guid: d6e6fe290ff528c4a96582b16845e4af, type: 3}
+  outfitMenuSkinRenderer: {fileID: 13700000, guid: d6e6fe290ff528c4a96582b16845e4af,
+    type: 3}
   outfitType: top
   attackType: punch
   attackColliders:
@@ -1189,6 +1191,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
   outfitMaterial: {fileID: 2100000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
   outfitSkinRenderer: {fileID: 13700000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
+  outfitMenuSkinRenderer: {fileID: 3985736901482605415}
   outfitType: misc
   attackType: misc
   attackColliders:
@@ -1329,6 +1332,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
   outfitMaterial: {fileID: 2100000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
   outfitSkinRenderer: {fileID: 13700000, guid: 6a8546ac1a1809b45a2f320db674e934, type: 3}
+  outfitMenuSkinRenderer: {fileID: 3985736901482605415}
   outfitType: misc
   attackType: misc
   attackColliders:
@@ -1627,6 +1631,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: 0b52a4440cd6344459180e9b6b62d049, type: 3}
   outfitMaterial: {fileID: 2100000, guid: 61fdc667552cc074aba533d8b63e718d, type: 2}
   outfitSkinRenderer: {fileID: 3985736901482605409}
+  outfitMenuSkinRenderer: {fileID: 3985736901482605409}
   outfitType: top
   attackType: punch
   attackColliders:
@@ -1763,6 +1768,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
   outfitMaterial: {fileID: 2100000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
   outfitSkinRenderer: {fileID: 13700000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
+  outfitMenuSkinRenderer: {fileID: 3985736901482605413}
   outfitType: bot
   attackType: kick
   attackColliders:
@@ -1987,6 +1993,7 @@ MonoBehaviour:
   outfitMesh: {fileID: 4300000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
   outfitMaterial: {fileID: 2100000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
   outfitSkinRenderer: {fileID: 13700000, guid: e124bf99da2741e4d80a157fe73e351c, type: 3}
+  outfitMenuSkinRenderer: {fileID: 3985736901482605413}
   outfitType: bot
   attackType: kick
   attackColliders:
