@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    public outfit misc2;
     public Collider laser;
     public GameObject gameManager;
     CharacterController controller;
@@ -51,6 +52,7 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         currentHealth = maxHealth;
         healthbar.value = currentHealth / maxHealth;
+        changeOutfit(misc2);
     }
     // Get user inputs
     void Update()
