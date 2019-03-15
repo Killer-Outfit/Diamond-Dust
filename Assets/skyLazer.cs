@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StraightLaser : MonoBehaviour
+public class skyLazer : MonoBehaviour
 {
     private float maxLength;
     private float incriment;
     private float currentSize;
     private float speed;
+    private float rotate;
 
     // Start is called before the first frame update
     void Start()
@@ -19,7 +20,8 @@ public class StraightLaser : MonoBehaviour
         transform.Rotate(90, 0, 0);
         */
         speed = 1;
-        transform.Rotate(0, 180, 0);
+        rotate = Random.Range(-120f, -60f);
+        transform.Rotate(rotate, 180 + rotate, 0);
         transform.position = new Vector3(transform.position.x, transform.position.y + 5, transform.position.z);
     }
 
