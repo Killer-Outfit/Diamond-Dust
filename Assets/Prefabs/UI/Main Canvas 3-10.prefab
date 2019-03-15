@@ -1,47 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &419703165408893690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3339209515336392718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 419703166468414939}
-          m_MethodName: changeOutfit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 3339209515721791702}
-          m_MethodName: Select
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
-        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  delegates: []
 --- !u!1 &419703166396502432
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,9 +54,8 @@ GameObject:
   - component: {fileID: 419703166468414942}
   - component: {fileID: 419703166468414938}
   - component: {fileID: 419703166468414936}
-  - component: {fileID: 419703166468414939}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Main Canvas 3-10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -213,64 +170,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 040091ee407cf3745b7c2926e8d21636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &419703166468414939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419703166468414913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cb1a9750ec082d49aa1067f675997a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outfit1: {fileID: 0}
-  outfit2: {fileID: 0}
-  player: {fileID: 0}
-  outfitModel: {fileID: 3339209515773787738}
---- !u!114 &419703166589677776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3339209515200146519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 419703166468414939}
-          m_MethodName: changeOutfit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 3339209515721791702}
-          m_MethodName: Select
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
-        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  delegates: []
 --- !u!1001 &419703165450792761
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -428,11 +327,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 419703166396502433}
     m_Modifications:
-    - target: {fileID: 6620625391939317466, guid: b493e751f9d04af4c8c96f29bba7b9b5,
-        type: 3}
-      propertyPath: m_Name
-      value: Exit (Button)
-      objectReference: {fileID: 0}
     - target: {fileID: 252371510, guid: b493e751f9d04af4c8c96f29bba7b9b5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -516,6 +410,11 @@ PrefabInstance:
     - target: {fileID: 252371510, guid: b493e751f9d04af4c8c96f29bba7b9b5, type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620625391939317466, guid: b493e751f9d04af4c8c96f29bba7b9b5,
+        type: 3}
+      propertyPath: m_Name
+      value: Exit (Button)
       objectReference: {fileID: 0}
     - target: {fileID: 7175139539557718643, guid: b493e751f9d04af4c8c96f29bba7b9b5,
         type: 3}
@@ -839,6 +738,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a81b4a59d49b6394c94c356fd8d95e98, type: 3}
+--- !u!224 &8501032745602321930 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8082459346119155782, guid: a81b4a59d49b6394c94c356fd8d95e98,
+    type: 3}
+  m_PrefabInstance: {fileID: 419703165812797004}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8501032745602321933 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8082459346119155777, guid: a81b4a59d49b6394c94c356fd8d95e98,
@@ -851,12 +756,6 @@ MonoBehaviour:
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &8501032745602321930 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8082459346119155782, guid: a81b4a59d49b6394c94c356fd8d95e98,
-    type: 3}
-  m_PrefabInstance: {fileID: 419703165812797004}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &419703165855009160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1518,7 +1417,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 419703166468414939}
+      objectReference: {fileID: 0}
     - target: {fileID: 3135724229468087771, guid: 9fe6d88effeb8b34482743a26cbf7132,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -1548,7 +1447,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 419703166468414939}
+      objectReference: {fileID: 0}
     - target: {fileID: 3135724230141208962, guid: 9fe6d88effeb8b34482743a26cbf7132,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -1599,21 +1498,3 @@ MonoBehaviour:
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &3339209515336392718 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3135724229468087773, guid: 9fe6d88effeb8b34482743a26cbf7132,
-    type: 3}
-  m_PrefabInstance: {fileID: 419703166582195667}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3339209515200146519 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3135724230141208964, guid: 9fe6d88effeb8b34482743a26cbf7132,
-    type: 3}
-  m_PrefabInstance: {fileID: 419703166582195667}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3339209515773787738 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3135724229575703433, guid: 9fe6d88effeb8b34482743a26cbf7132,
-    type: 3}
-  m_PrefabInstance: {fileID: 419703166582195667}
-  m_PrefabAsset: {fileID: 0}
