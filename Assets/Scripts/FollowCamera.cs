@@ -27,6 +27,7 @@ public class FollowCamera : MonoBehaviour
     private float camDistance;
     private Transform myTransform;
     private bool isShaking;
+    private Renderer objRend;
 
     // Bool to check if the player has locked on and already inputted a target change
     bool canChangeTarget;
