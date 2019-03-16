@@ -31,7 +31,7 @@ public class CameraCollision : MonoBehaviour
     {
         objRend = collision.gameObject.GetComponent<Renderer>();
 
-        Debug.Log("Camera no longer colliding with object");
+        Debug.Log("Camera no longer colliding+ with object");
 
         objRend.enabled = true;
     }
