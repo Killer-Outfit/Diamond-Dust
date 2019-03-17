@@ -15,6 +15,7 @@ public class crowd : MonoBehaviour
 
     Collider myCollider;
     NavMeshAgent agent;
+    Animator anim;
 
     bool canCurrentlyTurn = false;
 
@@ -27,6 +28,7 @@ public class crowd : MonoBehaviour
         myCollider = transform.GetComponent<Collider>();
         speed = Random.Range(1f, 5);
         agent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -43,6 +45,7 @@ public class crowd : MonoBehaviour
             }
             transform.Rotate(0.0f, -0.5f, 0.0f);
             speed = Random.Range(0.5f, 1);
+            anim.SetFloat("speed", speed);
         }
         // Left Sensor
         if (Physics.Raycast(transform.position, -transform.right, out hit, (sensorLength + transform.localScale.x)))
@@ -53,6 +56,7 @@ public class crowd : MonoBehaviour
             }
             transform.Rotate(0.0f, 0.5f, 0.0f);
             speed = Random.Range(0.5f, 1);
+            anim.SetFloat("speed", speed);
         }
         // Front Sensor
         if (Physics.Raycast(transform.position, transform.forward, out hit, (sensorLength + transform.localScale.z)))
@@ -62,6 +66,7 @@ public class crowd : MonoBehaviour
                 return;
             }
             speed = 0.0f;
+            anim.SetFloat("speed", speed);
             if (Physics.Raycast(transform.position, -transform.right, out hit, (sensorLength + transform.localScale.x)))
                 transform.Rotate(0.0f, 0.5f, 0.0f);
             if (Physics.Raycast(transform.position, transform.right, out hit, (sensorLength + transform.localScale.x)))
@@ -73,6 +78,7 @@ public class crowd : MonoBehaviour
         else
         {
             speed = Random.Range(0.5f, 1);
+            anim.SetFloat("speed", speed);
         }
 
         if (Vector3.Distance(transform.position, Vector3.zero) >= globalCrowd.arenaSize)
@@ -91,6 +97,8 @@ public class crowd : MonoBehaviour
                                                   Quaternion.LookRotation(direction),
                                                   rotationSpeed * Time.deltaTime);
             speed = Random.Range(0.5f, 1);
+            anim.SetFloat("speed", speed);
+
         }
         else
         {
