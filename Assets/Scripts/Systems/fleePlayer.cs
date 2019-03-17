@@ -7,6 +7,8 @@ public class fleePlayer : MonoBehaviour
     public float multiplier;
     public float runRange;
 
+    Animator anim;
+
     private Transform player;
     private UnityEngine.AI.NavMeshAgent myNMagent;
     private float nextTurnTime;
@@ -18,6 +20,7 @@ public class fleePlayer : MonoBehaviour
 
         player = GameObject.FindGameObjectWithTag("Player").transform;
         myNMagent = this.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        anim = GetComponent<Animator>();
 
     }
 
@@ -50,6 +53,7 @@ public class fleePlayer : MonoBehaviour
         // Then we'll get the position on that rotation that's multiplier down the path (you could set a Random.range
         // for this if you want variable results) and store it in a new Vector3 called runTo
         Vector3 runTo = transform.position + transform.forward * multiplier;
+        anim.SetFloat("speed", multiplier);
         // Debug.Log("runTo = " + runTo);
 
         // So now we've got a Vector3 to run to and we can transfer that to a location on the NavMesh with samplePosition.
