@@ -8,7 +8,7 @@ public class yesnt : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = .09f;
+        speed = .15f;
         transform.Rotate(0, 180, 0);
         transform.position = new Vector3(transform.position.x, transform.position.y + 5, transform.position.z);
     }

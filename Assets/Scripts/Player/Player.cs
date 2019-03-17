@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     public Collider laser;
+    public Collider laserSpawn;
+    public Collider NONONO;
     public GameObject gameManager;
     CharacterController controller;
     public CheckpointManager checkpoint;
@@ -31,6 +33,7 @@ public class Player : MonoBehaviour
     private bool isBlocking;
     private float shield;
     private int currentHitNumber;
+    private bool outfit2;
 
     // Create an animator variable and animation overrider for outfit switching
     Animator anim;
@@ -39,6 +42,7 @@ public class Player : MonoBehaviour
     // Initialize animator, current health and healthbar value
     void Start()
     {
+        outfit2 = false;
         state = "idle";
         controller = GetComponent<CharacterController>();
         checkpoint.updateCheckpoint(transform.position);
@@ -62,7 +66,7 @@ public class Player : MonoBehaviour
             {
                 if (Input.GetButtonDown("XButton") || Input.GetMouseButtonDown(0))
                 {
-                    Instantiate(laser, transform.position, transform.rotation);
+                    //Instantiate(laser, transform.position, transform.rotation);
                     inputQueue[0] = "punch";
                 }
                 else if (Input.GetButtonDown("YButton") || Input.GetMouseButtonDown(1))
@@ -193,6 +197,8 @@ public class Player : MonoBehaviour
     // Make the attack activate
     IEnumerator launchAttack()
     {
+        int happened = 0;
+        float startTime = 0f;
         bool hit;
         outfit currentOutfitItem = null;
         // Set the collider being used based on current attack type
@@ -209,11 +215,13 @@ public class Player : MonoBehaviour
         {
             currentOutfitItem = misc;
         }
+        
         attack = currentOutfitItem.attackColliders[currentHitNumber];
 
         // Go through each phase of the attack based on the outfit attack stats
         for (int i = 0; i < currentOutfitItem.GetPhases(currentHitNumber); i++)
         {
+            startTime += Time.deltaTime;
             // Reset hit counter and set speed
             hit = false;
             GetComponent<PlayerMove>().movementSpeed = currentOutfitItem.GetPhaseMove(currentHitNumber, i);
@@ -241,9 +249,40 @@ public class Player : MonoBehaviour
                     }
                 }
                 yield return null;
+                if (attackType == "misc" && outfit2)
+                {
+                    if (currentHitNumber == 0)
+                    {
+                        Vector3 spawnPos = transform.position;
+                        spawnPos.y += 2;
+                        Instantiate(laser, spawnPos, transform.rotation);
+                        //StartCoroutine("launchStraightLaser");
+                    }else if (currentHitNumber == 2)
+                    {
+                        Vector3 spawnPos = transform.position;
+                        spawnPos = spawnPos + transform.forward * -5;
+                        if ((int)startTime % 10 == 0)
+                        {
+
+                            Instantiate(NONONO, spawnPos, transform.rotation);
+                        }
+                    }
+                    else if (currentHitNumber == 3)
+                    {
+                        happened++;
+                        if(happened == 1)
+                        {
+                            
+                            Vector3 spawnPos = transform.position;
+                            spawnPos.y += 20;
+                            spawnPos = spawnPos + transform.forward * -5;
+                            Instantiate(laserSpawn, spawnPos, transform.rotation);
+                        }
+                    }
+                }
             }
         }
-
+        
         GetComponent<PlayerMove>().DefaultTurn();
         GetComponent<PlayerMove>().DefaultSpeed();
         currentHitNumber++;
@@ -263,7 +302,6 @@ public class Player : MonoBehaviour
         state = "attacking";
         gameObject.GetComponent<PlayerMove>().changeAttacking(true);
         StartCoroutine("launchAttack");
-      
     }
 
     // Activate kick
@@ -273,8 +311,7 @@ public class Player : MonoBehaviour
         attackType = "kick";
         state = "attacking";
         gameObject.GetComponent<PlayerMove>().changeAttacking(true);
-        StartCoroutine("launchAttack");
-      
+        StartCoroutine("launchAttack");  
     }
 
     // Activate misc attack
@@ -297,6 +334,13 @@ public class Player : MonoBehaviour
         }else if (newOutfit.outfitType == "Misc")
         {
             misc = newOutfit;
+            if (outfit2)
+            {
+                outfit2 = false;
+            }else
+            {
+                outfit2 = true;
+            }
         }
         else if (newOutfit.outfitType == "Bot")
         {
@@ -321,5 +365,15 @@ public class Player : MonoBehaviour
         // Override all animations in the anims list
         aoc.ApplyOverrides(anims);
         anim.runtimeAnimatorController = aoc;
+    }
+
+    IEnumerable launchStraightLaser()
+    {
+        for(float i = 0; i < 10; i += Time.deltaTime)
+        {
+            Instantiate(laser, transform.position, transform.rotation);
+            yield return null;
+        }
+        
     }
 }

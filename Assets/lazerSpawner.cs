@@ -11,6 +11,7 @@ public class lazerSpawner : MonoBehaviour
     void Start()
     {
         transform.Rotate(180, 0, 0);
+        transform.Translate(Vector3.forward * 5);
     }
 
     // Update is called once per frame

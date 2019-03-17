@@ -113,7 +113,7 @@ public class PlayerMove : MonoBehaviour {
             }
             if (hasStickPushed && hasBPressed)
             {
-                StartCoroutine("dash");
+                //StartCoroutine("dash");
                 break;
             }
             yield return null;
