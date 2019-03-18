@@ -5,9 +5,9 @@ using UnityEngine;
 public class globalCrowd : MonoBehaviour
 {
     public GameObject crowdPrefab;
-    public static int arenaSize = 300;
+    public static int arenaSize = 150;
     public GameObject playerPrefab;
-    public static int numCrowd = 200;
+    public static int numCrowd = 50;
     public static GameObject[] allCrowd = new GameObject[numCrowd];
     //public static int spaceHeight = 1960;
     public static Vector3 goalPos = Vector3.zero;
