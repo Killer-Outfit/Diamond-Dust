@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EditorBanks:
   - {fileID: 114360846810793322}
-  - {fileID: 114024206296765650}
+  - {fileID: 114161998936783950}
   EditorEvents:
   - {fileID: 114589735638554862}
   MasterBanks:
@@ -22,9 +22,10 @@ MonoBehaviour:
   - {fileID: 114299711074387374}
   - {fileID: 114613818439132024}
   - {fileID: 114259118062472562}
+  - {fileID: 114161998936783950}
   StringsBanks:
   - {fileID: 114360846810793322}
-  stringsBankWriteTime: 636884422096753243
+  stringsBankWriteTime: 636882580973241349
   cacheVersion: 3
 --- !u!114 &114024206296765650
 MonoBehaviour:
@@ -45,7 +46,7 @@ MonoBehaviour:
   FileSizes:
   - Name: Desktop
     Value: 2516160
-  Exists: 1
+  Exists: 0
 --- !u!114 &114092888109246094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,6 +119,26 @@ MonoBehaviour:
   MinDistance: 0
   MaxDistance: 0
   Length: 73600
+--- !u!114 &114161998936783950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: C:\Users\Kevin Ly\Desktop\KillerOutfit\Diamond-Dust\Assets\Audio\Music\Killer
+    Outfit\Build\Desktop\Master Bank.bank
+  lastModified: 636882580973201372
+  LoadResult: 0
+  FileSizes:
+  - Name: Desktop
+    Value: 2516160
+  Exists: 1
 --- !u!114 &114192469025282190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,7 +280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Path: Assets\Audio\Music\Killer Outfit\Build\Desktop\Master Bank.strings.bank
-  lastModified: 636884422096753243
+  lastModified: 636882580973241349
   LoadResult: 0
   FileSizes:
   - Name: Desktop
@@ -430,12 +451,12 @@ MonoBehaviour:
   Path: event:/Music/District One
   guid: 65a7796a1f1f5143bf76d0c6da5dec37
   Banks:
-  - {fileID: 114024206296765650}
+  - {fileID: 114161998936783950}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 114643709398298418}
+  - {fileID: 114773252853894226}
   MinDistance: 0
   MaxDistance: 0
   Length: 73600
@@ -527,6 +548,22 @@ MonoBehaviour:
   - Name: 
     Value: 2516160
   Exists: 1
+--- !u!114 &114773252853894226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: In Battle
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114849989208276674
 MonoBehaviour:
   m_ObjectHideFlags: 0
